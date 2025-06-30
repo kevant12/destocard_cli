@@ -75,11 +75,22 @@ class ProductController extends AbstractController
     /**
      * Ajoute un nouveau produit
      */
-    #[Route('/add', name: 'app_product_add')]
+    #[Route('/add/{pokemonCardId}', name: 'app_product_add', defaults: ['pokemonCardId' => null])]
     #[IsGranted('ROLE_USER')]
-    public function add(Request $request): Response
+    public function add(Request $request, ?int $pokemonCardId): Response
     {
         $product = new Products();
+        $pokemonCard = null;
+
+        if ($pokemonCardId) {
+            $pokemonCard = $this->pokemonCardRepository->find($pokemonCardId);
+            if ($pokemonCard) {
+                $product->setPokemonCard($pokemonCard);
+                $product->setTitle($pokemonCard->getName());
+                $product->setDescription($pokemonCard->getDescription());
+                $product->setCategory($pokemonCard->getCategory());
+            }
+        }
         
         // Récupérer toutes les extensions pour le champ de sélection
         $extensions = $this->em->getRepository(\App\Entity\Extension::class)->findAll();
@@ -89,7 +100,8 @@ class ProductController extends AbstractController
         }
 
         $form = $this->createForm(ProductFormType::class, $product, [
-            'extensions' => $extensionChoices
+            'extensions' => $extensionChoices,
+            'pokemonCard' => $pokemonCard,
         ]);
         $form->handleRequest($request);
 

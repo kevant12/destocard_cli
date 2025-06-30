@@ -19,6 +19,8 @@ use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Positive;
 use Symfony\Component\Validator\Constraints\PositiveOrZero;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 class ProductFormType extends AbstractType
 {
@@ -148,6 +150,51 @@ class ProductFormType extends AbstractType
                 'attr' => ['class' => 'media-collection'],
                 'required' => false,
             ]);
+
+        $builder->addEventListener(
+            FormEvents::PRE_SET_DATA,
+            function (FormEvent $event) use ($options) {
+                $form = $event->getForm();
+                $product = $event->getData();
+                $pokemonCard = $options['pokemonCard'] ?? null;
+
+                if ($pokemonCard instanceof PokemonCard) {
+                    $form->get('extension')->setData($pokemonCard->getExtension()->getId());
+                    $form->get('pokemonCardNumber')->setData($pokemonCard->getNumber());
+
+                    // Set the single choice for pokemonCard field
+                    $form->add('pokemonCard', EntityType::class, [
+                        'class' => PokemonCard::class,
+                        'choice_label' => 'name',
+                        'label' => 'Nom de la carte',
+                        'placeholder' => '--- Sélectionner une carte ---',
+                        'choices' => [$pokemonCard], // Only the pre-filled card
+                        'attr' => [
+                            'data-card-selector-target' => 'cardSelect',
+                            'data-action' => 'change->card-selector#onCardChange',
+                        ],
+                        'data' => $pokemonCard, // Set the selected value
+                    ]);
+                } else if ($product instanceof Products && $product->getPokemonCard()) {
+                    // If product already has a pokemonCard (e.g., on edit), pre-fill
+                    $form->get('extension')->setData($product->getPokemonCard()->getExtension()->getId());
+                    $form->get('pokemonCardNumber')->setData($product->getPokemonCard()->getNumber());
+
+                    $form->add('pokemonCard', EntityType::class, [
+                        'class' => PokemonCard::class,
+                        'choice_label' => 'name',
+                        'label' => 'Nom de la carte',
+                        'placeholder' => '--- Sélectionner une carte ---',
+                        'choices' => [$product->getPokemonCard()],
+                        'attr' => [
+                            'data-card-selector-target' => 'cardSelect',
+                            'data-action' => 'change->card-selector#onCardChange',
+                        ],
+                        'data' => $product->getPokemonCard(),
+                    ]);
+                }
+            }
+        );
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -155,6 +202,7 @@ class ProductFormType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Products::class,
             'extensions' => [],
+            'pokemonCard' => null,
         ]);
     }
 }
