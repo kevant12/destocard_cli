@@ -58,6 +58,7 @@ class PokemonCard
 
     #[ORM\ManyToOne(targetEntity: Extension::class)]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['product:read'])]
     private ?Extension $extension = null;
 
     #[OneToOne(targetEntity: Media::class, cascade: ['persist', 'remove'])]
