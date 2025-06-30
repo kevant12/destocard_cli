@@ -23,7 +23,25 @@ class ProductFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $product = $options['data'] ?? null;
+        $initialNumber = null;
+        
+        if ($product instanceof Products && $product->getPokemonCard()) {
+            $initialNumber = $product->getPokemonCard()->getNumber();
+        }
+
         $builder
+            ->add('pokemon_card_number', TextType::class, [
+                'label' => 'Numéro de la carte Pokémon',
+                'mapped' => false,
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'data-pokemon-card-number-target' => 'numberInput',
+                    'data-property-path' => 'pokemonCard.number'
+                ],
+                'data' => $initialNumber
+            ])
             ->add('pokemonCard', EntityType::class, [
                 'class' => PokemonCard::class,
                 'choice_label' => 'name',

@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250630003058 extends AbstractMigration
+final class Version20250630094234 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -21,10 +21,10 @@ final class Version20250630003058 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            ALTER TABLE orders ADD delivery_method VARCHAR(100) DEFAULT NULL, ADD shipping_cost DOUBLE PRECISION DEFAULT NULL
+            ALTER TABLE orders ADD paid_at DATETIME DEFAULT NULL COMMENT '(DC2Type:datetime_immutable)', ADD stripe_payment_intent_id VARCHAR(255) DEFAULT NULL
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE products DROP number, DROP extension, DROP rarity, DROP type
+            ALTER TABLE products CHANGE pokemon_card_id pokemon_card_id INT DEFAULT NULL
         SQL);
     }
 
@@ -32,10 +32,10 @@ final class Version20250630003058 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            ALTER TABLE orders DROP delivery_method, DROP shipping_cost
+            ALTER TABLE orders DROP paid_at, DROP stripe_payment_intent_id
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE products ADD number INT NOT NULL, ADD extension VARCHAR(100) NOT NULL, ADD rarity VARCHAR(50) NOT NULL, ADD type VARCHAR(50) NOT NULL
+            ALTER TABLE products CHANGE pokemon_card_id pokemon_card_id INT NOT NULL
         SQL);
     }
 }

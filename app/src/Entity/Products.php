@@ -55,8 +55,8 @@ class Products
     private Collection $ordersProducts;
 
     #[ORM\ManyToOne(targetEntity: PokemonCard::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    private PokemonCard $pokemonCard;
+    #[ORM\JoinColumn(nullable: true)]
+    private ?PokemonCard $pokemonCard = null;
 
     public function __construct()
     {
@@ -69,7 +69,7 @@ class Products
         return $this->pokemonCard;
     }
 
-    public function setPokemonCard(PokemonCard $pokemonCard): static
+    public function setPokemonCard(?PokemonCard $pokemonCard): static
     {
         $this->pokemonCard = $pokemonCard;
 

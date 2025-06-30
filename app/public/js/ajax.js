@@ -225,10 +225,32 @@ if (extensionSelect && pokemonCardSelect) {
     pokemonCardSelect.addEventListener('change', (event) => {
         const selectedOption = pokemonCardSelect.options[pokemonCardSelect.selectedIndex];
         const imageUrl = selectedOption.dataset.imageUrl;
+        const numberInput = document.querySelector('#product_form_pokemon_card_number');
 
-        if (imageUrl) {
-            mediaPreviewBlock.innerHTML = `<img src="/media/images/${imageUrl}" alt="Aperçu de la carte" style="max-width: 100%; height: auto;">`;
+        if (selectedOption.value) {
+            // Récupérer les détails de la carte sélectionnée
+            fetch(`/product/api/pokemon-card/${selectedOption.value}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.number && numberInput) {
+                        numberInput.value = data.number;
+                    }
+                    if (imageUrl) {
+                        mediaPreviewBlock.innerHTML = `<img src="/media/images/${imageUrl}" alt="Aperçu de la carte" style="max-width: 100%; height: auto;">`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la récupération du numéro de carte:', error);
+                    if (imageUrl) {
+                        mediaPreviewBlock.innerHTML = `<img src="/media/images/${imageUrl}" alt="Aperçu de la carte" style="max-width: 100%; height: auto;">`;
+                    } else {
+                        mediaPreviewBlock.innerHTML = '<span class="media-preview-text">Aperçu image/vidéo<br><small>(Image non disponible)</small></span>';
+                    }
+                });
         } else {
+            if (numberInput) {
+                numberInput.value = '';
+            }
             mediaPreviewBlock.innerHTML = '<span class="media-preview-text">Aperçu image/vidéo<br><small>(Image non disponible)</small></span>';
         }
     });

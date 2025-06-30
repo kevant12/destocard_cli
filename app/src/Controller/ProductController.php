@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Products;
+use App\Entity\PokemonCard;
 use App\Form\Product\ProductFormType;
 use App\Repository\ProductsRepository;
 use App\Repository\PokemonCardRepository;

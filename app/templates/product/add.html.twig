@@ -29,8 +29,7 @@
                     {{ form_start(form, {'attr': {'class': 'product-add-form', 'aria-labelledby': 'product-add-title'}}) }}
                         {{ form_errors(form) }}
                         <div class="detail-item">
-                            <label for="product_form_pokemon_card_number">Numéro de la carte Pokémon</label>
-                            <input type="text" id="product_form_pokemon_card_number" name="product_form[pokemon_card_number]" class="form-control" data-pokemon-card-number-target="numberInput">
+                            {{ form_row(form.pokemon_card_number) }}
                         </div>
                         <div class="detail-item">{{ form_row(form.pokemonCard) }}</div>
                         <div class="detail-item">{{ form_row(form.title, {'attr': {'aria-label': 'Titre du produit'}}) }}</div>
@@ -45,7 +44,7 @@
                         </div>
                         <div class="detail-item">
                             <label class="add-media-label">Médias (image/vidéo)</label>
-                            <div class="media-collection-wrapper" data-prototype="{{ form.media.vars.prototype|e('html_attr') }}">
+                            <div class="media-collection-wrapper" data-prototype="{{ form_widget(form.media.vars.prototype)|e('html_attr') }}">
                                 {{ form_widget(form.media) }}
                                 <button type="button" class="add-media-button btn btn-secondary">Ajouter un média</button>
                                 <div class="media-previews" id="media-previews-add"></div>

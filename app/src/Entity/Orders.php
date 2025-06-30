@@ -14,6 +14,7 @@ class Orders
     public const STATUS_PENDING = 'pending';
     public const STATUS_COMPLETED = 'completed';
     public const STATUS_CANCELLED = 'cancelled';
+    public const STATUS_FAILED = 'failed';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -22,6 +23,9 @@ class Orders
 
     #[ORM\Column(options: ['default' => 'CURRENT_TIMESTAMP'])]
     private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $paidAt = null;
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $deliveryAt = null;
@@ -34,6 +38,9 @@ class Orders
 
     #[ORM\Column(length: 50)]
     private ?string $paymentProvider = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $stripePaymentIntentId = null;
 
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $deliveryMethod = null;
@@ -77,6 +84,18 @@ class Orders
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getPaidAt(): ?\DateTimeImmutable
+    {
+        return $this->paidAt;
+    }
+
+    public function setPaidAt(?\DateTimeImmutable $paidAt): static
+    {
+        $this->paidAt = $paidAt;
 
         return $this;
     }
@@ -125,6 +144,18 @@ class Orders
     public function setPaymentProvider(string $paymentProvider): static
     {
         $this->paymentProvider = $paymentProvider;
+
+        return $this;
+    }
+
+    public function getStripePaymentIntentId(): ?string
+    {
+        return $this->stripePaymentIntentId;
+    }
+
+    public function setStripePaymentIntentId(?string $stripePaymentIntentId): static
+    {
+        $this->stripePaymentIntentId = $stripePaymentIntentId;
 
         return $this;
     }

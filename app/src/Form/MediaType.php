@@ -36,6 +36,7 @@ class MediaType extends AbstractType
 
         $builder->get('webcamImage')
             ->addModelTransformer(new DataUriToUploadedFileTransformer());
+    }
 
     public function configureOptions(OptionsResolver $resolver): void
     {

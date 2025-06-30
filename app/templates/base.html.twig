@@ -4,28 +4,30 @@
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
         <meta name="description" content="{% block meta_description %}Votre boutique spécialisée en cartes Pokémon. Achetez et vendez des cartes rares, des figurines et des accessoires.{% endblock %}">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         {# Open Graph / Social Media Tags #}
         {% block open_graph %}
-            <meta property="og:title" content="{% block og_title %}{% block title %}Welcome!{% endblock %}{% endblock %}">
-            <meta property="og:description" content="{% block og_description %}{% block meta_description %}{% endblock %}{% endblock %}">
+            <meta property="og:title" content="{% block og_title %}{{ block('title') }}{% endblock %}">
+            <meta property="og:description" content="{% block og_description %}{{ block('meta_description') }}{% endblock %}">
             <meta property="og:type" content="website">
             <meta property="og:url" content="{{ app.request.uri }}">
             <meta property="og:image" content="{{ absolute_url(asset('images/logo-destocard.png')) }}"> {# Remplacez par le chemin de votre image par défaut #}
             <meta property="og:image:alt" content="Logo Destocard - Boutique de cartes Pokémon">
             {# Twitter Card (similaire à Open Graph) #}
             <meta name="twitter:card" content="summary_large_image">
-            <meta name="twitter:title" content="{% block twitter_title %}{% block og_title %}{% endblock %}{% endblock %}">
-            <meta name="twitter:description" content="{% block twitter_description %}{% block og_description %}{% endblock %}{% endblock %}">
+            <meta name="twitter:title" content="{% block twitter_title %}{{ block('og_title') }}{% endblock %}">
+            <meta name="twitter:description" content="{% block twitter_description %}{{ block('og_description') }}{% endblock %}">
             <meta name="twitter:image" content="{{ absolute_url(asset('images/logo-destocard.png')) }}">
         {% endblock %}
         
         
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
 
-        {% block stylesheets %}
-            <link rel="stylesheet" href="{{ asset('css/reset.css')}}"/>
-        {% endblock %}
+        <link rel="stylesheet" href="{{ asset('css/reset.css')}}"/>
+        {% block stylesheets %}{% endblock %}
+           
+        
         <link rel="stylesheet" href="{{ asset('css/general.css')}}"/>
 
 
@@ -45,7 +47,7 @@
               "@id": "{{ app.request.schemeAndHttpHost }}/#website",
               "url": "{{ app.request.schemeAndHttpHost }}/",
               "name": "Destocard",
-              "description": "{% block meta_description %}{% endblock %}",
+              "description": "{{ block('meta_description') }}",
               "publisher": {
                 "@id": "{{ app.request.schemeAndHttpHost }}/#organization"
               },
@@ -74,10 +76,9 @@
     <body>
         <header>
             <div class="logo-header">
-                {# <img src="{{ asset('images/logo2redim.png') }}" alt="Logo Destocard" style="max-width:300px; height:auto;"> #}
-                <video src="{{ asset('media/videos/veo3-ai-video-1750948599536.mp4') }}" autoplay loop muted playsinline class="video">
-    <img src="{{ asset('images/logo-destocard.png') }}" alt="Logo Destocard">
-</video>
+                <video src="{{ asset('media/videos/veo3-ai-video-1750948599536.mp4') }}" autoplay loop muted playsinline class="video" aria-label="Logo animé Destocard" poster="{{ asset('images/logo-destocard.png') }}">
+                </video>
+                <img src="{{ asset('images/logo-destocard.png') }}" alt="Logo Destocard" class="logo-fallback" style="display:none;">
             </div>
             <nav>
                 <a href="{{ path('app_home') }}">Accueil</a>
@@ -113,10 +114,10 @@
                 <div class="footer-section links">
                     <strong>Liens utiles</strong>
                     <ul>
-                        <li><a href="path">À propos de nous</a></li>
-                        <li><a href="#">Conditions générales</a></li>
-                        <li><a href="#">Politique de confidentialité</a></li>
-                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#" title="À propos de nous">À propos de nous</a></li>
+                        <li><a href="#" title="Conditions générales">Conditions générales</a></li>
+                        <li><a href="#" title="Politique de confidentialité">Politique de confidentialité</a></li>
+                        <li><a href="#" title="FAQ">FAQ</a></li>
                     </ul>
                 </div>
                 <div class="footer-section contact">
@@ -125,9 +126,9 @@
                         <li><span class="icon">✉</span> <a href="mailto:contact@destocard.fr">contact@destocard.fr</a></li>
                         <li><span class="icon">📞</span> 01 23 45 67 89</li>
                         <li class="social-icons">
-                            <a href="#">🐦</a>
-                            <a href="#">📘</a>
-                            <a href="#">💙</a>
+                            <a href="#" aria-label="Twitter"><span role="img" aria-label="Twitter">🐦</span></a>
+                            <a href="#" aria-label="Facebook"><span role="img" aria-label="Facebook">📘</span></a>
+                            <a href="#" aria-label="Autre réseau"><span role="img" aria-label="Autre réseau">💙</span></a>
                         </li>
                     </ul>
                 </div>
