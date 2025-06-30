@@ -1,0 +1,103 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Résultats de recherche pour "{{ query }}" | Destocard{% endblock %}
+
+{% block meta_description %}Découvrez les produits Pokémon correspondant à votre recherche "{{ query }}" sur Destocard. Cartes, figurines, accessoires et plus encore !{% endblock %}
+
+{% block body %}
+<div class="products-container">
+    <h1>Résultats de recherche pour "{{ query }}"</h1>
+
+    <div class="search-filters">
+        <form method="get" action="{{ path('app_product_search') }}" id="search-filter-form">
+            <input type="hidden" name="q" value="{{ query }}">
+
+            <div class="filter-group">
+                <label for="category-filter">Catégorie:</label>
+                <select name="category" id="category-filter" onchange="this.form.submit()">
+                    <option value="">Toutes</option>
+                    <option value="cards" {% if selectedCategory == 'cards' %}selected{% endif %}>Cartes à collectionner</option>
+                    <option value="figures" {% if selectedCategory == 'figures' %}selected{% endif %}>Figurines</option>
+                    <option value="boardgames" {% if selectedCategory == 'boardgames' %}selected{% endif %}>Jeux de société</option>
+                    <option value="books" {% if selectedCategory == 'books' %}selected{% endif %}>Livres</option>
+                    <option value="clothing" {% if selectedCategory == 'clothing' %}selected{% endif %}>Vêtements</option>
+                    <option value="accessories" {% if selectedCategory == 'accessories' %}selected{% endif %}>Accessoires</option>
+                    <option value="others" {% if selectedCategory == 'others' %}selected{% endif %}>Autres</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="rarity-filter">Rareté:</label>
+                <select name="rarity" id="rarity-filter" onchange="this.form.submit()">
+                    <option value="">Toutes</option>
+                    <option value="common" {% if selectedRarity == 'common' %}selected{% endif %}>Commune</option>
+                    <option value="uncommon" {% if selectedRarity == 'uncommon' %}selected{% endif %}>Peu commune</option>
+                    <option value="rare" {% if selectedRarity == 'rare' %}selected{% endif %}>Rare</option>
+                    <option value="mythic" {% if selectedRarity == 'mythic' %}selected{% endif %}>Mythique</option>
+                    <option value="secret" {% if selectedRarity == 'secret' %}selected{% endif %}>Secrète</option>
+                    <option value="other" {% if selectedRarity == 'other' %}selected{% endif %}>Autres</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="sort-by">Trier par:</label>
+                <select name="sort_by" id="sort-by" onchange="this.form.submit()">
+                    <option value="date" {% if sortBy == 'date' %}selected{% endif %}>Date d'ajout</option>
+                    <option value="price" {% if sortBy == 'price' %}selected{% endif %}>Prix</option>
+                    <option value="name" {% if sortBy == 'name' %}selected{% endif %}>Nom</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="sort-order">Ordre:</label>
+                <select name="sort_order" id="sort-order" onchange="this.form.submit()">
+                    <option value="asc" {% if sortOrder == 'asc' %}selected{% endif %}>Croissant</option>
+                    <option value="desc" {% if sortOrder == 'desc' %}selected{% endif %}>Décroissant</option>
+                </select>
+            </div>
+        </form>
+    </div>
+
+    {% if pagination is empty %}
+        <p>Aucun produit ne correspond à votre recherche.</p>
+    {% else %}
+        <div class="products-grid">
+            {% for product in pagination %}
+                <div class="product-card">
+                    {% if product.media|length > 0 %}
+                        <img src="{{ asset('upload/products/' ~ product.media|first.imageUrl) }}" alt="{{ product.title }}">
+                    {% else %}
+                        <img src="{{ asset('images/placeholder.png') }}" alt="Image non disponible">
+                    {% endif %}
+                    <h3>{{ product.title|highlight(query) }}</h3>
+                    <p class="price">{{ product.price }} €</p>
+                    <p class="description">{{ product.description|highlight(query) }}</p>
+                    <div class="product-actions">
+                        {% if app.user %}
+                            <button class="like-button {% if product in app.user.likes %}active{% endif %}" data-product-id="{{ product.id }}" aria-label="Ajouter {{ product.title }} aux favoris">
+                                ❤️
+                            </button>
+                        {% endif %}
+                        <form method="post" action="{{ path('add_to_cart', {'id': product.id}) }}" class="add-to-cart-form">
+                            <button type="submit" aria-label="Ajouter {{ product.title }} au panier">Ajouter au panier</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="navigation text-center">
+            {{ knp_pagination_render(pagination) }}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {# Le script AJAX pour les favoris et le panier est déjà dans ajax.js #}
+{% endblock %}

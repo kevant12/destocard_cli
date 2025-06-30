@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Favoris{% endblock %}
+
+{% block body %}
+<div class="favorites-container">
+    <h1>Mes Favoris</h1>
+
+    {% if favorites is empty %}
+        <p>Vous n'avez pas encore de favoris.</p>
+    {% else %}
+        <div class="products-grid">
+            {% for product in favorites %}
+                <div class="product-card">
+                    {% if product.media|length > 0 %}
+                        <img src="{{ asset('upload/' ~ product.media|first.name) }}" alt="{{ product.title }}">
+                    {% endif %}
+                    <h3>{{ product.title }}</h3>
+                    <p class="price">{{ product.price }} €</p>
+                    <p class="description">{{ product.description }}</p>
+                    <div class="product-actions">
+                        <button class="like-button active" data-product-id="{{ product.id }}" aria-label="Retirer {{ product.title }} des favoris">
+                            ❤️
+                        </button>
+                        <form method="post" action="{{ path('add_to_cart', {'id': product.id}) }}" class="add-to-cart-form">
+                            <button type="submit" aria-label="Ajouter {{ product.title }} au panier">Ajouter au panier</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.querySelectorAll('.like-button').forEach(button => {
+            button.addEventListener('click', async () => {
+                const productId = button.dataset.productId;
+                try {
+                    const response = await fetch(`/favorite/toggle/${productId}`, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        if (!data.isLiked) {
+                            // Supprimer la carte du produit de l'affichage
+                            button.closest('.product-card').remove();
+                            // Si c'était le dernier favori, afficher le message "pas de favoris"
+                            const remainingCards = document.querySelectorAll('.product-card');
+                            if (remainingCards.length === 0) {
+                                const container = document.querySelector('.favorites-container');
+                                container.innerHTML = '<h1>Mes Favoris</h1><p>Vous n\'avez pas encore de favoris.</p>';
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('Erreur lors de la mise à jour des favoris:', error);
+                }
+            });
+        });
+    </script>
+{% endblock %}

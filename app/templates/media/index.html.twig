@@ -1,0 +1,31 @@
+{# templates/media/index.html.twig #}
+
+<h1>Méthodes de l'entité Media</h1>
+
+<form method="post" action="{{ path('media_get_id') }}">
+    <button type="submit">getId</button>
+</form>
+
+<form method="post" action="{{ path('media_get_image_url') }}">
+    <button type="submit">getImageUrl</button>
+</form>
+
+<form method="post" action="{{ path('media_set_image_url') }}">
+    <button type="submit">setImageUrl</button>
+</form>
+
+<form method="post" action="{{ path('media_get_video_url') }}">
+    <button type="submit">getVideoUrl</button>
+</form>
+
+<form method="post" action="{{ path('media_set_video_url') }}">
+    <button type="submit">setVideoUrl</button>
+</form>
+
+<form method="post" action="{{ path('media_get_products') }}">
+    <button type="submit">getProducts</button>
+</form>
+
+<form method="post" action="{{ path('media_set_products') }}">
+    <button type="submit">setProducts</button>
+</form> 

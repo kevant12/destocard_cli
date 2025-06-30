@@ -1,0 +1,17 @@
+Bonjour {{ user.firstname }},
+
+Merci de vous être inscrit sur Destocard. Pour activer votre compte et commencer à explorer notre collection de cartes Pokémon, veuillez visiter le lien suivant :
+
+{{ verificationUrl }}
+
+Ce lien expirera dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+
+Si vous n’êtes pas à l’origine de cette inscription, veuillez ignorer cet email.
+
+À bientôt sur Destocard !
+
+L'équipe Destocard
+
+---
+Ceci est un email automatique, merci de ne pas y répondre.
+© {{ "now"|date("Y") }} Destocard. Tous droits réservés.

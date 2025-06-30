@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes conversations{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>Mes conversations</h1>
+    {% if conversations is empty %}
+        <p>Vous n'avez pas encore de conversation.</p>
+    {% else %}
+        <ul>
+            {% for user in conversations %}
+                <li>
+                    <a href="{{ path('app_message_conversation', {'id': user.id}) }}">
+                        {{ user.firstname }} {{ user.lastname }} ({{ user.email }})
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
+{% endblock %} 

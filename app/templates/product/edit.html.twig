@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier le produit{% endblock %}
+
+{% block body %}
+<main class="add-main-bg">
+    <section class="product-header">
+        <div class="container">
+            <h1 class="game-title">MODIFIER LE PRODUIT</h1>
+        </div>
+    </section>
+    <section class="product-detail">
+        <div class="container">
+            <div class="product-content add-product-flex">
+                <div class="product-info add-form-encadre">
+                    <h2 class="product-add-title add-form-title">Modifier le produit</h2>
+                    {{ form_start(form, {'attr': {'class': 'product-add-form', 'aria-labelledby': 'product-add-title'}}) }}
+                        {{ form_errors(form) }}
+                        <div class="detail-item">
+                            <label for="product_form_pokemon_card_number">Numéro de la carte Pokémon</label>
+                            <input type="text" id="product_form_pokemon_card_number" name="product_form[pokemon_card_number]" class="form-control" data-pokemon-card-number-target="numberInput">
+                        </div>
+                        <div class="detail-item">{{ form_row(form.pokemonCard) }}</div>
+                        <div class="detail-item">{{ form_row(form.title, {'attr': {'aria-label': 'Titre du produit'}}) }}</div>
+                        <div class="detail-item">{{ form_row(form.description, {'attr': {'aria-label': 'Description du produit'}}) }}</div>
+                        <div class="detail-item">{{ form_row(form.price, {'attr': {'aria-label': 'Prix du produit'}}) }}</div>
+                        <div class="detail-item">{{ form_row(form.category, {'attr': {'aria-label': 'Catégorie du produit'}}) }}</div>
+                        <div class="detail-item">{{ form_row(form.quantity, {'attr': {'aria-label': 'Quantité'}}) }}</div>
+                        <div class="detail-item">
+                            <div class="pokemon-card-image-preview">
+                                <img src="" alt="Aperçu de la carte Pokémon" style="max-width: 150px; display: none;" data-pokemon-card-image-target="imagePreview">
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <label class="add-media-label">Médias (image/vidéo)</label>
+                            <div class="media-collection-wrapper" data-prototype="{{ form.media.vars.prototype|e('html_attr') }}">
+                                {{ form_widget(form.media) }}
+                                <button type="button" class="add-media-button btn btn-secondary">Ajouter un média</button>
+                                <div class="media-previews" id="media-previews-edit"></div>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="webcam-capture-section mt-3">
+                                <h3>Prendre une photo</h3>
+                                <video id="webcam-video" autoplay style="width: 100%; max-width: 320px; display: none;"></video>
+                                <canvas id="webcam-canvas" style="display: none;"></canvas>
+                                <button type="button" id="start-webcam" class="btn btn-info mt-2">Activer la webcam</button>
+                                <button type="button" id="capture-photo" class="btn btn-success mt-2" style="display: none;">Prendre la photo</button>
+                                <button type="button" id="retake-photo" class="btn btn-warning mt-2" style="display: none;">Reprendre</button>
+                                <button type="button" id="add-captured-photo" class="btn btn-primary mt-2" style="display: none;">Ajouter la photo capturée</button>
+                                <input type="hidden" id="webcam-image-data" class="webcam-image-data-input">
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn-add" aria-label="Modifier le produit">Modifier le produit</button>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

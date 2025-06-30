@@ -1,0 +1,166 @@
+{# templates/cart/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Panier{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="/css/product.css">
+    <link rel="stylesheet" href="/css/common.css">
+{% endblock %}
+
+{% block body %}
+<div class="cart-main-container container">
+    <h1 class="cart-title">Votre panier</h1>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% if cart is empty %}
+        <p class="cart-empty">Votre panier est vide.</p>
+    {% else %}
+        <div class="cart-table-wrapper">
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Produit</th>
+                        <th>Image</th>
+                        <th>Prix unitaire</th>
+                        <th>Quantité</th>
+                        <th>Total</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart %}
+                        <tr data-product-id="{{ item.product.id }}">
+                            <td class="cart-product-name">{{ item.product.title }}</td>
+                            <td class="cart-product-image">
+                                {% if item.product.media|length > 0 %}
+                                    <img src="{{ asset('upload/products/' ~ item.product.media|first.imageUrl) }}" alt="{{ item.product.title }}" style="width: 50px; height: 50px; object-fit: cover;">
+                                {% else %}
+                                    <img src="{{ asset('images/placeholder.png') }}" alt="Image non disponible" style="width: 50px; height: 50px; object-fit: cover;">
+                                {% endif %}
+                            </td>
+                            <td class="cart-product-price">{{ item.product.price|number_format(2, ',', ' ') }} €</td>
+                            <td>
+                                <input type="number" 
+                                       class="cart-quantity-input" 
+                                       value="{{ item.quantity }}" 
+                                       min="1" 
+                                       data-product-id="{{ item.product.id }}"
+                                       data-price="{{ item.product.price }}"
+                                       aria-label="Quantité pour {{ item.product.title }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('cart_update' ~ item.product.id) }}">
+                            </td>
+                            <td class="cart-item-total">{{ item.totalItemPrice|number_format(2, ',', ' ') }} €</td>
+                            <td>
+                                <button class="cart-remove-btn btn btn-delete" data-product-id="{{ item.product.id }}" data-csrf-token="{{ csrf_token('cart_remove' ~ item.product.id) }}" title="Retirer du panier" aria-label="Retirer {{ item.product.title }} du panier">🗑️</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="cart-summary">
+            <div class="cart-total">
+                Total : <span id="cart-total">{{ total|number_format(2, ',', ' ') }}</span> €
+            </div>
+            <div class="cart-actions">
+                <form method="post" action="{{ path('cart_buy') }}">
+                    <button type="submit" class="cart-buy-btn btn btn-add" aria-label="Passer la commande">Passer la commande</button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.querySelectorAll('.cart-quantity-input').forEach(input => {
+            let timeout;
+            input.addEventListener('input', (e) => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    const productId = e.target.dataset.productId;
+                    const quantity = parseInt(e.target.value);
+                    
+                    if (quantity > 0) {
+                        updateQuantity(productId, quantity);
+                    }
+                }, 500);
+            });
+        });
+
+        document.querySelectorAll('.cart-remove-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const productId = e.target.dataset.productId;
+                removeItem(productId);
+            });
+        });
+
+        async function updateQuantity(productId, quantity) {
+            try {
+                const formData = new FormData();
+                formData.append('quantity', quantity);
+
+                const response = await fetch(`/cart/update/${productId}`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Mettre à jour le total de l'article
+                    const row = document.querySelector(`tr[data-product-id="${productId}"]`);
+                    row.querySelector('.cart-item-total').textContent = `${(data.itemTotal).toLocaleString('fr-FR', {minimumFractionDigits: 2})} €`;
+                    
+                    // Mettre à jour le total du panier
+                    document.getElementById('cart-total').textContent = data.total.toLocaleString('fr-FR', {minimumFractionDigits: 2});
+                    
+                    // Mettre à jour le badge du panier
+                    document.querySelector('.cart-badge').textContent = data.cartCount;
+                }
+            } catch (error) {
+                console.error('Erreur lors de la mise à jour de la quantité:', error);
+            }
+        }
+
+        async function removeItem(productId) {
+            try {
+                const response = await fetch(`/cart/remove/${productId}`, {
+                    method: 'POST'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Supprimer la ligne du tableau
+                    const row = document.querySelector(`tr[data-product-id="${productId}"]`);
+                    row.remove();
+                    
+                    // Mettre à jour le total du panier
+                    document.getElementById('cart-total').textContent = data.total.toLocaleString('fr-FR', {minimumFractionDigits: 2});
+                    
+                    // Mettre à jour le badge du panier
+                    document.querySelector('.cart-badge').textContent = data.cartCount;
+                    
+                    // Si le panier est vide, afficher le message
+                    if (data.cartCount === 0) {
+                        const container = document.querySelector('.cart-main-container');
+                        container.innerHTML = '<h1 class="cart-title">Votre panier</h1><p class="cart-empty">Votre panier est vide.</p>';
+                    }
+                }
+            } catch (error) {
+                console.error('Erreur lors de la suppression de l\'article:', error);
+            }
+        }
+    </script>
+{% endblock %} 

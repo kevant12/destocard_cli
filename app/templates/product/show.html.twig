@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ product.title }} - Carte Pokémon | Destocard{% endblock %}
+
+{% block meta_description %}Découvrez {{ product.title }}, une carte Pokémon {{ product.rarity }} de l'extension {{ product.extension }}. Achetez-la sur Destocard !{% endblock %}
+
+{% block body %}
+<div class="product-detail-container">
+    <h1 class="product-detail-title">{{ product.title }}</h1>
+
+    <div class="product-detail-content">
+        <div class="product-detail-image">
+            {% if product.media|length > 0 %}
+                <img src="{{ asset('upload/products/' ~ product.media|first.imageUrl) }}" alt="{{ product.title }}" class="main-product-image">
+            {% else %}
+                <img src="{{ asset('images/placeholder.png') }}" alt="Image non disponible" class="main-product-image">
+            {% endif %}
+        </div>
+
+        <div class="product-detail-info">
+            <p class="product-detail-price">{{ product.price }} €</p>
+            <p class="product-detail-description">{{ product.description|default('Pas de description disponible.') }}</p>
+            
+            <div class="product-detail-specs">
+                <p><strong>Catégorie:</strong> {{ product.category }}</p>
+                <p><strong>Quantité disponible:</strong> {{ product.quantity }}</p>
+                {% if product.extension %}
+                    <p><strong>Extension:</strong> {{ product.extension }}</p>
+                {% endif %}
+                {% if product.rarity %}
+                    <p><strong>Rareté:</strong> {{ product.rarity }}</p>
+                {% endif %}
+                {% if product.type %}
+                    <p><strong>Type:</strong> {{ product.type }}</p>
+                {% endif %}
+                {% if product.number %}
+                    <p><strong>Numéro:</strong> {{ product.number }}</p>
+                {% endif %}
+            </div>
+
+            <div class="product-detail-actions">
+                {% if app.user %}
+                    <button class="like-button {% if product in app.user.likes %}active{% endif %}" data-product-id="{{ product.id }}" aria-label="Ajouter {{ product.title }} aux favoris">
+                        ❤️
+                    </button>
+                {% endif %}
+                <form method="post" action="{{ path('add_to_cart', {'id': product.id}) }}" class="add-to-cart-form">
+                    <input type="hidden" name="_token" value="{{ csrf_token('add_to_cart' ~ product.id) }}">
+                    <button type="submit" class="btn btn-primary" aria-label="Ajouter {{ product.title }} au panier">Ajouter au panier</button>
+                </form>
+
+                {% if app.user and (product.users == app.user or is_granted('ROLE_ADMIN')) %}
+                    <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn btn-secondary">Modifier</a>
+                    <form method="post" action="{{ path('app_product_delete', {'id': product.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?');" class="inline-form">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ product.id) }}">
+                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{# Schema.org Product Markup #}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": "{{ product.title }}",
+      "description": "{{ product.description|default('')|striptags|e('js') }}",
+      "image": [
+        {% if product.media|length > 0 %}
+          "{{ absolute_url(asset('upload/products/' ~ product.media|first.imageUrl)) }}"
+        {% else %}
+          "{{ absolute_url(asset('images/placeholder.png')) }}"
+        {% endif %}
+      ],
+      "sku": "{{ product.id }}",
+      "mpn": "{{ product.number }}",
+      "brand": {
+        "@type": "Brand",
+        "name": "Destocard"
+      },
+      "offers": {
+        "@type": "Offer",
+        "url": "{{ app.request.uri }}",
+        "priceCurrency": "EUR",
+        "price": "{{ product.price }}",
+        "itemCondition": "https://schema.org/UsedCondition", {# Ou NewCondition, RefurbishedCondition, etc. #}
+        "availability": "{% if product.quantity > 0 %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}"
+      }
+      {# Vous pouvez ajouter d'autres propriétés comme "aggregateRating", "review", "color", "size", etc. #}
+    }
+    </script>
+{% endblock %}

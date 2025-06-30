@@ -1,0 +1,2795 @@
+ [
+{
+  "numero": "001/203",
+      "nom": {
+        "fr": "Sursautoile",
+        "en": "Bounsweet",
+        "jp": "アマカジ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "002/203",
+      "nom": {
+        "fr": "Drattak",
+        "en": "Steenee",
+        "jp": "アママイコ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "003/203",
+      "nom": {
+        "fr": "Floravol",
+        "en": "Hoppip",
+        "jp": "ハネッコ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "004/203",
+      "nom": {
+        "fr": "Karaclee",
+        "en": "Skiploom",
+        "jp": "ポポッコ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "005/203",
+      "nom": {
+        "fr": "Givrali VMAX",
+        "en": "Glaceon VMAX",
+        "jp": "グレイシアVMAX"
+      },
+      "rarete": "ultra-rare",
+      "stars": "★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "006/203",
+      "nom": {
+        "fr": "Tritosor",
+        "en": "Barbaracle",
+        "jp": "ガメノデス"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "007/203",
+      "nom": {
+        "fr": "Phyllali V",
+        "en": "Leafeon V",
+        "jp": "リーフィアV"
+      },
+      "rarete": "rare",
+      "stars": "★ argentée",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "008/203",
+      "nom": {
+        "fr": "Phyllali VMAX",
+        "en": "Leafeon VMAX",
+        "jp": "リーフィアVMAX"
+      },
+      "rarete": "ultra-rare",
+      "stars": "★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "009/203",
+      "nom": {
+        "fr": "Crikzik",
+        "en": "Kricketot",
+        "jp": "コロボーシ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "010/203",
+      "nom": {
+        "fr": "Crabagarre",
+        "en": "Crabrawler",
+        "jp": "マケンカニ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "011/203",
+      "nom": {
+        "fr": "Crikzik",
+        "en": "Kricketot",
+        "jp": "コロボーシ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "012/203",
+      "nom": {
+        "fr": "Crabominable",
+        "en": "Crabominable",
+        "jp": "ケケンカニ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "013/203",
+      "nom": {
+        "fr": "Desséliande V",
+        "en": "Trevenant V",
+        "jp": "オーロンゲV"
+      },
+      "rarete": "rare",
+      "stars": "★ argentée",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "014/203",
+      "nom": {
+        "fr": "Desséliande VMAX",
+        "en": "Trevenant VMAX",
+        "jp": "オーロンゲVMAX"
+      },
+      "rarete": "ultra-rare",
+      "stars": "★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "015/203",
+      "nom": {
+        "fr": "Diamat",
+        "en": "Gigalith",
+        "jp": "ギガイアス"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "016/203",
+      "nom": {
+        "fr": "Blamelon",
+        "en": "Fletchinder",
+        "jp": "ヒノヤコマ"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "017/203",
+      "nom": {
+        "fr": "Cryptéro",
+        "en": "Sigilyph",
+        "jp": "シンボラー"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "018/203",
+      "nom": {
+        "fr": "Lançargot VMAX",
+        "en": "Inteleon VMAX",
+        "jp": "インテレオンVMAX"
+      },
+      "rarete": "ultra-rare",
+      "stars": "★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "019/203",
+      "nom": {
+        "fr": "Ecaïd",
+        "en": "Pawniard",
+        "jp": "コマタナ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "020/203",
+      "nom": {
+        "fr": "Tarinor",
+        "en": "Bisharp",
+        "jp": "キリキザン"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "021/203",
+      "nom": {
+        "fr": "Pyron V",
+        "en": "Flareon V",
+        "jp": "ブースターV"
+      },
+      "rarete": "rare",
+      "stars": "★ argentée",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "022/203",
+      "nom": {
+        "fr": "Pyron VMAX",
+        "en": "Flareon VMAX",
+        "jp": "ブースターVMAX"
+      },
+      "rarete": "ultra-rare",
+      "stars": "★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "023/203",
+      "nom": {
+        "fr": "Furaiglon",
+        "en": "Rufflet",
+        "jp": "ワシボン"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "024/203",
+      "nom": {
+        "fr": "Déflaisan",
+        "en": "Braviary",
+        "jp": "ウォーグル"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "025/203",
+      "nom": {
+        "fr": "Noctali V",
+        "en": "Umbreon V",
+        "jp": "ブラッキーV"
+      },
+      "rarete": "rare",
+      "stars": "★ argentée",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "026/203",
+      "nom": {
+        "fr": "Noctali VMAX",
+        "en": "Umbreon VMAX",
+        "jp": "ブラッキーVMAX"
+      },
+      "rarete": "ultra-rare",
+      "stars": "★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "027/203",
+      "nom": {
+        "fr": "Moumouton",
+        "en": "Wooloo",
+        "jp": "ウールー"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "028/203",
+      "nom": {
+        "fr": "Moumouflèche",
+        "en": "Dubwool",
+        "jp": "バイウールー"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "029/203",
+      "nom": {
+        "fr": "Baggiguane",
+        "en": "Scraggy",
+        "jp": "ズルッグ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "030/203",
+      "nom": {
+        "fr": "Baggaïd",
+        "en": "Scrafty",
+        "jp": "ズルズキン"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "031/203",
+      "nom": {
+        "fr": "Ptyranidur",
+        "en": "Tyrunt",
+        "jp": "チゴラス"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "032/203",
+      "nom": {
+        "fr": "Rexillius",
+        "en": "Tyrantrum",
+        "jp": "ガチゴラス"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "033/203",
+      "nom": {
+        "fr": "Archéomire",
+        "en": "Beldum",
+        "jp": "ダンバル"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "034/203",
+      "nom": {
+        "fr": "Archéodong",
+        "en": "Metang",
+        "jp": "メタング"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "035/203",
+      "nom": {
+        "fr": "Métalosse",
+        "en": "Metagross",
+        "jp": "メタグロス"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "036/203",
+      "nom": {
+        "fr": "Duralugon V",
+        "en": "Duraludon V",
+        "jp": "ジュラルドンV"
+      },
+      "rarete": "rare",
+      "stars": "★ argentée",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "037/203",
+      "nom": {
+        "fr": "Duralugon VMAX",
+        "en": "Duraludon VMAX",
+        "jp": "ジュラルドンVMAX"
+      },
+      "rarete": "ultra-rare",
+      "stars": "★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "038/203",
+      "nom": {
+        "fr": "Voltali V",
+        "en": "Jolteon V",
+        "jp": "サンダースV"
+      },
+      "rarete": "rare",
+      "stars": "★ argentée",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "039/203",
+      "nom": {
+        "fr": "Voltali VMAX",
+        "en": "Jolteon VMAX",
+        "jp": "サンダースVMAX"
+      },
+      "rarete": "ultra-rare",
+      "stars": "★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "040/203",
+      "nom": {
+        "fr": "Pérégrain",
+        "en": "Nuzleaf",
+        "jp": "コノハナ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "041/203",
+      "nom": {
+        "fr": "Blindépique",
+        "en": "Shiftry",
+        "jp": "ダーテング"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "042/203",
+      "nom": {
+        "fr": "Fouinar",
+        "en": "Linoone",
+        "jp": "マッスグマ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "043/203",
+      "nom": {
+        "fr": "Vaporeon V",
+        "en": "Vaporeon V",
+        "jp": "シャワーズV"
+      },
+      "rarete": "rare",
+      "stars": "★ argentée",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "044/203",
+      "nom": {
+        "fr": "Vaporeon VMAX",
+        "en": "Vaporeon VMAX",
+        "jp": "シャワーズVMAX"
+      },
+      "rarete": "ultra-rare",
+      "stars": "★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "045/203",
+      "nom": {
+        "fr": "Crabicoque",
+        "en": "Dwebble",
+        "jp": "イシズマイ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "046/203",
+      "nom": {
+        "fr": "Crabaraque",
+        "en": "Crustle",
+        "jp": "イワパレス"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "047/203",
+      "nom": {
+        "fr": "Tiboudet",
+        "en": "Mareep",
+        "jp": "メリープ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "048/203",
+      "nom": {
+        "fr": "Lainergie",
+        "en": "Flaaffy",
+        "jp": "モココ"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "049/203",
+      "nom": {
+        "fr": "Pharamp",
+        "en": "Ampharos",
+        "jp": "デンリュウ"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "050/203",
+      "nom": {
+        "fr": "Regirock V",
+        "en": "Regirock V",
+        "jp": "レジロックV"
+      },
+      "rarete": "rare",
+      "stars": "★ argentée",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "051/203",
+      "nom": {
+        "fr": "Chrysacier",
+        "en": "Metapod",
+        "jp": "トランセル"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "052/203",
+      "nom": {
+        "fr": "Papilusion",
+        "en": "Butterfree",
+        "jp": "バタフリー"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "053/203",
+      "nom": {
+        "fr": "Coquiperl",
+        "en": "Clamperl",
+        "jp": "パールル"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "054/203",
+      "nom": {
+        "fr": "Milobellus",
+        "en": "Milotic",
+        "jp": "ミロカロス"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "055/203",
+      "nom": {
+        "fr": "Wailord",
+        "en": "Wailord",
+        "jp": "ホエルオー"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "056/203",
+      "nom": {
+        "fr": "Lamantine",
+        "en": "Dewgong",
+        "jp": "ジュゴン"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "057/203",
+      "nom": {
+        "fr": "Banshitrouye",
+        "en": "Pumpkaboo",
+        "jp": "バケッチャ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "058/203",
+      "nom": {
+        "fr": "Grodrive",
+        "en": "Drifblim",
+        "jp": "フワライド"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "059/203",
+      "nom": {
+        "fr": "Mimiqui V",
+        "en": "Mimikyu V",
+        "jp": "ミミッキュV"
+      },
+      "rarete": "rare",
+      "stars": "★ argentée",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "060/203",
+      "nom": {
+        "fr": "Fantominus",
+        "en": "Gastly",
+        "jp": "ゴース"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "061/203",
+      "nom": {
+        "fr": "Fantominus",
+        "en": "Gastly",
+        "jp": "ゴース"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "062/203",
+      "nom": {
+        "fr": "Spectrum",
+        "en": "Haunter",
+        "jp": "ゴースト"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "063/203",
+      "nom": {
+        "fr": "Spectrum",
+        "en": "Haunter",
+        "jp": "ゴースト"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "064/203",
+      "nom": {
+        "fr": "Ectoplasma",
+        "en": "Gengar",
+        "jp": "ゲンガー"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "065/203",
+      "nom": {
+        "fr": "Shuppet",
+        "en": "Shuppet",
+        "jp": "カゲボウズ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "066/203",
+      "nom": {
+        "fr": "Branette",
+        "en": "Banette",
+        "jp": "ジュペッタ"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "067/203",
+      "nom": {
+        "fr": "Momartik",
+        "en": "Froslass",
+        "jp": "ユキメノコ"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "068/203",
+      "nom": {
+        "fr": "Spectreval",
+        "en": "Spectrier",
+        "jp": "レイスポス"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "069/203",
+      "nom": {
+        "fr": "Carmache",
+        "en": "Gabite",
+        "jp": "ガバイト"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "070/203",
+      "nom": {
+        "fr": "Carchacrok",
+        "en": "Garchomp",
+        "jp": "ガブリアス"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "071/203",
+      "nom": {
+        "fr": "Golemastoc",
+        "en": "Golurk",
+        "jp": "ゴルーグ"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "072/203",
+      "nom": {
+        "fr": "Shaofouine",
+        "en": "Mienshao",
+        "jp": "コジョンド"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "073/203",
+      "nom": {
+        "fr": "Draby",
+        "en": "Deino",
+        "jp": "モノズ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "074/203",
+      "nom": {
+        "fr": "Diamat",
+        "en": "Gigalith",
+        "jp": "ギガイアス"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "075/203",
+      "nom": {
+        "fr": "Karaclée",
+        "en": "Skiploom",
+        "jp": "ポポッコ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "076/203",
+      "nom": {
+        "fr": "Cotovol",
+        "en": "Jumpluff",
+        "jp": "ワタッコ"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "077/203",
+      "nom": {
+        "fr": "Voltorbe",
+        "en": "Voltorb",
+        "jp": "ビリリダマ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "078/203",
+      "nom": {
+        "fr": "Électrode",
+        "en": "Electrode",
+        "jp": "マルマイン"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "079/203",
+      "nom": {
+        "fr": "Regice V",
+        "en": "Regice V",
+        "jp": "レジアイスV"
+      },
+      "rarete": "rare",
+      "stars": "★ argentée",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "080/203",
+      "nom": {
+        "fr": "Pikachu",
+        "en": "Pikachu",
+        "jp": "ピカチュウ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "081/203",
+      "nom": {
+        "fr": "Raichu",
+        "en": "Raichu",
+        "jp": "ライチュウ"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "082/203",
+      "nom": {
+        "fr": "Négapi",
+        "en": "Minun",
+        "jp": "マイナン"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "083/203",
+      "nom": {
+        "fr": "Elecsprint",
+        "en": "Manectric",
+        "jp": "ライボルト"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "084/203",
+      "nom": {
+        "fr": "Galvaran",
+        "en": "Joltik",
+        "jp": "バチュル"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "085/203",
+      "nom": {
+        "fr": "Mygavolt",
+        "en": "Galvantula",
+        "jp": "デンチュラ"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "086/203",
+      "nom": {
+        "fr": "Registeel V",
+        "en": "Registeel V",
+        "jp": "レジスチルV"
+      },
+      "rarete": "rare",
+      "stars": "★ argentée",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "087/203",
+      "nom": {
+        "fr": "Airmure",
+        "en": "Skarmory",
+        "jp": "エアームド"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "088/203",
+      "nom": {
+        "fr": "Rhinastoc",
+        "en": "Rhyperior",
+        "jp": "ドサイドン"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "089/203",
+      "nom": {
+        "fr": "Chartor",
+        "en": "Torkoal",
+        "jp": "コータス"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "090/203",
+      "nom": {
+        "fr": "Goupix",
+        "en": "Vulpix",
+        "jp": "ロコン"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "091/203",
+      "nom": {
+        "fr": "Feunard",
+        "en": "Ninetales",
+        "jp": "キュウコン"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "092/203",
+      "nom": {
+        "fr": "Hélionceau",
+        "en": "Litleo",
+        "jp": "シシコ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "093/203",
+      "nom": {
+        "fr": "Némélios",
+        "en": "Pyroar",
+        "jp": "カエンジシ"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "094/203",
+      "nom": {
+        "fr": "Darumarond",
+        "en": "Darumaka",
+        "jp": "ダルマッカ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "095/203",
+      "nom": {
+        "fr": "Darumacho",
+        "en": "Darmanitan",
+        "jp": "ヒヒダルマ"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "096/203",
+      "nom": {
+        "fr": "Roublenard",
+        "en": "Honedge",
+        "jp": "ヒトツキ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "097/203",
+      "nom": {
+        "fr": "Dimoclès",
+        "en": "Doublade",
+        "jp": "ニダンギル"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "098/203",
+      "nom": {
+        "fr": "Noacier",
+        "en": "Aegislash",
+        "jp": "ギルガルド"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "099/203",
+      "nom": {
+        "fr": "Terhal",
+        "en": "Aron",
+        "jp": "ココドラ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "100/203",
+      "nom": {
+        "fr": "Métang",
+        "en": "Metang",
+        "jp": "メタング"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "101/203",
+      "nom": {
+        "fr": "Regidrago V",
+        "en": "Regidrago V",
+        "jp": "レジドラゴV"
+      },
+      "rarete": "rare",
+      "stars": "★ argentée",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "102/203",
+      "nom": {
+        "fr": "Minidraco",
+        "en": "Dratini",
+        "jp": "ミニリュウ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "103/203",
+      "nom": {
+        "fr": "Draco",
+        "en": "Dragonair",
+        "jp": "ハクリュー"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "104/203",
+      "nom": {
+        "fr": "Dracolosse",
+        "en": "Dragonite",
+        "jp": "カイリュー"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "105/203",
+      "nom": {
+        "fr": "Hydragon",
+        "en": "Hydreigon",
+        "jp": "サザンドラ"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "106/203",
+      "nom": {
+        "fr": "Dinoclier",
+        "en": "Bastiodon",
+        "jp": "トリデプス"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "107/203",
+      "nom": {
+        "fr": "Cosmog",
+        "en": "Cosmog",
+        "jp": "コスモッグ"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "108/203",
+      "nom": {
+        "fr": "Cosmovum",
+        "en": "Cosmoem",
+        "jp": "コスモウム"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "109/203",
+      "nom": {
+        "fr": "Lunala",
+        "en": "Lunala",
+        "jp": "ルナアーラ"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "110/203",
+      "nom": {
+        "fr": "Regieleki V",
+        "en": "Regieleki V",
+        "jp": "レジエレキV"
+      },
+      "rarete": "rare",
+      "stars": "★ argentée",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "111/203",
+      "nom": {
+        "fr": "Bamboiselle",
+        "en": "Tsareena",
+        "jp": "アマージョ"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "112/203",
+      "nom": {
+        "fr": "Piafabec",
+        "en": "Spearow",
+        "jp": "オニスズメ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "113/203",
+      "nom": {
+        "fr": "Rapasdepic",
+        "en": "Fearow",
+        "jp": "オニドリル"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "114/203",
+      "nom": {
+        "fr": "Moufouette",
+        "en": "Stunky",
+        "jp": "スカンプー"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "115/203",
+      "nom": {
+        "fr": "Moufflair",
+        "en": "Skuntank",
+        "jp": "スカタンク"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "116/203",
+      "nom": {
+        "fr": "Tournicoton",
+        "en": "Hoppip",
+        "jp": "ハネッコ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "117/203",
+      "nom": {
+        "fr": "Fragilady",
+        "en": "Lilligant",
+        "jp": "ドレディア"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "118/203",
+      "nom": {
+        "fr": "Noeunoeuf",
+        "en": "Exeggcute",
+        "jp": "タマタマ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "119/203",
+      "nom": {
+        "fr": "Noadkoko",
+        "en": "Exeggutor",
+        "jp": "ナッシー"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "120/203",
+      "nom": {
+        "fr": "Psykokwak",
+        "en": "Psyduck",
+        "jp": "コダック"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "121/203",
+      "nom": {
+        "fr": "Akwakwak",
+        "en": "Golduck",
+        "jp": "ゴルダック"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "122/203",
+      "nom": {
+        "fr": "Togetic",
+        "en": "Togetic",
+        "jp": "トゲチック"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "123/203",
+      "nom": {
+        "fr": "Togekiss",
+        "en": "Togekiss",
+        "jp": "トゲキッス"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "124/203",
+      "nom": {
+        "fr": "Abra",
+        "en": "Abra",
+        "jp": "ケーシィ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "125/203",
+      "nom": {
+        "fr": "Kadabra",
+        "en": "Kadabra",
+        "jp": "ユンゲラー"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "126/203",
+      "nom": {
+        "fr": "Alakazam",
+        "en": "Alakazam",
+        "jp": "フーディン"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "127/203",
+      "nom": {
+        "fr": "Zarbi",
+        "en": "Unown",
+        "jp": "アンノーン"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "128/203",
+      "nom": {
+        "fr": "Lippoutou",
+        "en": "Jynx",
+        "jp": "ルージュラ"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "129/203",
+      "nom": {
+        "fr": "Givrali V",
+        "en": "Glaceon V",
+        "jp": "グレイシアV"
+      },
+      "rarete": "rare",
+      "stars": "★ argentée",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "130/203",
+      "nom": {
+        "fr": "Goinfrex",
+        "en": "Munchlax",
+        "jp": "ゴンベ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "131/203",
+      "nom": {
+        "fr": "Ronflex",
+        "en": "Snorlax",
+        "jp": "カビゴン"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "132/203",
+      "nom": {
+        "fr": "Mewtwo V",
+        "en": "Mewtwo V",
+        "jp": "ミュウツーV"
+      },
+      "rarete": "rare",
+      "stars": "★ argentée",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "133/203",
+      "nom": {
+        "fr": "Ramoloss",
+        "en": "Slowpoke",
+        "jp": "ヤドン"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "134/203",
+      "nom": {
+        "fr": "Flagadoss",
+        "en": "Slowbro",
+        "jp": "ヤドラン"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "135/203",
+      "nom": {
+        "fr": "Roigada",
+        "en": "Slowking",
+        "jp": "ヤドキング"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "136/203",
+      "nom": {
+        "fr": "Lançargot V",
+        "en": "Inteleon V",
+        "jp": "インテレオンV"
+      },
+      "rarete": "rare",
+      "stars": "★ argentée",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "137/203",
+      "nom": {
+        "fr": "Stari",
+        "en": "Staryu",
+        "jp": "ヒトデマン"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "138/203",
+      "nom": {
+        "fr": "Staross",
+        "en": "Starmie",
+        "jp": "スターミー"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "139/203",
+      "nom": {
+        "fr": "Zorua",
+        "en": "Zorua",
+        "jp": "ゾロア"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "140/203",
+      "nom": {
+        "fr": "Zoroark",
+        "en": "Zoroark",
+        "jp": "ゾロアーク"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "141/203",
+      "nom": {
+        "fr": "Zygarde",
+        "en": "Zygarde",
+        "jp": "ジガルデ"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "142/203",
+      "nom": {
+        "fr": "Bulbizarre",
+        "en": "Bulbasaur",
+        "jp": "フシギダネ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "143/203",
+      "nom": {
+        "fr": "Herbizarre",
+        "en": "Ivysaur",
+        "jp": "フシギソウ"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "144/203",
+      "nom": {
+        "fr": "Florizarre",
+        "en": "Venusaur",
+        "jp": "フシギバナ"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "145/203",
+      "nom": {
+        "fr": "Kapoera",
+        "en": "Hitmontop",
+        "jp": "カポエラー"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "146/203",
+      "nom": {
+        "fr": "Tiplouf",
+        "en": "Piplup",
+        "jp": "ポッチャマ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "147/203",
+      "nom": {
+        "fr": "Prinplouf",
+        "en": "Prinplup",
+        "jp": "ポッタイシ"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "148/203",
+      "nom": {
+        "fr": "Pingoléon",
+        "en": "Empoleon",
+        "jp": "エンペルト"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "149/203",
+      "nom": {
+        "fr": "Arakdo",
+        "en": "Dewpider",
+        "jp": "アゴジムシ"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "150/203",
+      "nom": {
+        "fr": "Tarenbulle",
+        "en": "Araquanid",
+        "jp": "オニシズクモ"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "151/203",
+      "nom": {
+        "fr": "Maître Moustache",
+        "en": "Mustard",
+        "jp": "マスタード"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "152/203",
+      "nom": {
+        "fr": "Cape Météo",
+        "en": "Weather Tents",
+        "jp": "てんきテント"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "153/203",
+      "nom": {
+        "fr": "Dresseuse Dojo",
+        "en": "Dojo Instructor",
+        "jp": "どうじょうのきょうかん"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "154/203",
+      "nom": {
+        "fr": "Équipement Héroïque",
+        "en": "Hero's Potential",
+        "jp": "えいゆうのかくご"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "155/203",
+      "nom": {
+        "fr": "Essaim Insectes",
+        "en": "Bug Catcher",
+        "jp": "むしとりしょうねん"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "156/203",
+      "nom": {
+        "fr": "Brume Glacée",
+        "en": "Chilling Mist",
+        "jp": "こごえるきり"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "157/203",
+      "nom": {
+        "fr": "Forêt de Lumière",
+        "en": "Light of Galar",
+        "jp": "ガラルのひかり"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "158/203",
+      "nom": {
+        "fr": "Professeur Magnolia",
+        "en": "Professor's Research",
+        "jp": "マグノリア博士"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "159/203",
+      "nom": {
+        "fr": "Capture d'Énergie",
+        "en": "Energy Fetch",
+        "jp": "エネルギーつりざお"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "160/203",
+      "nom": {
+        "fr": "Tour Inachevée",
+        "en": "Broken Tower",
+        "jp": "こわれたとう"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "161/203",
+      "nom": {
+        "fr": "Volcan Endormi",
+        "en": "Slumbering Volcano",
+        "jp": "ねむるかざん"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "162/203",
+      "nom": {
+        "fr": "Équipement Booster",
+        "en": "Boost Pack",
+        "jp": "ブーストパック"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "163/203",
+      "nom": {
+        "fr": "Filet Ball",
+        "en": "Net Ball",
+        "jp": "ネットボール"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "164/203",
+      "nom": {
+        "fr": "Pokécom",
+        "en": "PokeNav",
+        "jp": "ポケナビ"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "165/203",
+      "nom": {
+        "fr": "Recyclage d'Énergie",
+        "en": "Energy Recycler",
+        "jp": "エネルギーリサイクル"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "166/203",
+      "nom": {
+        "fr": "Récupérateur",
+        "en": "Rescue Stretcher",
+        "jp": "レスキューストレッチャー"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "167/203",
+      "nom": {
+        "fr": "Roto-Maxi",
+        "en": "Rotom Phone",
+        "jp": "ロトム電話"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "168/203",
+      "nom": {
+        "fr": "Sac à Dos",
+        "en": "Backpack",
+        "jp": "バックパック"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "169/203",
+      "nom": {
+        "fr": "Tour de Maîtrise",
+        "en": "Training Court",
+        "jp": "れんしゅうじょう"
+      },
+      "rarete": "peu commune",
+      "stars": "★ noire",
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "170/203",
+      "nom": {
+        "fr": "Énergie Plante",
+        "en": "Grass Energy",
+        "jp": "草エネルギー"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "171/203",
+      "nom": {
+        "fr": "Énergie Feu",
+        "en": "Fire Energy",
+        "jp": "炎エネルギー"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "172/203",
+      "nom": {
+        "fr": "Énergie Eau",
+        "en": "Water Energy",
+        "jp": "水エネルギー"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "173/203",
+      "nom": {
+        "fr": "Énergie Électrique",
+        "en": "Lightning Energy",
+        "jp": "雷エネルギー"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "174/203",
+      "nom": {
+        "fr": "Énergie Psy",
+        "en": "Psychic Energy",
+        "jp": "超エネルギー"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "175/203",
+      "nom": {
+        "fr": "Énergie Combat",
+        "en": "Fighting Energy",
+        "jp": "闘エネルギー"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "176/203",
+      "nom": {
+        "fr": "Énergie Obscurité",
+        "en": "Darkness Energy",
+        "jp": "悪エネルギー"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "177/203",
+      "nom": {
+        "fr": "Énergie Métal",
+        "en": "Metal Energy",
+        "jp": "鋼エネルギー"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "178/203",
+      "nom": {
+        "fr": "Énergie Fée",
+        "en": "Fairy Energy",
+        "jp": "フェアリーエネルギー"
+      },
+      "rarete": "commune",
+      "stars": null,
+      "holo": false,
+      "reverse": false
+    },
+    {
+      "numero": "179/203",
+      "nom": {
+        "fr": "Bamboiselle",
+        "en": "Tsareena",
+        "jp": "アマージョ"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "180/203",
+      "nom": {
+        "fr": "Cryptéro",
+        "en": "Sigilyph",
+        "jp": "シンボラー"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "181/203",
+      "nom": {
+        "fr": "Diamat",
+        "en": "Gigalith",
+        "jp": "ギガイアス"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "182/203",
+      "nom": {
+        "fr": "Électrode",
+        "en": "Electrode",
+        "jp": "マルマイン"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "183/203",
+      "nom": {
+        "fr": "Goinfrex",
+        "en": "Munchlax",
+        "jp": "ゴンベ"
+      },
+      "rarete": "rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "184/203",
+      "nom": {
+        "fr": "Pyron V",
+        "en": "Flareon V",
+        "jp": "ブースターV"
+      },
+      "rarete": "ultra-rare",
+      "stars": "★ argentée",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "185/203",
+      "nom": {
+        "fr": "Noctali V",
+        "en": "Umbreon V",
+        "jp": "ブラッキーV"
+      },
+      "rarete": "ultra-rare",
+      "stars": "★ argentée",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "186/203",
+      "nom": {
+        "fr": "Vaporeon V",
+        "en": "Vaporeon V",
+        "jp": "シャワーズV"
+      },
+      "rarete": "ultra-rare",
+      "stars": "★ argentée",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "187/203",
+      "nom": {
+        "fr": "Mimiqui V",
+        "en": "Mimikyu V",
+        "jp": "ミミッキュV"
+      },
+      "rarete": "ultra-rare",
+      "stars": "★ argentée",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "188/203",
+      "nom": {
+        "fr": "Phyllali V",
+        "en": "Leafeon V",
+        "jp": "リーフィアV"
+      },
+      "rarete": "ultra-rare",
+      "stars": "★ argentée",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "189/203",
+      "nom": {
+        "fr": "Desséliande V",
+        "en": "Trevenant V",
+        "jp": "オーロンゲV"
+      },
+      "rarete": "ultra-rare",
+      "stars": "★ argentée",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "190/203",
+      "nom": {
+        "fr": "Duralugon V",
+        "en": "Duraludon V",
+        "jp": "ジュラルドンV"
+      },
+      "rarete": "ultra-rare",
+      "stars": "★ argentée",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "191/203",
+      "nom": {
+        "fr": "Lançargot V",
+        "en": "Inteleon V",
+        "jp": "インテレオンV"
+      },
+      "rarete": "ultra-rare",
+      "stars": "★ argentée",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "192/203",
+      "nom": {
+        "fr": "Givrali V",
+        "en": "Glaceon V",
+        "jp": "グレイシアV"
+      },
+      "rarete": "ultra-rare",
+      "stars": "★ argentée",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "193/203",
+      "nom": {
+        "fr": "Voltali V",
+        "en": "Jolteon V",
+        "jp": "サンダースV"
+      },
+      "rarete": "ultra-rare",
+      "stars": "★ argentée",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "194/203",
+      "nom": {
+        "fr": "Mewtwo V",
+        "en": "Mewtwo V",
+        "jp": "ミュウツーV"
+      },
+      "rarete": "ultra-rare",
+      "stars": "★ argentée",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "195/203",
+      "nom": {
+        "fr": "Maître Moustache",
+        "en": "Mustard",
+        "jp": "マスタード"
+      },
+      "rarete": "ultra-rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "196/203",
+      "nom": {
+        "fr": "Professeur Magnolia",
+        "en": "Professor's Research",
+        "jp": "マグノリア博士"
+      },
+      "rarete": "ultra-rare",
+      "stars": "★★ noires",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "197/203",
+      "nom": {
+        "fr": "Noctali VMAX",
+        "en": "Umbreon VMAX",
+        "jp": "ブラッキーVMAX"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "198/203",
+      "nom": {
+        "fr": "Pyron VMAX",
+        "en": "Flareon VMAX",
+        "jp": "ブースターVMAX"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "199/203",
+      "nom": {
+        "fr": "Vaporeon VMAX",
+        "en": "Vaporeon VMAX",
+        "jp": "シャワーズVMAX"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "200/203",
+      "nom": {
+        "fr": "Phyllali VMAX",
+        "en": "Leafeon VMAX",
+        "jp": "リーフィアVMAX"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "201/203",
+      "nom": {
+        "fr": "Duralugon VMAX",
+        "en": "Duraludon VMAX",
+        "jp": "ジュラルドンVMAX"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "202/203",
+      "nom": {
+        "fr": "Lançargot VMAX",
+        "en": "Inteleon VMAX",
+        "jp": "インテレオンVMAX"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "203/203",
+      "nom": {
+        "fr": "Givrali VMAX",
+        "en": "Glaceon VMAX",
+        "jp": "グレイシアVMAX"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "204/203",
+      "nom": {
+        "fr": "Voltali VMAX",
+        "en": "Jolteon VMAX",
+        "jp": "サンダースVMAX"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "205/203",
+      "nom": {
+        "fr": "Desséliande VMAX",
+        "en": "Trevenant VMAX",
+        "jp": "オーロンゲVMAX"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "206/203",
+      "nom": {
+        "fr": "Filet Ball",
+        "en": "Net Ball",
+        "jp": "ネットボール"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ dorées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "207/203",
+      "nom": {
+        "fr": "Tour de Maîtrise",
+        "en": "Training Court",
+        "jp": "れんしゅうじょう"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ dorées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "208/203",
+      "nom": {
+        "fr": "Roto-Maxi",
+        "en": "Rotom Phone",
+        "jp": "ロトム電話"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ dorées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "209/203",
+      "nom": {
+        "fr": "Recyclage d'Énergie",
+        "en": "Energy Recycler",
+        "jp": "エネルギーリサイクル"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ dorées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "210/203",
+      "nom": {
+        "fr": "Pyron V (Alternate Art)",
+        "en": "Flareon V (Alternate Art)",
+        "jp": "ブースターV (Alternate Art)"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "211/203",
+      "nom": {
+        "fr": "Noctali V (Alternate Art)",
+        "en": "Umbreon V (Alternate Art)",
+        "jp": "ブラッキーV (Alternate Art)"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "212/203",
+      "nom": {
+        "fr": "Vaporeon V (Alternate Art)",
+        "en": "Vaporeon V (Alternate Art)",
+        "jp": "シャワーズV (Alternate Art)"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "213/203",
+      "nom": {
+        "fr": "Phyllali V (Alternate Art)",
+        "en": "Leafeon V (Alternate Art)",
+        "jp": "リーフィアV (Alternate Art)"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "214/203",
+      "nom": {
+        "fr": "Desséliande V (Alternate Art)",
+        "en": "Trevenant V (Alternate Art)",
+        "jp": "オーロンゲV (Alternate Art)"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "215/203",
+      "nom": {
+        "fr": "Duralugon V (Alternate Art)",
+        "en": "Duraludon V (Alternate Art)",
+        "jp": "ジュラルドンV (Alternate Art)"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "216/203",
+      "nom": {
+        "fr": "Givrali V (Alternate Art)",
+        "en": "Glaceon V (Alternate Art)",
+        "jp": "グレイシアV (Alternate Art)"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "217/203",
+      "nom": {
+        "fr": "Voltali V (Alternate Art)",
+        "en": "Jolteon V (Alternate Art)",
+        "jp": "サンダースV (Alternate Art)"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "218/203",
+      "nom": {
+        "fr": "Mimiqui V (Alternate Art)",
+        "en": "Mimikyu V (Alternate Art)",
+        "jp": "ミミッキュV (Alternate Art)"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "219/203",
+      "nom": {
+        "fr": "Maître Moustache (Alternate Art)",
+        "en": "Mustard (Alternate Art)",
+        "jp": "マスタード (Alternate Art)"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "220/203",
+      "nom": {
+        "fr": "Professeur Magnolia (Alternate Art)",
+        "en": "Professor's Research (Alternate Art)",
+        "jp": "マグノリア博士 (Alternate Art)"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "221/203",
+      "nom": {
+        "fr": "Noctali VMAX (Alternate Art)",
+        "en": "Umbreon VMAX (Alternate Art)",
+        "jp": "ブラッキーVMAX (Alternate Art)"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "222/203",
+      "nom": {
+        "fr": "Lançargot VMAX (Alternate Art)",
+        "en": "Inteleon VMAX (Alternate Art)",
+        "jp": "インテレオンVMAX (Alternate Art)"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "223/203",
+      "nom": {
+        "fr": "Regice V (Alternate Art)",
+        "en": "Regice V (Alternate Art)",
+        "jp": "レジアイスV (Alternate Art)"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "224/203",
+      "nom": {
+        "fr": "Regirock V (Alternate Art)",
+        "en": "Regirock V (Alternate Art)",
+        "jp": "レジロックV (Alternate Art)"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "225/203",
+      "nom": {
+        "fr": "Registeel V (Alternate Art)",
+        "en": "Registeel V (Alternate Art)",
+        "jp": "レジスチルV (Alternate Art)"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "226/203",
+      "nom": {
+        "fr": "Regidrago V (Alternate Art)",
+        "en": "Regidrago V (Alternate Art)",
+        "jp": "レジドラゴV (Alternate Art)"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "227/203",
+      "nom": {
+        "fr": "Regieleki V (Alternate Art)",
+        "en": "Regieleki V (Alternate Art)",
+        "jp": "レジエレキV (Alternate Art)"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "228/203",
+      "nom": {
+        "fr": "Mewtwo V (Alternate Art)",
+        "en": "Mewtwo V (Alternate Art)",
+        "jp": "ミュウツーV (Alternate Art)"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "229/203",
+      "nom": {
+        "fr": "Givrali VMAX (Alternate Art)",
+        "en": "Glaceon VMAX (Alternate Art)",
+        "jp": "グレイシアVMAX (Alternate Art)"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "230/203",
+      "nom": {
+        "fr": "Voltali VMAX (Alternate Art)",
+        "en": "Jolteon VMAX (Alternate Art)",
+        "jp": "サンダースVMAX (Alternate Art)"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+    {
+      "numero": "231/203",
+      "nom": {
+        "fr": "Pyron VMAX (Alternate Art)",
+        "en": "Flareon VMAX (Alternate Art)",
+        "jp": "ブースターVMAX (Alternate Art)"
+      },
+      "rarete": "secrète",
+      "stars": "★★★ argentées",
+      "holo": true,
+      "reverse": false
+    },
+  php
+];
+
+// Exemples d'utilisation:
+
+// Pour récupérer toutes les cartes avec rareté secrète:
+// const cartesSecretes = cartesPokemon.filter(carte => carte.rarete === "secrète");
+
+// Pour récupérer toutes les cartes avec des étoiles dorées:
+// const cartesEtoilesDor = cartesPokemon.filter(carte => carte.stars && carte.stars.includes("dorées"));
+
+// Pour récupérer toutes les cartes VMAX:
+// const cartesVMAX = cartesPokemon.filter(carte => carte.nom.fr.includes("VMAX"));
+
+// Pour récupérer toutes les cartes holographiques:
+// const cartesHolo = cartesPokemon.filter(carte => carte.holo === true);
+
+// Pour récupérer toutes les cartes reverse:
+// const cartesReverse = cartesPokemon.filter(carte => carte.reverse === true);
+
+// Pour rechercher une carte par son numéro:
+// const rechercherParNumero = (numero) => cartesPokemon.find(carte => carte.numero === numero);

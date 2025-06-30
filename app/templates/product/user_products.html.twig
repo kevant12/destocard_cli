@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Articles{% endblock %}
+
+{% block body %}
+    <a href="{{ path('app_home') }}" class="back-arrow" title="Retour à l'accueil">&#8592; Accueil</a>
+    <div class="container">
+        <div class="products-header" style="display: flex; flex-direction: column; align-items: center; margin: 48px auto 24px auto; max-width: 900px;">
+            <h1>Mes Articles</h1>
+            <div style="margin-top: 18px;">
+                <a href="{{ path('app_product_add') }}" class="add-product-link">Ajouter un article</a>
+            </div>
+        </div>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-error">{{ message }}</div>
+        {% endfor %}
+
+        {% if pagination is empty %}
+            <div class="user-products-empty">
+                <p>Vous n'avez pas encore d'articles en vente.</p>
+                <p>Cliquez sur "Ajouter un article" pour commencer !</p>
+            </div>
+        {% else %}
+            <div class="products-grid">
+                {% for product in pagination %}
+                    <div class="product-card {% if product.quantity == 0 %}unavailable{% endif %}" data-id="{{ product.id }}">
+                        {% if product.media|length > 0 %}
+                            <img src="{{ asset('upload/products/' ~ product.media|first.imageUrl) }}"
+                                 alt="{{ product.title }}"
+                                 class="product-image">
+                        {% endif %}
+
+                        <div class="product-info">
+                            <h3 class="product-title">{{ product.title }}</h3>
+                            <p class="product-price">{{ product.price|number_format(2, ',', ' ') }} €</p>
+                            <p>{{ product.description|slice(0, 100) }}{% if product.description|length > 100 %}...{% endif %}</p>
+
+                            <div class="product-status {% if product.quantity > 0 %}status-available{% else %}status-unavailable{% endif %}">
+                                {{ product.quantity > 0 ? 'Disponible' : 'Indisponible' }}
+                            </div>
+                        </div>
+
+                        <div class="product-actions">
+                            <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn btn-edit">
+                                Modifier
+                            </a>
+
+                            <form method="post" action="{{ path('app_product_delete', {'id': product.id}) }}"
+                                  class="user-products-action-form"
+                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ product.id) }}">
+                                <button type="submit" class="btn btn-delete" aria-label="Supprimer l'article {{ product.title }}">Supprimer</button>
+                            </form>
+
+                            <form method="post" action="{{ path('app_product_toggle', {'id': product.id}) }}" class="user-products-action-form">
+                                <button type="submit" class="btn btn-toggle" aria-label="{{ product.quantity > 0 ? 'Masquer' : 'Afficher' }} l'article {{ product.title }}">
+                                    {{ product.quantity > 0 ? 'Masquer' : 'Afficher' }}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="navigation text-center">
+                {{ knp_pagination_render(pagination) }}
+            </div>
+        {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script defer>
+        // Sélection des éléments
+        const productCards = document.querySelectorAll('.product-card');
+        const toggleButtons = document.querySelectorAll('.btn-toggle');
+
+        // Gestion du toggle de disponibilité
+        toggleButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                const card = button.closest('.product-card');
+                const status = card.querySelector('.product-status');
+                const isAvailable = !card.classList.contains('unavailable');
+
+                // Mise à jour visuelle
+                card.classList.toggle('unavailable');
+                status.textContent = isAvailable ? 'Indisponible' : 'Disponible';
+                status.classList.toggle('status-available');
+                status.classList.toggle('status-unavailable');
+                button.textContent = isAvailable ? 'Afficher' : 'Masquer';
+            });
+        });
+    </script>
+{% endblock %}

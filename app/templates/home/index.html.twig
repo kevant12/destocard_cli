@@ -1,0 +1,146 @@
+{# templates/home/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Destocard - Votre boutique de cartes Pokémon rares et accessoires{% endblock %}
+
+{% block meta_description %}Découvrez Destocard, votre référence pour l'achat et la vente de cartes Pokémon rares, de boosters, de figurines et d'accessoires. Collectionnez les cartes les plus recherchées !{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="home-main-container">
+    <!-- Header visuel avec barre de recherche -->
+    <header class="home-header-bg">
+        <div class="home-header-overlay">
+            <div class="home-header-top">
+                <img src="{{ asset('images/logo2redim.png') }}" alt="Logo Destocard" class="home-logo">
+                <form class="home-search-form" method="get" action="{{ path('app_product_search') }}">
+                    <label for="home-search-input" class="visually-hidden">Rechercher sur le site</label>
+                    <input type="text" id="home-search-input" class="home-search-input" placeholder="Rechercher..." aria-label="Recherche" name="q">
+                    <button type="submit" class="btn btn-primary">Rechercher</button>
+                </form>
+            </div>
+            <div class="home-header-pokemon">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/International_Pokémon_logo.svg" alt="Pokémon" class="home-pokemon-logo">
+            </div>
+        </div>
+    </header>
+
+    <!-- Catégories (boutons) -->
+    <section class="home-categories">
+        <button class="home-category-btn">Produit scellé</button>
+        <button class="home-category-btn">Carte à l'unité</button>
+        <button class="home-category-btn">Carte gradée</button>
+    </section>
+
+    <!-- Derniers ajouts (grille) -->
+    <section class="home-latest">
+        <div class="home-latest-display-select">
+            <span>choisissez votre affichage&nbsp;:</span>
+            <button class="home-latest-display-btn" data-cols="2">2x2</button>
+            <button class="home-latest-display-btn active" data-cols="3">3x3</button>
+            <button class="home-latest-display-btn" data-cols="4">4x4</button>
+        </div>
+        <h2 class="home-section-title">Derniers ajouts</h2>
+        <div class="home-latest-grid home-latest-grid-3">
+            {% for i in 1..9 %}
+            <article class="home-latest-article">
+                <a href="#" class="home-latest-link">
+                    <div class="home-latest-num">numéro</div>
+                    <div class="home-latest-img">
+                        <img src="https://via.placeholder.com/80x110/000/fff?text=carte" alt="Carte {{ i }}">
+                    </div>
+                    <div class="home-latest-price">prix</div>
+                </a>
+                <button class="home-latest-add-btn">ajouter</button>
+            </article>
+            {% endfor %}
+        </div>
+        <div class="home-latest-pagination">page &lt; 1/.. &gt;</div>
+    </section>
+
+    <!-- Extension à la une -->
+    <section class="home-extension">
+        <div class="home-extension-img">
+            <img src="https://assets.pokemon.com/assets/cms2/img/cards/web/SM12/SM12_FR_20.png" alt="Nouvelle extension">
+        </div>
+        <div class="home-extension-info">
+            <div class="home-extension-title">Nouvelle extension disponible</div>
+            <button class="home-extension-btn">Découvrir</button>
+        </div>
+    </section>
+
+    <!-- Articles populaires -->
+    <section class="home-popular">
+        <h2 class="home-section-title">Articles populaires</h2>
+        <div class="home-popular-list">
+            {% for i in 1..3 %}
+            <div class="home-popular-card">
+                <div class="home-popular-img">
+                    <img src="https://via.placeholder.com/100x120/222/FF5722?text=Produit" alt="Produit populaire">
+                </div>
+                <div class="home-popular-info">
+                    <div class="home-popular-name">etb ev8.5</div>
+                    <div class="home-popular-price">20€</div>
+                    <button class="home-popular-btn">Ajouter</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Actualités -->
+    <section class="home-news">
+        <h2 class="home-section-title">Actualités</h2>
+        <div class="home-news-block">
+            <img src="https://www.japan-expo-paris.com/data/medias/section/5/5/5/5/5555/5555.jpg" alt="Japan Expo" class="home-news-img">
+            <div class="home-news-info">
+                <div class="home-news-title">Japan Expo</div>
+                <div class="home-news-date">30-10/2025 au 5-11/2025</div>
+                <button class="home-news-btn">En savoir plus</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Logo Pokémon au-dessus de la navbar -->
+    <div class="home-pokemon-navbar">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/International_Pokémon_logo.svg" alt="Pokémon">
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const grid = document.getElementById('products-grid');
+        const grid2x2Btn = document.getElementById('grid-2x2');
+        const grid3x3Btn = document.getElementById('grid-3x3');
+        const grid4x4Btn = document.getElementById('grid-4x4');
+        const buttons = [grid2x2Btn, grid3x3Btn, grid4x4Btn];
+
+        function setActive(button) {
+            buttons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+        }
+
+        grid2x2Btn.addEventListener('click', () => {
+            grid.className = 'products-grid grid-2x2';
+            setActive(grid2x2Btn);
+        });
+
+        grid3x3Btn.addEventListener('click', () => {
+            grid.className = 'products-grid grid-3x3';
+            setActive(grid3x3Btn);
+        });
+
+        grid4x4Btn.addEventListener('click', () => {
+            grid.className = 'products-grid'; // default is 4x4
+            setActive(grid4x4Btn);
+        });
+    });
+</script>
+{% endblock %} 

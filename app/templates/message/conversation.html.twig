@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Conversation avec {{ otherUser.firstname }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>Conversation avec {{ otherUser.firstname }} {{ otherUser.lastname }}</h1>
+    <a href="{{ path('app_message_index') }}">&larr; Retour à mes conversations</a>
+
+    <div class="conversation-messages-container">
+        {% if messages is empty %}
+            <p>Aucun message pour le moment.</p>
+        {% else %}
+            <ul>
+                {% for message in messages %}
+                    <li class="message-item">
+                        <strong>{{ message.sender.firstname }} :</strong>
+                        {{ message.content }}
+                        <span class="message-timestamp">({{ message.expeditionDate|date('d/m/Y H:i') }})</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+
+    <h2 id="send-message-title">Envoyer un message</h2>
+    {{ form_start(form, {'attr': {'aria-labelledby': 'send-message-title'}}) }}
+        {{ form_row(form.content, {'attr': {'aria-label': 'Contenu du message'}}) }}
+        <button type="submit" class="btn btn-add" aria-label="Envoyer le message">Envoyer</button>
+    {{ form_end(form) }}
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const messagesContainer = document.querySelector('.conversation-messages-container');
+            if (messagesContainer) {
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        });
+    </script>
+{% endblock %} 

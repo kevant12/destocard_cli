@@ -1,0 +1,24 @@
+/home/project/src/cardData.js
+{
+    numero: "234/203",
+    nom: {
+      fr: "Boîte de Générosité",
+      en: "Generous Box",
+      jp: "心優しい箱"
+    },
+    rarete: "secrète",
+    stars: "★★★ dorées",
+    holo: true,
+    reverse: false
+  }{
+       numero: "234/203",
+       nom: {
+         fr: "Boîte de Générosité",
+         en: "Generous Box",
+         jp: "心優しい箱"
+       },
+       rarete: "secrète",
+       stars: "★★★ dorées",
+       holo: true,
+       reverse: false
+     }
