@@ -11,7 +11,6 @@ use Doctrine\ORM\Mapping\JoinColumn;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PokemonCardRepository::class)]
-#[ORM\HasLifecycleCallbacks]
 class PokemonCard
 {
     #[ORM\Id]
@@ -20,64 +19,66 @@ class PokemonCard
     #[Groups(['product:read'])]
     private ?int $id = null;
 
+    #[ORM\Column(length: 255, unique: true)]
+    #[Groups(['product:read'])]
+    private ?string $apiId = null;
+
     #[ORM\Column(length: 255)]
     #[Groups(['product:read'])]
-    #[Assert\NotBlank(message: "Le numéro de carte ne peut pas être vide.")]
-    #[Assert\Length(max: 255, maxMessage: "Le numéro de carte ne peut pas dépasser {{ limit }} caractères.")]
     private ?string $number = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['product:read'])]
-    #[Assert\NotBlank(message: "Le nom de la carte ne peut pas être vide.")]
-    #[Assert\Length(min: 2, max: 255, minMessage: "Le nom de la carte doit contenir au moins {{ limit }} caractères.", maxMessage: "Le nom de la carte ne peut pas dépasser {{ limit }} caractères.")]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['product:read'])]
-    #[Assert\NotBlank(message: "La rareté ne peut pas être vide.")]
-    #[Assert\Length(max: 255, maxMessage: "La rareté ne peut pas dépasser {{ limit }} caractères.")]
-    private ?string $rarity = null;
+    private ?string $category = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['product:read'])]
-    #[Assert\Length(max: 255, maxMessage: "L'extension ne peut pas dépasser {{ limit }} caractères.")]
-    private ?string $extension = null;
+    private ?string $specialType = null;
+
+    #[ORM\Column(length: 255)]
+    #[Groups(['product:read'])]
+    private ?string $raritySymbol = null;
+
+    #[ORM\Column(length: 255)]
+    #[Groups(['product:read'])]
+    private ?string $rarityText = null;
+
+    #[ORM\Column]
+    #[Groups(['product:read'])]
+    private ?bool $isReversePossible = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['product:read'])]
+    private ?string $subSerie = null;
+
+    #[ORM\ManyToOne(inversedBy: 'pokemonCards')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Extension $extension = null;
 
     #[OneToOne(targetEntity: Media::class, cascade: ['persist', 'remove'])]
     #[JoinColumn(nullable: true)]
     #[Groups(['product:read'])]
     private ?Media $image = null;
 
-    #[ORM\Column(type: 'integer')]
-    #[Assert\NotBlank(message: "La note en étoile ne peut pas être vide.")]
-    #[Assert\Range(min: 0, max: 5, notInRangeMessage: "La note en étoile doit être comprise entre {{ min }} et {{ max }}.")]
-    private ?int $starRating = null;
-
-    #[ORM\Column]
-    private ?bool $holo = null;
-
-    #[ORM\Column]
-    private ?bool $reverse = null;
-
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $updatedAt = null;
-
-    public function setCreatedAtValue(): void
-    {
-        $this->createdAt = new \DateTimeImmutable();
-    }
-
-    public function setUpdatedAtValue(): void
-    {
-        $this->updatedAt = new \DateTimeImmutable();
-    }
-
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getApiId(): ?string
+    {
+        return $this->apiId;
+    }
+
+    public function setApiId(string $apiId): static
+    {
+        $this->apiId = $apiId;
+
+        return $this;
     }
 
     public function getNumber(): ?string
@@ -104,48 +105,84 @@ class PokemonCard
         return $this;
     }
 
-    // public function getNomEn(): ?string
-    // {
-    //     return $this->nomEn;
-    // }
-
-    // public function setNomEn(?string $nomEn): static
-    // {
-    //     $this->nomEn = $nomEn;
-
-    //     return $this;
-    // }
-
-    // public function getNomJp(): ?string
-    // {
-    //     return $this->nomJp;
-    // }
-
-    // public function setNomJp(?string $nomJp): static
-    // {
-    //     $this->nomJp = $nomJp;
-
-    //     return $this;
-    // }
-
-    public function getRarity(): ?string
+    public function getCategory(): ?string
     {
-        return $this->rarity;
+        return $this->category;
     }
 
-    public function setRarity(string $rarity): static
+    public function setCategory(string $category): static
     {
-        $this->rarity = $rarity;
+        $this->category = $category;
 
         return $this;
     }
 
-    public function getExtension(): ?string
+    public function getSpecialType(): ?string
+    {
+        return $this->specialType;
+    }
+
+    public function setSpecialType(?string $specialType): static
+    {
+        $this->specialType = $specialType;
+
+        return $this;
+    }
+
+    public function getRaritySymbol(): ?string
+    {
+        return $this->raritySymbol;
+    }
+
+    public function setRaritySymbol(string $raritySymbol): static
+    {
+        $this->raritySymbol = $raritySymbol;
+
+        return $this;
+    }
+
+    public function getRarityText(): ?string
+    {
+        return $this->rarityText;
+    }
+
+    public function setRarityText(string $rarityText): static
+    {
+        $this->rarityText = $rarityText;
+
+        return $this;
+    }
+
+    public function isIsReversePossible(): ?bool
+    {
+        return $this->isReversePossible;
+    }
+
+    public function setIsReversePossible(bool $isReversePossible): static
+    {
+        $this->isReversePossible = $isReversePossible;
+
+        return $this;
+    }
+
+    public function getSubSerie(): ?string
+    {
+        return $this->subSerie;
+    }
+
+    public function setSubSerie(?string $subSerie): static
+    {
+        $this->subSerie = $subSerie;
+
+        return $this;
+    }
+
+    public function getExtension(): ?Extension
     {
         return $this->extension;
     }
 
-    public function setExtension(?string $extension): static
+    public function setExtension(?Extension $extension): static
     {
         $this->extension = $extension;
 
@@ -160,66 +197,6 @@ class PokemonCard
     public function setImage(?Media $image): static
     {
         $this->image = $image;
-
-        return $this;
-    }
-
-    public function getStarRating(): ?string
-    {
-        return $this->starRating;
-    }
-
-    public function setStarRating(string $starRating): static
-    {
-        $this->starRating = $starRating;
-
-        return $this;
-    }
-
-    public function isHolo(): ?bool
-    {
-        return $this->holo;
-    }
-
-    public function setHolo(bool $holo): static
-    {
-        $this->holo = $holo;
-
-        return $this;
-    }
-
-    public function isReverse(): ?bool
-    {
-        return $this->reverse;
-    }
-
-    public function setReverse(bool $reverse): static
-    {
-        $this->reverse = $reverse;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeImmutable
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
-    {
-        $this->updatedAt = $updatedAt;
 
         return $this;
     }

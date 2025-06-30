@@ -28,10 +28,15 @@
                     <h2 class="product-add-title add-form-title">Ajouter un produit</h2>
                     {{ form_start(form, {'attr': {'class': 'product-add-form', 'aria-labelledby': 'product-add-title'}}) }}
                         {{ form_errors(form) }}
-                        <div class="detail-item">
-                            {{ form_row(form.pokemon_card_number) }}
+                        <div class="detail-item" {{ stimulus_controller('card-selector') }}>
+                            {{ form_row(form.extension) }}
                         </div>
-                        <div class="detail-item">{{ form_row(form.pokemonCard) }}</div>
+                        <div class="detail-item">
+                            {{ form_row(form.pokemonCardNumber) }}
+                        </div>
+                        <div class="detail-item">
+                            {{ form_row(form.pokemonCard) }}
+                        </div>
                         <div class="detail-item">{{ form_row(form.title, {'attr': {'aria-label': 'Titre du produit'}}) }}</div>
                         <div class="detail-item">{{ form_row(form.description, {'attr': {'aria-label': 'Description du produit'}}) }}</div>
                         <div class="detail-item">{{ form_row(form.price, {'attr': {'aria-label': 'Prix du produit'}}) }}</div>

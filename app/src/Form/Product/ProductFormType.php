@@ -2,20 +2,21 @@
 
 namespace App\Form\Product;
 
+use App\Entity\Extension;
 use App\Entity\PokemonCard;
 use App\Entity\Products;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Positive;
 use Symfony\Component\Validator\Constraints\PositiveOrZero;
 
@@ -23,39 +24,39 @@ class ProductFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $product = $options['data'] ?? null;
-        $initialNumber = null;
-        
-        if ($product instanceof Products && $product->getPokemonCard()) {
-            $initialNumber = $product->getPokemonCard()->getNumber();
-        }
-
         $builder
-            ->add('pokemon_card_number', TextType::class, [
-                'label' => 'Numéro de la carte Pokémon',
+            ->add('extension', EntityType::class, [
+                'class' => Extension::class,
+                'choice_label' => 'name',
+                'placeholder' => '--- Choisir une extension --',
+                'label' => 'Extension',
                 'mapped' => false,
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
-                    'data-pokemon-card-number-target' => 'numberInput',
-                    'data-property-path' => 'pokemonCard.number'
+                    'data-controller' => 'card-selector',
+                    'data-action' => 'change->card-selector#onExtensionChange',
                 ],
-                'data' => $initialNumber
+            ])
+            ->add('pokemonCardNumber', TextType::class, [
+                'label' => 'Numéro de la carte',
+                'mapped' => false,
+                'required' => false,
+                'attr' => [
+                    'placeholder' => 'Taper le numéro...',
+                    'data-card-selector-target' => 'numberInput',
+                    'data-action' => 'input->card-selector#onNumberInput',
+                ],
             ])
             ->add('pokemonCard', EntityType::class, [
                 'class' => PokemonCard::class,
                 'choice_label' => 'name',
-                'label' => 'Carte Pokémon',
-                'placeholder' => 'Sélectionnez une extension d\'abord',
-                'required' => true,
-                'constraints' => [
-                    new NotBlank(['message' => 'Veuillez sélectionner une carte.']),
-                ],
+                'label' => 'Nom de la carte',
+                'placeholder' => '--- Sélectionner une carte ---',
+                'choices' => [], // Rempli par Stimulus
                 'attr' => [
-                    'class' => 'form-select',
-                    'data-pokemon-card-target' => 'pokemonCardSelect', // Attribut pour JS
+                    'data-card-selector-target' => 'cardSelect',
+                    'data-action' => 'change->card-selector#onCardChange',
                 ],
-                'choices' => [], // Initialement vide, sera peuplé par JS
             ])
             ->add('title', TextType::class, [
                 'label' => 'Titre',
@@ -140,7 +141,6 @@ class ProductFormType extends AbstractType
                     ])
                 ]
             ])
-            
             ->add('media', CollectionType::class, [
                 'entry_type' => MediaType::class,
                 'label' => false,
@@ -150,18 +150,13 @@ class ProductFormType extends AbstractType
                 'prototype' => true,
                 'attr' => ['class' => 'media-collection'],
                 'required' => false,
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Products::class,
-            'csrf_protection' => true,
-            'csrf_field_name' => '_token',
-            'csrf_token_id'   => 'product_form',
-            'extensions' => [], // Option pour passer les extensions
         ]);
     }
-} 
+}
