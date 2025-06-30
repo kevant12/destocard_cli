@@ -17,39 +17,14 @@ class MediaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('image_url', TextType::class, [
-                'label' => 'URL de l\'image',
-                'required' => true,
-                'attr' => [
-                    'placeholder' => 'https://...'
-                ],
-                'constraints' => [
-                    new Length([
-                        'max' => 255,
-                        'maxMessage' => 'L\'URL ne peut pas dépasser {{ limit }} caractères'
-                    ]),
-                    new Url([
-                        'message' => 'Veuillez saisir une URL valide.'
-                    ])
-                ]
-            ])
-            ->add('video_url', TextType::class, [
-                'label' => 'URL de la vidéo (YouTube, etc.)',
+            ->add('file', FileType::class, [
+                'label' => 'Image ou vidéo',
                 'required' => false,
                 'attr' => [
-                    'placeholder' => 'https://youtube.com/...'
+                    'accept' => 'image/*,video/*',
+                    'capture' => 'environment',
                 ],
-                'constraints' => [
-                    new Length([
-                        'max' => 255,
-                        'maxMessage' => 'L\'URL ne peut pas dépasser {{ limit }} caractères'
-                    ]),
-                    new Url([
-                        'message' => 'Veuillez saisir une URL valide.'
-                    ])
-                ]
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

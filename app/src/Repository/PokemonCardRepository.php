@@ -21,12 +21,10 @@ class PokemonCardRepository extends ServiceEntityRepository
      */
     public function findUniqueExtensions(): array
     {
-        return $this->createQueryBuilder('pc')
-            ->select('DISTINCT pc.extension')
-            ->where('pc.extension IS NOT NULL')
-            ->orderBy('pc.extension', 'ASC')
-            ->getQuery()
-            ->getSingleColumnResult();
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = 'SELECT DISTINCT extension FROM pokemon_card WHERE extension IS NOT NULL ORDER BY extension ASC';
+        $stmt = $conn->executeQuery($sql);
+        return array_column($stmt->fetchAllAssociative(), 'extension');
     }
 
     public function findOneByNumber(string $number): ?PokemonCard

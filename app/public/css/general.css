@@ -1632,3 +1632,113 @@ main {
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-sm);
 }
+
+/* --- Style formulaire d'ajout de produit --- */
+.product-add-form {
+    max-width: 500px;
+    margin: 2rem auto;
+    background: #181818;
+    border-radius: 12px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.25);
+    padding: 2rem 2.5rem;
+    color: #fff;
+}
+
+.product-add-form label {
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    display: block;
+    color: #ff9800;
+    letter-spacing: 0.5px;
+}
+
+.product-add-form input[type="text"],
+.product-add-form input[type="number"],
+.product-add-form input[type="file"],
+.product-add-form input[type="email"],
+.product-add-form input[type="password"],
+.product-add-form select,
+.product-add-form textarea {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    margin-bottom: 1.2rem;
+    background: #262626;
+    border: 1.5px solid #333;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.product-add-form input[type="text"]:focus,
+.product-add-form input[type="number"]:focus,
+.product-add-form input[type="file"]:focus,
+.product-add-form input[type="email"]:focus,
+.product-add-form input[type="password"]:focus,
+.product-add-form select:focus,
+.product-add-form textarea:focus {
+    border-color: #ff9800;
+    outline: none;
+}
+
+.product-add-form .btn,
+.product-add-form button,
+.product-add-form input[type="submit"] {
+    background: #ff9800;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.7rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    margin-bottom: 1.2rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.product-add-form .btn:hover,
+.product-add-form button:hover,
+.product-add-form input[type="submit"]:hover {
+    background: #ffb74d;
+    color: #181818;
+}
+
+.product-add-form h2,
+.product-add-form h3 {
+    color: #fff;
+    margin-bottom: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.product-add-form .media-collection-wrapper,
+.product-add-form .webcam-capture-section,
+.product-add-form .video-capture-section {
+    margin-bottom: 2rem;
+    background: #222;
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+}
+
+.product-add-form .media-previews img,
+.product-add-form .media-preview-block img,
+.product-add-form .pokemon-card-image-preview img {
+    max-width: 120px;
+    border-radius: 6px;
+    margin: 0.5rem 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.product-add-form .form-label {
+    color: #ff9800;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+@media (max-width: 600px) {
+    .product-add-form {
+        padding: 1rem 0.5rem;
+    }
+}

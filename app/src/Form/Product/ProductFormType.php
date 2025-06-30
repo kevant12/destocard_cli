@@ -25,16 +25,13 @@ class ProductFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('extension', EntityType::class, [
-                'class' => Extension::class,
-                'choice_label' => 'name',
-                'placeholder' => '--- Choisir une extension --',
+            ->add('extension', ChoiceType::class, [
                 'label' => 'Extension',
+                'choices' => $options['extensions'],
+                'required' => true,
                 'mapped' => false,
-                'required' => false,
                 'attr' => [
-                    'data-controller' => 'card-selector',
-                    'data-action' => 'change->card-selector#onExtensionChange',
+                    'data-extension-target' => 'extensionSelect',
                 ],
             ])
             ->add('pokemonCardNumber', TextType::class, [
@@ -157,6 +154,7 @@ class ProductFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Products::class,
+            'extensions' => [],
         ]);
     }
 }

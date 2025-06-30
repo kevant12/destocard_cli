@@ -29,13 +29,13 @@
                     {{ form_start(form, {'attr': {'class': 'product-add-form', 'aria-labelledby': 'product-add-title'}}) }}
                         {{ form_errors(form) }}
                         <div class="detail-item" {{ stimulus_controller('card-selector') }}>
-                            {{ form_row(form.extension) }}
+                            {{ form_row(form.extension, {'attr': {'data-extension-target': 'extensionSelect'}}) }}
                         </div>
                         <div class="detail-item">
                             {{ form_row(form.pokemonCardNumber) }}
                         </div>
                         <div class="detail-item">
-                            {{ form_row(form.pokemonCard) }}
+                            {{ form_row(form.pokemonCard, {'attr': {'data-pokemon-card-target': 'pokemonCardSelect'}}) }}
                         </div>
                         <div class="detail-item">{{ form_row(form.title, {'attr': {'aria-label': 'Titre du produit'}}) }}</div>
                         <div class="detail-item">{{ form_row(form.description, {'attr': {'aria-label': 'Description du produit'}}) }}</div>
@@ -48,12 +48,13 @@
                             </div>
                         </div>
                         <div class="detail-item">
-                            <label class="add-media-label">Médias (image/vidéo)</label>
-                            <div class="media-collection-wrapper" data-prototype="{{ form_widget(form.media.vars.prototype)|e('html_attr') }}">
+                            <label class="add-media-label">Médias (photo)</label>
+                            <div class="media-collection-wrapper d-flex align-items-center gap-2" data-prototype="{{ form_widget(form.media.vars.prototype)|e('html_attr') }}">
                                 {{ form_widget(form.media) }}
-                                <button type="button" class="add-media-button btn btn-secondary">Ajouter un média</button>
-                                <div class="media-previews" id="media-previews-add"></div>
+                                <button type="button" class="add-media-button btn btn-secondary" style="margin-left: 10px;">Ajouter une photo</button>
                             </div>
+                            <small class="form-text text-muted">Ajouter une photo (ou prendre une photo)</small>
+                            <div class="media-previews" id="media-previews-add"></div>
                         </div>
                         <div class="detail-item">
                             <div class="webcam-capture-section mt-3">
@@ -67,8 +68,19 @@
                                 <input type="hidden" id="webcam-image-data" class="webcam-image-data-input">
                             </div>
                         </div>
-                        
-                        <button type="submit" class="btn-add" aria-label="Ajouter le produit">Ajouter le produit</button>
+                        <div class="video-capture-section mt-3">
+                            <h3>Enregistrer une vidéo</h3>
+                            <video id="video-record-preview" controls style="width: 100%; max-width: 320px; display: none;"></video>
+                            <button type="button" id="start-video-webcam" class="btn btn-info mt-2">Activer la webcam (vidéo)</button>
+                            <button type="button" id="start-recording" class="btn btn-success mt-2" style="display: none;">Démarrer l'enregistrement</button>
+                            <button type="button" id="stop-recording" class="btn btn-danger mt-2" style="display: none;">Arrêter l'enregistrement</button>
+                            <button type="button" id="retake-video" class="btn btn-warning mt-2" style="display: none;">Recommencer</button>
+                            <button type="button" id="add-captured-video" class="btn btn-primary mt-2" style="display: none;">Ajouter la vidéo</button>
+                            <input type="hidden" id="video-data" class="video-data-input">
+                        </div>
+                        <div class="detail-item mt-4">
+                            <button type="submit" class="btn-add" aria-label="Ajouter le produit">Ajouter le produit</button>
+                        </div>
                     {{ form_end(form) }}
                 </div>
             </div>

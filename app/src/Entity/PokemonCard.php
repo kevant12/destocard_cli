@@ -9,6 +9,7 @@ use App\Entity\Media;
 use Doctrine\ORM\Mapping\OneToOne;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\Extension;
 
 #[ORM\Entity(repositoryClass: PokemonCardRepository::class)]
 class PokemonCard
@@ -55,7 +56,7 @@ class PokemonCard
     #[Groups(['product:read'])]
     private ?string $subSerie = null;
 
-    #[ORM\ManyToOne(inversedBy: 'pokemonCards')]
+    #[ORM\ManyToOne(targetEntity: Extension::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?Extension $extension = null;
 
@@ -185,7 +186,6 @@ class PokemonCard
     public function setExtension(?Extension $extension): static
     {
         $this->extension = $extension;
-
         return $this;
     }
 

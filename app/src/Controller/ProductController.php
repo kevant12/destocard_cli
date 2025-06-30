@@ -15,16 +15,23 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Extension;
 
 #[Route('/product')]
 class ProductController extends AbstractController
 {
+    private EntityManagerInterface $em;
+
     public function __construct(
         private ProductService $productService,
         private ProductsRepository $productsRepository,
         private PokemonCardRepository $pokemonCardRepository,
-        private PaginatorInterface $paginator
-    ) {}
+        private PaginatorInterface $paginator,
+        EntityManagerInterface $em
+    ) {
+        $this->em = $em;
+    }
 
     /**
      * Affiche tous les produits disponibles
@@ -74,14 +81,26 @@ class ProductController extends AbstractController
     {
         $product = new Products();
         
-        // Récupérer les extensions uniques pour le champ de sélection
-        $extensions = $this->pokemonCardRepository->findUniqueExtensions();
-        $extensionChoices = array_combine($extensions, $extensions); // Créer un tableau clé-valeur
+        // Récupérer toutes les extensions pour le champ de sélection
+        $extensions = $this->em->getRepository(\App\Entity\Extension::class)->findAll();
+        $extensionChoices = [];
+        foreach ($extensions as $ext) {
+            $extensionChoices[$ext->getName()] = $ext->getId();
+        }
 
-        $form = $this->createForm(ProductFormType::class, $product);
+        $form = $this->createForm(ProductFormType::class, $product, [
+            'extensions' => $extensionChoices
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Lier l'objet Extension à la carte sélectionnée
+            $extensionId = $form->get('extension')->getData();
+            $extension = $this->em->getRepository(\App\Entity\Extension::class)->find($extensionId);
+            $pokemonCard = $form->get('pokemonCard')->getData();
+            if ($pokemonCard) {
+                $pokemonCard->setExtension($extension);
+            }
             $this->productService->createProduct($product, $this->getUser());
             $this->addFlash('success', 'Article ajouté avec succès !');
             return $this->redirectToRoute('app_user_products');
@@ -147,10 +166,11 @@ class ProductController extends AbstractController
         return $this->redirectToRoute('app_user_products');
     }
 
-    #[Route('/api/pokemon-cards-by-extension/{extensionName}', name: 'api_pokemon_cards_by_extension', methods: ['GET'])]
-    public function getPokemonCardsByExtension(string $extensionName): JsonResponse
+    #[Route('/api/pokemon-cards-by-extension/{extensionId}', name: 'api_pokemon_cards_by_extension', methods: ['GET'])]
+    public function getPokemonCardsByExtension(int $extensionId): JsonResponse
     {
-        $cards = $this->pokemonCardRepository->findBy(['extension' => $extensionName]);
+        $extension = $this->em->getRepository(\App\Entity\Extension::class)->find($extensionId);
+        $cards = $this->pokemonCardRepository->findBy(['extension' => $extension]);
 
         $data = [];
         foreach ($cards as $card) {
@@ -179,7 +199,19 @@ class ProductController extends AbstractController
             return $this->json(['error' => 'Card not found'], 404);
         }
 
-        return $this->json($card, 200, [], ['groups' => 'product:read']);
+        return $this->json([
+            'id' => $card->getId(),
+            'name' => $card->getName(),
+            'image' => $card->getImage(),
+            'extensionId' => $card->getExtension() ? $card->getExtension()->getId() : null,
+            'extensionName' => $card->getExtension() ? $card->getExtension()->getName() : null,
+            'rarityText' => $card->getRarityText(),
+            'raritySymbol' => $card->getRaritySymbol(),
+            'category' => $card->getCategory(),
+            'specialType' => $card->getSpecialType(),
+            'subSerie' => $card->getSubSerie(),
+            // ... autres champs utiles
+        ], 200, [], ['groups' => 'product:read']);
     }
 
     /**
@@ -235,5 +267,24 @@ class ProductController extends AbstractController
         }
 
         return $this->redirectToRoute('app_user_products');
+    }
+
+    #[Route('/api/pokemon-card', name: 'api_pokemon_card_by_extension_and_number', methods: ['GET'])]
+    public function getPokemonCardByExtensionAndNumber(Request $request): JsonResponse
+    {
+        $extensionId = $request->query->get('extensionId');
+        $cardNumber = $request->query->get('cardNumber');
+        if (!$extensionId || !$cardNumber) {
+            return $this->json(['error' => 'Extension et numéro requis'], 400);
+        }
+        $extension = $this->em->getRepository(Extension::class)->find($extensionId);
+        if (!$extension) {
+            return $this->json(['error' => 'Extension inconnue'], 404);
+        }
+        $card = $this->pokemonCardRepository->findOneBy(['extension' => $extension, 'number' => $cardNumber]);
+        if (!$card) {
+            return $this->json(['error' => 'Carte non trouvée'], 404);
+        }
+        return $this->json($card, 200, [], ['groups' => 'product:read']);
     }
 } 

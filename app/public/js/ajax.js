@@ -274,49 +274,96 @@ document.addEventListener('DOMContentLoaded', function() {
     const titleInput = addProductForm.querySelector('input[id^="product_form_title"]');
     const pokemonCardSelect = addProductForm.querySelector('[data-pokemon-card-target="pokemonCardSelect"]');
     const imagePreview = addProductForm.querySelector('[data-pokemon-card-image-target="imagePreview"]');
+    const extensionSelect = addProductForm.querySelector('[data-extension-target="extensionSelect"]');
 
-    if (numberInput && titleInput && pokemonCardSelect && imagePreview) {
+    if (numberInput && titleInput && pokemonCardSelect && imagePreview && extensionSelect) {
+        // Créer ou cibler la div d'erreur sous le champ numéro
+        let errorDiv = document.getElementById('card-number-error');
+        if (!errorDiv) {
+            errorDiv = document.createElement('div');
+            errorDiv.id = 'card-number-error';
+            errorDiv.style.color = '#ff9800';
+            errorDiv.style.fontWeight = 'bold';
+            errorDiv.style.marginTop = '0.3rem';
+            numberInput.parentNode.appendChild(errorDiv);
+        }
+
+        function showCardNumberError(msg) {
+            errorDiv.textContent = msg;
+            errorDiv.style.display = 'block';
+            setTimeout(() => { errorDiv.style.display = 'none'; }, 4000);
+        }
+
         numberInput.addEventListener('blur', function() {
             const number = this.value.trim();
-            if (number) {
-                fetch(`/product/api/pokemon-card-details/${number}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Carte non trouvée');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        // Remplir le titre du produit avec le nom de la carte
-                        if (data.name) titleInput.value = data.name;
-
-                        // Sélectionner la carte Pokémon dans le champ EntityType
-                        if (data.id) {
-                            // Assurez-vous que l'option existe avant de la sélectionner
-                            // La logique de `updatePokemonCards` doit avoir déjà peuplé le select
-                            // Si l'extension n'est pas déjà sélectionnée, cela peut poser problème
-                            // Il faudrait peut-être déclencher la sélection de l'extension d'abord
-                            // ou s'assurer que toutes les cartes sont chargées au départ (moins performant)
-                            setSelectValue(pokemonCardSelect, data.id, true); // true pour comparer par value (ID)
-                        }
-
-                        // Afficher l'image
-                        if (data.image && data.image.imageUrl) {
-                            imagePreview.src = `/media/images/${data.image.imageUrl}`;
-                            imagePreview.style.display = 'block';
-                        } else {
-                            imagePreview.style.display = 'none';
-                        }
-
-                    })
-                    .catch(error => {
-                        console.error('Erreur lors de la récupération des détails de la carte:', error);
-                        // Optionnel: réinitialiser les champs si la carte n'est pas trouvée
-                        titleInput.value = '';
-                        setSelectValue(pokemonCardSelect, '');
-                        imagePreview.style.display = 'none';
-                    });
+            const extensionId = extensionSelect.value;
+            if (!number) {
+                showCardNumberError('Veuillez saisir un numéro de carte.');
+                return;
             }
+            if (!extensionId) {
+                showCardNumberError('Veuillez d'abord sélectionner une extension.');
+                return;
+            }
+            fetch(`/api/pokemon-card?extensionId=${extensionId}&cardNumber=${encodeURIComponent(number)}`)
+                .then(response => {
+                    if (!response.ok) {
+                        if (response.status === 404) {
+                            showCardNumberError('Aucune carte trouvée avec ce numéro dans cette extension.');
+                        } else {
+                            showCardNumberError('Erreur lors de la requête API (code ' + response.status + ').');
+                        }
+                        throw new Error('Carte non trouvée ou erreur API');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    let missingField = null;
+                    if (!data.name) missingField = 'nom';
+                    else if (!data.extension || !data.extension.id) missingField = 'extension';
+                    else if (!data.rarityText) missingField = 'rareté';
+                    if (missingField) {
+                        showCardNumberError('Champ manquant dans la base : ' + missingField);
+                        return;
+                    }
+                    // Remplir le titre du produit avec le nom de la carte
+                    if (data.name) titleInput.value = data.name;
+                    // Sélectionner l'extension
+                    if (data.extension && data.extension.id) {
+                        setSelectValue(extensionSelect, data.extension.id, true);
+                    }
+                    // Sélectionner la carte (après que le select des cartes soit mis à jour)
+                    if (data.id) {
+                        setTimeout(() => setSelectValue(pokemonCardSelect, data.id, true), 300);
+                    }
+                    // Remplir la rareté si un champ existe
+                    const rarityInput = document.querySelector('#product_form_rarity');
+                    if (rarityInput && data.rarityText) {
+                        rarityInput.value = data.rarityText;
+                    }
+                    // Remplir d'autres champs si besoin (catégorie, sous-série, etc.)
+                    const categoryInput = document.querySelector('#product_form_category');
+                    if (categoryInput && data.category) {
+                        categoryInput.value = data.category;
+                    }
+                    const subSerieInput = document.querySelector('#product_form_subSerie');
+                    if (subSerieInput && data.subSerie) {
+                        subSerieInput.value = data.subSerie;
+                    }
+                    // Afficher l'image
+                    if (data.image && data.image.imageUrl) {
+                        imagePreview.src = `/media/images/${data.image.imageUrl}`;
+                        imagePreview.style.display = 'block';
+                    } else {
+                        imagePreview.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    // Optionnel: réinitialiser les champs si la carte n'est pas trouvée
+                    titleInput.value = '';
+                    setSelectValue(pokemonCardSelect, '');
+                    imagePreview.style.display = 'none';
+                });
         });
     }
 
@@ -496,6 +543,200 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Erreur lors de la finalisation de la commande:', error);
                 showFlash('Erreur réseau lors de la finalisation de la commande.', 'error');
             });
+        }
+    });
+});
+
+// --- Gestion de la capture photo via webcam ---
+document.addEventListener('DOMContentLoaded', function() {
+    const startWebcamBtn = document.getElementById('start-webcam');
+    const capturePhotoBtn = document.getElementById('capture-photo');
+    const retakePhotoBtn = document.getElementById('retake-photo');
+    const addCapturedPhotoBtn = document.getElementById('add-captured-photo');
+    const webcamVideo = document.getElementById('webcam-video');
+    const webcamCanvas = document.getElementById('webcam-canvas');
+    const webcamImageData = document.getElementById('webcam-image-data');
+
+    let stream = null;
+    let photoDataUrl = null;
+
+    if (!startWebcamBtn || !capturePhotoBtn || !retakePhotoBtn || !addCapturedPhotoBtn || !webcamVideo || !webcamCanvas || !webcamImageData) {
+        return; // Les éléments ne sont pas présents sur la page
+    }
+
+    // Démarrer la webcam
+    startWebcamBtn.addEventListener('click', async function() {
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            webcamVideo.srcObject = stream;
+            webcamVideo.style.display = 'block';
+            webcamCanvas.style.display = 'none';
+            capturePhotoBtn.style.display = 'inline-block';
+            retakePhotoBtn.style.display = 'none';
+            addCapturedPhotoBtn.style.display = 'none';
+            startWebcamBtn.style.display = 'none';
+        } catch (err) {
+            alert('Impossible d\'accéder à la caméra : ' + err.message);
+        }
+    });
+
+    // Capturer la photo
+    capturePhotoBtn.addEventListener('click', function() {
+        const context = webcamCanvas.getContext('2d');
+        webcamCanvas.width = webcamVideo.videoWidth;
+        webcamCanvas.height = webcamVideo.videoHeight;
+        context.drawImage(webcamVideo, 0, 0, webcamCanvas.width, webcamCanvas.height);
+        photoDataUrl = webcamCanvas.toDataURL('image/png');
+        webcamImageData.value = photoDataUrl;
+        webcamCanvas.style.display = 'block';
+        webcamVideo.style.display = 'none';
+        capturePhotoBtn.style.display = 'none';
+        retakePhotoBtn.style.display = 'inline-block';
+        addCapturedPhotoBtn.style.display = 'inline-block';
+        // Arrêter la webcam pour économiser les ressources
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+            stream = null;
+        }
+    });
+
+    // Reprendre la photo
+    retakePhotoBtn.addEventListener('click', async function() {
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            webcamVideo.srcObject = stream;
+            webcamVideo.style.display = 'block';
+            webcamCanvas.style.display = 'none';
+            capturePhotoBtn.style.display = 'inline-block';
+            retakePhotoBtn.style.display = 'none';
+            addCapturedPhotoBtn.style.display = 'none';
+            startWebcamBtn.style.display = 'none';
+        } catch (err) {
+            alert('Impossible d\'accéder à la caméra : ' + err.message);
+        }
+    });
+
+    // Ajouter la photo capturée au formulaire (l'input hidden est déjà rempli)
+    addCapturedPhotoBtn.addEventListener('click', function() {
+        // Ici, tu peux éventuellement afficher un aperçu ailleurs ou déclencher une action
+        alert('Photo capturée prête à être envoyée avec le formulaire !');
+        // Tu peux aussi masquer la section webcam si tu veux
+    });
+
+    // Nettoyer le flux webcam à la fermeture de la page
+    window.addEventListener('beforeunload', function() {
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
+    });
+});
+
+// --- Gestion de l'enregistrement vidéo via webcam ---
+document.addEventListener('DOMContentLoaded', function() {
+    const startVideoWebcamBtn = document.getElementById('start-video-webcam');
+    const startRecordingBtn = document.getElementById('start-recording');
+    const stopRecordingBtn = document.getElementById('stop-recording');
+    const retakeVideoBtn = document.getElementById('retake-video');
+    const addCapturedVideoBtn = document.getElementById('add-captured-video');
+    const videoPreview = document.getElementById('video-record-preview');
+    const videoDataInput = document.getElementById('video-data');
+
+    let videoStream = null;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let recordedBlob = null;
+
+    if (!startVideoWebcamBtn || !startRecordingBtn || !stopRecordingBtn || !retakeVideoBtn || !addCapturedVideoBtn || !videoPreview || !videoDataInput) {
+        return; // Les éléments ne sont pas présents sur la page
+    }
+
+    // Activer la webcam pour la vidéo
+    startVideoWebcamBtn.addEventListener('click', async function() {
+        try {
+            videoStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            videoPreview.srcObject = videoStream;
+            videoPreview.style.display = 'block';
+            videoPreview.controls = false;
+            startRecordingBtn.style.display = 'inline-block';
+            stopRecordingBtn.style.display = 'none';
+            retakeVideoBtn.style.display = 'none';
+            addCapturedVideoBtn.style.display = 'none';
+            startVideoWebcamBtn.style.display = 'none';
+        } catch (err) {
+            alert('Impossible d\'accéder à la caméra : ' + err.message);
+        }
+    });
+
+    // Démarrer l'enregistrement
+    startRecordingBtn.addEventListener('click', function() {
+        if (!videoStream) return;
+        recordedChunks = [];
+        mediaRecorder = new MediaRecorder(videoStream, { mimeType: 'video/webm' });
+        mediaRecorder.ondataavailable = function(e) {
+            if (e.data.size > 0) recordedChunks.push(e.data);
+        };
+        mediaRecorder.onstop = function() {
+            recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
+            const videoUrl = URL.createObjectURL(recordedBlob);
+            videoPreview.srcObject = null;
+            videoPreview.src = videoUrl;
+            videoPreview.controls = true;
+            videoPreview.style.display = 'block';
+            // Encoder la vidéo en base64 pour l'envoyer dans l'input hidden
+            const reader = new FileReader();
+            reader.onloadend = function() {
+                videoDataInput.value = reader.result;
+            };
+            reader.readAsDataURL(recordedBlob);
+            stopRecordingBtn.style.display = 'none';
+            retakeVideoBtn.style.display = 'inline-block';
+            addCapturedVideoBtn.style.display = 'inline-block';
+        };
+        mediaRecorder.start();
+        startRecordingBtn.style.display = 'none';
+        stopRecordingBtn.style.display = 'inline-block';
+        retakeVideoBtn.style.display = 'none';
+        addCapturedVideoBtn.style.display = 'none';
+    });
+
+    // Arrêter l'enregistrement
+    stopRecordingBtn.addEventListener('click', function() {
+        if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+            mediaRecorder.stop();
+        }
+        if (videoStream) {
+            videoStream.getTracks().forEach(track => track.stop());
+            videoStream = null;
+        }
+    });
+
+    // Recommencer l'enregistrement
+    retakeVideoBtn.addEventListener('click', async function() {
+        try {
+            videoStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            videoPreview.srcObject = videoStream;
+            videoPreview.controls = false;
+            videoPreview.style.display = 'block';
+            startRecordingBtn.style.display = 'inline-block';
+            stopRecordingBtn.style.display = 'none';
+            retakeVideoBtn.style.display = 'none';
+            addCapturedVideoBtn.style.display = 'none';
+            startVideoWebcamBtn.style.display = 'none';
+        } catch (err) {
+            alert('Impossible d\'accéder à la caméra : ' + err.message);
+        }
+    });
+
+    // Ajouter la vidéo capturée au formulaire (l'input hidden est déjà rempli)
+    addCapturedVideoBtn.addEventListener('click', function() {
+        alert('Vidéo capturée prête à être envoyée avec le formulaire !');
+        // Tu peux aussi masquer la section vidéo si tu veux
+    });
+
+    // Nettoyer le flux webcam à la fermeture de la page
+    window.addEventListener('beforeunload', function() {
+        if (videoStream) {
+            videoStream.getTracks().forEach(track => track.stop());
         }
     });
 });
