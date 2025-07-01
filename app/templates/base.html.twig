@@ -77,18 +77,21 @@
                     <img src="{{ asset('media/images/logo2redim.png') }}" alt="Logo Destocard">
                 </a>
 
-                <nav class="site-header__nav-main">
+                <nav class="site-header__nav-main" role="navigation" aria-label="Navigation principale">
                     <a href="{{ path('app_home') }}">Accueil</a>
                     {% if app.user %}
                         <a href="{{ path('app_product_index') }}">Produits</a>
                     {% endif %}
                 </nav>
 
-                <nav class="site-header__nav-user">
+                <nav class="site-header__nav-user" role="navigation" aria-label="Navigation utilisateur">
                     {% if app.user %}
                         <a href="{{ path('app_user_products') }}">Mes Articles</a>
+                        <a href="{{ path('app_favorites') }}">Favoris</a>
                         <a href="{{ path('app_message_index') }}">Messages</a>
-                        <a href="{{ path('cart') }}" title="Panier">🛒</a>
+                        <a href="{{ path('cart') }}" class="nav-cart" title="Panier" aria-label="Panier">
+                            🛒 <span class="cart-count" aria-label="Nombre d'articles dans le panier"></span>
+                        </a>
                         <a href="{{ path('app_logout') }}" class="btn btn--secondary">Déconnexion</a>
                     {% else %}
                         <a href="{{ path('app_login') }}" class="btn btn--secondary">Connexion</a>
@@ -102,7 +105,7 @@
             <div class="container">
                 {% for label, messages in app.flashes %}
                     {% for message in messages %}
-                        <div class="flash-message flash-message--{{ label }}">
+                        <div class="flash-message flash-message--{{ label }}" role="alert" aria-live="polite">
                             {{ message }}
                         </div>
                     {% endfor %}
@@ -139,15 +142,16 @@
             </div>
         </footer>
 
-        <nav class="mobile-nav">
-            <a href="{{ path('app_home') }}" class="mobile-nav__link" title="Accueil">🏠</a>
-            <a href="{{ path('app_product_index') }}" class="mobile-nav__link" title="Produits">🃏</a>
+        <nav class="mobile-nav" role="navigation" aria-label="Navigation mobile">
+            <a href="{{ path('app_home') }}" class="mobile-nav__link" title="Accueil" aria-label="Accueil">🏠</a>
+            <a href="{{ path('app_product_index') }}" class="mobile-nav__link" title="Produits" aria-label="Produits">🃏</a>
             {% if app.user %}
-                 <a href="{{ path('app_product_new') }}" class="mobile-nav__link" title="Vendre">➕</a>
-                <a href="{{ path('app_message_index') }}" class="mobile-nav__link" title="Messages">✉️</a>
-                <a href="#" class="mobile-nav__link" title="Profil">👤</a>
+                 <a href="{{ path('app_product_new') }}" class="mobile-nav__link" title="Vendre" aria-label="Vendre un article">➕</a>
+                <a href="{{ path('app_favorites') }}" class="mobile-nav__link" title="Favoris" aria-label="Mes favoris">❤️</a>
+                <a href="{{ path('app_message_index') }}" class="mobile-nav__link" title="Messages" aria-label="Messages">✉️</a>
+                <a href="#" class="mobile-nav__link" title="Profil" aria-label="Mon profil">👤</a>
             {% else %}
-                <a href="{{ path('app_login') }}" class="mobile-nav__link" title="Connexion">👤</a>
+                <a href="{{ path('app_login') }}" class="mobile-nav__link" title="Connexion" aria-label="Se connecter">👤</a>
             {% endif %}
         </nav>
     </body>

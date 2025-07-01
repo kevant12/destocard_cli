@@ -31,8 +31,13 @@
 
             <div class="product-detail-actions">
                 {% if app.user %}
-                    <button class="like-button {% if product in app.user.likes %}active{% endif %}" data-product-id="{{ product.id }}" aria-label="Ajouter {{ product.title }} aux favoris">
-                        ❤️
+                    <button 
+                        class="favorite-toggle-btn {% if app.user and product in app.user.likes %}is-liked{% endif %}"
+                        data-product-id="{{ product.id }}"
+                        data-csrf-token="{{ csrf_token('toggle_favorite' ~ product.id) }}"
+                        title="{% if app.user and product in app.user.likes %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}"
+                        aria-label="{% if app.user and product in app.user.likes %}Retirer {{ product.title }} des favoris{% else %}Ajouter {{ product.title }} aux favoris{% endif %}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="heart-icon" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                     </button>
                 {% endif %}
                 <form method="post" action="{{ path('add_to_cart', {'id': product.id}) }}" class="add-to-cart-form">
@@ -89,5 +94,98 @@
       }
       {# Vous pouvez ajouter d'autres propriétés comme "aggregateRating", "review", "color", "size", etc. #}
     }
+    </script>
+    <script>
+        const favoriteButtons = document.querySelectorAll('.favorite-toggle-btn');
+
+        favoriteButtons.forEach(button => {
+            button.addEventListener('click', async (e) => {
+                e.preventDefault();
+                const productId = button.dataset.productId;
+                const csrfToken = button.dataset.csrfToken;
+                const url = `/favorite/toggle/${productId}`;
+
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: new URLSearchParams({ '_token': csrfToken })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('La réponse du réseau n\'était pas bonne.');
+                    }
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        button.classList.toggle('is-liked', data.isLiked);
+                    } else {
+                        console.error('Erreur lors de la mise à jour des favoris:', data.error);
+                    }
+
+                } catch (error) {
+                    console.error('Il y a eu un problème avec l\'opération fetch:', error);
+                }
+            });
+        });
+    </script>
+    <script>
+        const addToCartForm = document.querySelector('.add-to-cart-form');
+
+        if (addToCartForm) {
+            addToCartForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const url = addToCartForm.action;
+                const formData = new FormData(addToCartForm);
+
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        body: new URLSearchParams(formData),
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('La réponse du réseau n\'était pas bonne.');
+                    }
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        // Mettre à jour le compteur du panier
+                        const cartCountElement = document.querySelector('.cart-count');
+                        if (cartCountElement) {
+                            cartCountElement.textContent = data.cartCount;
+                            cartCountElement.style.display = data.cartCount > 0 ? 'inline-block' : 'none';
+                        }
+                        
+                        // Afficher une confirmation visuelle sur le bouton
+                        const button = addToCartForm.querySelector('button[type="submit"]');
+                        const originalText = button.textContent;
+                        button.textContent = 'Ajouté !';
+                        button.disabled = true;
+
+                        setTimeout(() => {
+                            button.textContent = originalText;
+                            button.disabled = false;
+                        }, 2000);
+
+                    } else {
+                        console.error('Erreur lors de l\'ajout au panier:', data.error);
+                        // Optionnel: afficher l'erreur à l'utilisateur
+                    }
+
+                } catch (error) {
+                    console.error('Il y a eu un problème avec l\'opération fetch:', error);
+                }
+            });
+        }
     </script>
 {% endblock %}

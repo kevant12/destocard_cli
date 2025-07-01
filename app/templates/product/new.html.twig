@@ -3,8 +3,8 @@
 {% block title %}Mettre un nouvel article en vente{% endblock %}
 
 {% block body %}
-<div class="form-container">
-    <h1>Mettre un nouvel article en vente</h1>
+<div class="form-container container">
+    <h1 class="site-title">Mettre un nouvel article en vente</h1>
 
     {{ form_start(form) }}
         <div class="form-columns">
@@ -24,11 +24,36 @@
                 </fieldset>
                 <fieldset>
                     <legend>Photos</legend>
-                    <div class="form-row">{{ form_row(form.imageFiles) }}</div>
+                    <div class="form-row">
+                        {{ form_label(form.imageFiles) }}
+                        <div class="form-image-upload">
+                             {{ form_widget(form.imageFiles) }}
+                             <button type="button" id="webcam-button" class="btn btn--secondary" aria-label="Utiliser la webcam pour prendre une photo">Webcam</button>
+                        </div>
+                        {{ form_errors(form.imageFiles) }}
+                        <div id="image-preview-container"></div>
+                    </div>
                 </fieldset>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">Mettre en vente</button>
+        <button type="submit" class="btn btn--primary">Mettre en vente</button>
     {{ form_end(form) }}
 </div>
+
+{# Modale pour la webcam #}
+<div id="webcam-modal" class="webcam-modal" style="display: none;" aria-hidden="true" role="dialog">
+    <div class="webcam-modal-content">
+        <video id="webcam-video" autoplay playsinline aria-label="Aperçu de la webcam"></video>
+        <canvas id="webcam-canvas" style="display: none;"></canvas>
+        <div class="webcam-controls">
+            <button type="button" id="capture-button" class="btn btn--primary" aria-label="Capturer la photo">Prendre la photo</button>
+            <button type="button" id="close-webcam-button" class="btn btn--secondary" aria-label="Fermer la webcam">Fermer</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/webcam.js') }}" defer></script>
 {% endblock %} 
