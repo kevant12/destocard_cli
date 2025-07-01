@@ -6,6 +6,8 @@ use App\Repository\ProductsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Extension;
+use App\Entity\Serie;
 
 #[ORM\Entity(repositoryClass: ProductsRepository::class)]
 class Products
@@ -57,6 +59,17 @@ class Products
     #[ORM\ManyToOne(targetEntity: PokemonCard::class)]
     #[ORM\JoinColumn(nullable: true)]
     private ?PokemonCard $pokemonCard = null;
+
+    #[ORM\ManyToOne(targetEntity: Extension::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Extension $extension = null;
+
+    #[ORM\Column(type: 'string', length: 100, nullable: true)]
+    private ?string $number = null;
+
+    #[ORM\ManyToOne(targetEntity: Serie::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Serie $serie = null;
 
     public function __construct()
     {
@@ -231,6 +244,39 @@ class Products
     {
         $this->ordersProducts = $ordersProducts;
 
+        return $this;
+    }
+
+    public function getExtension(): ?Extension
+    {
+        return $this->extension;
+    }
+
+    public function setExtension(?Extension $extension): static
+    {
+        $this->extension = $extension;
+        return $this;
+    }
+
+    public function getNumber(): ?string
+    {
+        return $this->number;
+    }
+
+    public function setNumber(?string $number): static
+    {
+        $this->number = $number;
+        return $this;
+    }
+
+    public function getSerie(): ?Serie
+    {
+        return $this->serie;
+    }
+
+    public function setSerie(?Serie $serie): static
+    {
+        $this->serie = $serie;
         return $this;
     }
 }

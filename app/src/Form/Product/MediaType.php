@@ -11,6 +11,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Url;
+use App\Form\DataTransformer\DataUriToUploadedFileTransformer;
+
 
 class MediaType extends AbstractType
 {
@@ -25,6 +27,9 @@ class MediaType extends AbstractType
                     'capture' => 'environment',
                 ],
             ]);
+
+        // Ajout du DataTransformer pour accepter les data URI (webcam/photo/vidéo)
+        $builder->get('file')->addModelTransformer(new DataUriToUploadedFileTransformer());
     }
 
     public function configureOptions(OptionsResolver $resolver): void

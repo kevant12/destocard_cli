@@ -33,7 +33,7 @@ services:
         arguments:
             $stripeSecretKey: '%app.stripe.secret_key%'
             $webhookSecret: '%app.stripe.webhook_secret%'
-
+            
     # Configuration du gestionnaire de webhook Stripe
     App\Controller\StripeWebhookController:
         arguments:

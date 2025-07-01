@@ -28,20 +28,10 @@
                     <h2 class="product-add-title add-form-title">Ajouter un produit</h2>
                     {{ form_start(form, {'attr': {'class': 'product-add-form', 'aria-labelledby': 'product-add-title'}}) }}
                         {{ form_errors(form) }}
-                        <div class="detail-item" {{ stimulus_controller('card-selector') }}>
-                            {{ form_row(form.extension, {'attr': {'data-extension-target': 'extensionSelect'}}) }}
-                        </div>
                         <div class="detail-item">
-                            {{ form_row(form.pokemonCardNumber) }}
+                            {{ form_row(form.extension) }}
                         </div>
-                        <div class="detail-item">
-                            {{ form_row(form.pokemonCard, {'attr': {'data-pokemon-card-target': 'pokemonCardSelect'}}) }}
-                        </div>
-                        <div class="detail-item">{{ form_row(form.title, {'attr': {'aria-label': 'Titre du produit'}}) }}</div>
                         <div class="detail-item">{{ form_row(form.description, {'attr': {'aria-label': 'Description du produit'}}) }}</div>
-                        <div class="detail-item">{{ form_row(form.price, {'attr': {'aria-label': 'Prix du produit'}}) }}</div>
-                        <div class="detail-item">{{ form_row(form.category, {'attr': {'aria-label': 'Catégorie du produit'}}) }}</div>
-                        <div class="detail-item">{{ form_row(form.quantity, {'attr': {'aria-label': 'Quantité'}}) }}</div>
                         <div class="detail-item">
                             <div class="pokemon-card-image-preview">
                                 <img src="" alt="Aperçu de la carte Pokémon" style="max-width: 150px; display: none;" data-pokemon-card-image-target="imagePreview">
@@ -79,7 +69,7 @@
                             <input type="hidden" id="video-data" class="video-data-input">
                         </div>
                         <div class="detail-item mt-4">
-                            <button type="submit" class="btn-add" aria-label="Ajouter le produit">Ajouter le produit</button>
+                        <button type="submit" class="btn-add" aria-label="Ajouter le produit">Ajouter le produit</button>
                         </div>
                     {{ form_end(form) }}
                 </div>
@@ -87,4 +77,9 @@
         </div>
     </section>
 </main>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/ajax.js') }}"></script>
 {% endblock %}

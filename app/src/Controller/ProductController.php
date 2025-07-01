@@ -92,27 +92,36 @@ class ProductController extends AbstractController
             }
         }
         
-        // Récupérer toutes les extensions pour le champ de sélection
+        // Récupérer toutes les séries, extensions et cartes pour les champs du formulaire
+        $series = $this->em->getRepository(\App\Entity\Serie::class)->findAll();
         $extensions = $this->em->getRepository(\App\Entity\Extension::class)->findAll();
-        $extensionChoices = [];
-        foreach ($extensions as $ext) {
-            $extensionChoices[$ext->getName()] = $ext->getId();
-        }
+        $pokemonCards = $this->em->getRepository(\App\Entity\PokemonCard::class)->findAll();
 
         $form = $this->createForm(ProductFormType::class, $product, [
-            'extensions' => $extensionChoices,
-            'pokemonCard' => $pokemonCard,
+            'series' => $series,
+            'extensions' => $extensions,
+            'pokemonCards' => $pokemonCards,
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Lier l'objet Extension à la carte sélectionnée
-            $extensionId = $form->get('extension')->getData();
-            $extension = $this->em->getRepository(\App\Entity\Extension::class)->find($extensionId);
+            // Lier la bonne carte au produit
             $pokemonCard = $form->get('pokemonCard')->getData();
+            $product->setPokemonCard($pokemonCard);
+
+            // Pré-remplissage automatique si les champs sont vides
             if ($pokemonCard) {
-                $pokemonCard->setExtension($extension);
+                if (!$product->getTitle()) {
+                    $product->setTitle($pokemonCard->getName());
+                }
+                if (method_exists($pokemonCard, 'getDescription') && !$product->getDescription()) {
+                    $product->setDescription($pokemonCard->getDescription());
+                }
+                if (method_exists($pokemonCard, 'getCategory') && !$product->getCategory()) {
+                    $product->setCategory($pokemonCard->getCategory());
+                }
             }
+
             $this->productService->createProduct($product, $this->getUser());
             $this->addFlash('success', 'Article ajouté avec succès !');
             return $this->redirectToRoute('app_user_products');

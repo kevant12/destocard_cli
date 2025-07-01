@@ -5,6 +5,7 @@ namespace App\Form\Product;
 use App\Entity\Extension;
 use App\Entity\PokemonCard;
 use App\Entity\Products;
+use App\Entity\Serie;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -22,58 +23,36 @@ use Symfony\Component\Validator\Constraints\PositiveOrZero;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 
+
+
+
+
+
 class ProductFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('extension', ChoiceType::class, [
+            ->add('extension', TextType::class, [
                 'label' => 'Extension',
-                'choices' => $options['extensions'],
                 'required' => true,
-                'mapped' => false,
                 'attr' => [
-                    'data-extension-target' => 'extensionSelect',
+                    'placeholder' => 'Nom de l\'extension',
                 ],
             ])
-            ->add('pokemonCardNumber', TextType::class, [
-                'label' => 'Numéro de la carte',
-                'mapped' => false,
+            ->add('serie', TextType::class, [
+                'label' => 'Série',
                 'required' => false,
                 'attr' => [
-                    'placeholder' => 'Taper le numéro...',
-                    'data-card-selector-target' => 'numberInput',
-                    'data-action' => 'input->card-selector#onNumberInput',
+                    'placeholder' => 'Nom de la série',
                 ],
             ])
-            ->add('pokemonCard', EntityType::class, [
-                'class' => PokemonCard::class,
-                'choice_label' => 'name',
-                'label' => 'Nom de la carte',
-                'placeholder' => '--- Sélectionner une carte ---',
-                'choices' => [], // Rempli par Stimulus
+            ->add('number', TextType::class, [
+                'label' => 'Numéro',
+                'required' => false,
                 'attr' => [
-                    'data-card-selector-target' => 'cardSelect',
-                    'data-action' => 'change->card-selector#onCardChange',
+                    'placeholder' => 'Numéro de la carte/produit',
                 ],
-            ])
-            ->add('title', TextType::class, [
-                'label' => 'Titre',
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'Titre du produit'
-                ],
-                'constraints' => [
-                    new NotBlank([
-                        'message' => 'Veuillez saisir un titre'
-                    ]),
-                    new Length([
-                        'min' => 3,
-                        'max' => 100,
-                        'minMessage' => 'Le titre doit contenir au moins {{ limit }} caractères',
-                        'maxMessage' => 'Le titre ne peut pas dépasser {{ limit }} caractères'
-                    ])
-                ]
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description',
@@ -90,64 +69,13 @@ class ProductFormType extends AbstractType
                     ])
                 ]
             ])
-            ->add('category', ChoiceType::class, [
-                'label' => 'Catégorie',
-                'choices' => [
-                    'Cartes à collectionner' => 'cards',
-                    'Figurines' => 'figures',
-                    'Jeux de société' => 'boardgames',
-                    'Livres' => 'books',
-                    'Vêtements' => 'clothing',
-                    'Accessoires' => 'accessories',
-                    'Autres' => 'others'
-                ],
-                'attr' => [
-                    'class' => 'form-select'
-                ],
-                'constraints' => [
-                    new NotBlank([
-                        'message' => 'Veuillez sélectionner une catégorie'
-                    ])
-                ]
-            ])
-            ->add('quantity', IntegerType::class, [
-                'label' => 'Quantité',
-                'attr' => [
-                    'class' => 'form-control',
-                    'min' => 0
-                ],
-                'constraints' => [
-                    new NotBlank([
-                        'message' => 'Veuillez saisir une quantité'
-                    ]),
-                    new PositiveOrZero([
-                        'message' => 'La quantité doit être positive ou nulle'
-                    ])
-                ]
-            ])
-            ->add('price', MoneyType::class, [
-                'label' => 'Prix',
-                'currency' => 'EUR',
-                'attr' => [
-                    'class' => 'form-control'
-                ],
-                'constraints' => [
-                    new NotBlank([
-                        'message' => 'Veuillez saisir un prix'
-                    ]),
-                    new Positive([
-                        'message' => 'Le prix doit être positif'
-                    ])
-                ]
-            ])
             ->add('media', CollectionType::class, [
                 'entry_type' => MediaType::class,
-                'label' => false,
                 'allow_add' => true,
                 'allow_delete' => true,
                 'by_reference' => false,
+                'label' => false,
                 'prototype' => true,
-                'attr' => ['class' => 'media-collection'],
                 'required' => false,
             ]);
 
@@ -201,8 +129,9 @@ class ProductFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Products::class,
+            'series' => [],
             'extensions' => [],
-            'pokemonCard' => null,
+            'pokemonCards' => [],
         ]);
     }
 }

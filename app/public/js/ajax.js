@@ -477,6 +477,67 @@ document.querySelectorAll('.media-collection-wrapper').forEach(wrapper => {
             displayMediaPreview(imageUrl, previewsContainer, true);
         }
     });
+
+    // Fonction pour ajouter dynamiquement un champ média avec une data URI (photo ou vidéo)
+    function addMediaDataUri(dataUri) {
+        const prototype = wrapper.dataset.prototype;
+        const newFormHtml = prototype.replace(/__name__/g, index);
+        const newFormElement = document.createElement('div');
+        newFormElement.innerHTML = newFormHtml;
+        newFormElement.classList.add('media-item');
+        wrapper.insertBefore(newFormElement, addButton);
+
+        // Trouver l'input (file ou text/hidden) du champ média
+        const input = newFormElement.querySelector('input[type="file"], input[type="text"], input[type="hidden"]');
+        if (input) {
+            input.type = 'hidden'; // On force hidden pour éviter l'ouverture du file picker
+            input.value = dataUri;
+        }
+
+        // Afficher l'aperçu
+        let previewElement;
+        if (dataUri.startsWith('data:image')) {
+            previewElement = document.createElement('img');
+            previewElement.src = dataUri;
+            previewElement.style.maxWidth = '100px';
+            previewElement.style.maxHeight = '100px';
+        } else if (dataUri.startsWith('data:video')) {
+            previewElement = document.createElement('video');
+            previewElement.src = dataUri;
+            previewElement.controls = true;
+            previewElement.style.maxWidth = '100px';
+            previewElement.style.maxHeight = '100px';
+        }
+        if (previewElement) {
+            const previewWrapper = document.createElement('div');
+            previewWrapper.classList.add('media-preview-item');
+            previewWrapper.appendChild(previewElement);
+            previewsContainer.appendChild(previewWrapper);
+        }
+        index++;
+    }
+
+    // 2. Ajout de la photo capturée (webcam)
+    const addCapturedPhotoBtn = document.getElementById('add-captured-photo');
+    const webcamImageData = document.getElementById('webcam-image-data');
+    if (addCapturedPhotoBtn && webcamImageData) {
+        addCapturedPhotoBtn.addEventListener('click', function() {
+            if (webcamImageData.value) {
+                addMediaDataUri(webcamImageData.value);
+            }
+        });
+    }
+
+    // 3. Ajout de la vidéo capturée (webcam)
+    const addCapturedVideoBtn = document.getElementById('add-captured-video');
+    const videoDataInput = document.getElementById('video-data');
+    if (addCapturedVideoBtn && videoDataInput) {
+        addCapturedVideoBtn.addEventListener('click', function() {
+            if (videoDataInput.value) {
+                addMediaDataUri(videoDataInput.value);
+            }
+        });
+    }
 });
 
 // --- Logique de paiement Stripe ---

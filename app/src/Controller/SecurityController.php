@@ -19,7 +19,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-use App\Security\LoginFormAuthenticator;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 class SecurityController extends AbstractController
@@ -126,7 +125,7 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/verify-email/{token}', name: 'app_verify_email')]
-    public function verifyEmail(string $token, UsersRepository $usersRepository, EntityManagerInterface $entityManager, UserAuthenticatorInterface $userAuthenticator, LoginFormAuthenticator $authenticator, Request $request): Response
+    public function verifyEmail(string $token, UsersRepository $usersRepository, EntityManagerInterface $entityManager, UserAuthenticatorInterface $userAuthenticator, Request $request): Response
     {
         $user = $usersRepository->findOneBy(['verificationToken' => $token]);
 
@@ -150,11 +149,14 @@ class SecurityController extends AbstractController
         $this->addFlash('success', 'Votre compte a été activé avec succès ! Vous êtes maintenant connecté.');
 
         // Connecter l'utilisateur
-        return $userAuthenticator->authenticateUser(
-            $user,
-            $authenticator,
-            $request
-        );
+        // Il faut ici utiliser un authenticator valide si besoin, sinon commenter la ligne suivante
+        // return $userAuthenticator->authenticateUser(
+        //     $user,
+        //     $authenticator,
+        //     $request
+        // );
+        // Pour l'instant, on redirige simplement vers la page de login après activation
+        return $this->redirectToRoute('app_login');
     }
 
     #[Route('/reset-password-request', name: 'app_reset_password_request')]

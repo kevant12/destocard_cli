@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250630164141 extends AbstractMigration
+final class Version20250701100152 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -21,13 +21,13 @@ final class Version20250630164141 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            ALTER TABLE pokemon_card ADD extension_id INT NOT NULL, DROP extension
+            ALTER TABLE products ADD extension_id INT DEFAULT NULL
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE pokemon_card ADD CONSTRAINT FK_2ABDE690812D5EB FOREIGN KEY (extension_id) REFERENCES extension (id)
+            ALTER TABLE products ADD CONSTRAINT FK_B3BA5A5A812D5EB FOREIGN KEY (extension_id) REFERENCES extension (id)
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE INDEX IDX_2ABDE690812D5EB ON pokemon_card (extension_id)
+            CREATE INDEX IDX_B3BA5A5A812D5EB ON products (extension_id)
         SQL);
     }
 
@@ -35,13 +35,13 @@ final class Version20250630164141 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            ALTER TABLE pokemon_card DROP FOREIGN KEY FK_2ABDE690812D5EB
+            ALTER TABLE products DROP FOREIGN KEY FK_B3BA5A5A812D5EB
         SQL);
         $this->addSql(<<<'SQL'
-            DROP INDEX IDX_2ABDE690812D5EB ON pokemon_card
+            DROP INDEX IDX_B3BA5A5A812D5EB ON products
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE pokemon_card ADD extension VARCHAR(255) DEFAULT NULL, DROP extension_id
+            ALTER TABLE products DROP extension_id
         SQL);
     }
 }
