@@ -262,13 +262,8 @@ if (extensionSelect && pokemonCardSelect) {
 }
 
 // --- Remplissage automatique des champs de produit par numéro de carte ---
-document.addEventListener('DOMContentLoaded', function() {
-    // On cible le formulaire d'ajout de produit spécifiquement
-    const addProductForm = document.querySelector('.product-add-form');
-    if (!addProductForm) {
-        return; // Ne rien faire si on n'est pas sur la bonne page
-    }
-
+const addProductForm = document.querySelector('.product-add-form');
+if (addProductForm) {
     // Cible le nouveau champ de saisie du numéro de carte
     const numberInput = addProductForm.querySelector('#product_form_pokemon_card_number');
     const titleInput = addProductForm.querySelector('input[id^="product_form_title"]');
@@ -302,7 +297,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             if (!extensionId) {
-                showCardNumberError('Veuillez d'abord sélectionner une extension.');
+                showCardNumberError('Veuillez d\'abord sélectionner une extension.');
                 return;
             }
             fetch(`/api/pokemon-card?extensionId=${extensionId}&cardNumber=${encodeURIComponent(number)}`)
@@ -382,422 +377,162 @@ document.addEventListener('DOMContentLoaded', function() {
             selectElement.dispatchEvent(new Event('change'));
         }
     }
-});
+}
 
-// --- Gestion de l'aperçu dynamique des médias ---
-document.querySelectorAll('.media-collection-wrapper').forEach(wrapper => {
-    const addButton = wrapper.querySelector('.add-media-button');
-    const previewsContainer = wrapper.querySelector('.media-previews');
-    const form = wrapper.closest('form');
+// --- Gestion de l'ajout de produit et des médias (avec defer) ---
+const productForm = document.querySelector('form.product-add-form');
 
-    let index = wrapper.querySelectorAll('.media-item').length; // Compte les éléments existants
+if (productForm) {
+    // --- Gestionnaire de la collection de médias ---
+    const mediaCollectionWrapper = document.querySelector('.media-collection-wrapper');
+    const addMediaButton = mediaCollectionWrapper?.querySelector('.add-media-button');
+    const previewsContainer = document.getElementById('media-previews-add');
+    let mediaIndex = mediaCollectionWrapper?.querySelectorAll('.media-item').length || 0;
 
-    const addMediaForm = (file = null, imageUrl = null) => {
-        const prototype = wrapper.dataset.prototype;
-        const newFormHtml = prototype.replace(/__name__/g, index);
-        const newFormElement = document.createElement('div');
-        newFormElement.innerHTML = newFormHtml;
-        newFormElement.classList.add('media-item');
-        wrapper.insertBefore(newFormElement, addButton); // Insère avant le bouton
+    // Fonction pour convertir une data URI en objet File
+    const dataURItoFile = (dataURI, filename) => {
+        const byteString = atob(dataURI.split(',')[1]);
+        const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+        for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+        return new File([ab], filename, { type: mimeString });
+    };
 
-        const fileInput = newFormElement.querySelector('input[type="file"]');
-        const webcamImageInput = newFormElement.querySelector('.webcam-image-input'); // Assuming this class exists in the prototype
+    // Fonction pour afficher un aperçu et retourner le conteneur de l'aperçu
+    const displayPreview = (file) => {
+        if (!previewsContainer) return;
+
+        const previewWrapper = document.createElement('div');
+        previewWrapper.className = 'media-preview-item';
+
+        let previewElement;
+        if (file.type.startsWith('image/')) {
+            previewElement = document.createElement('img');
+            previewElement.src = URL.createObjectURL(file);
+        } else {
+            return null; // Ne gère que les images pour l'instant
+        }
+        previewElement.style.maxWidth = '100px';
+        previewElement.style.maxHeight = '100px';
+
+        const removeButton = document.createElement('button');
+        removeButton.className = 'btn btn-sm btn-danger remove-media-btn';
+        removeButton.textContent = 'X';
+        removeButton.type = 'button';
+
+        previewWrapper.appendChild(previewElement);
+        previewWrapper.appendChild(removeButton);
+        previewsContainer.appendChild(previewWrapper);
+
+        return previewWrapper;
+    };
+
+    // Fonction pour ajouter un nouveau formulaire de média
+    const addMediaForm = (file = null) => {
+        const prototype = mediaCollectionWrapper.dataset.prototype;
+        if (!prototype) return;
+
+        const newFormHtml = prototype.replace(/__name__/g, mediaIndex);
+        const newFormContainer = document.createElement('div');
+        newFormContainer.className = 'media-item d-none'; // Caché par défaut
+        newFormContainer.innerHTML = newFormHtml;
+
+        const fileInput = newFormContainer.querySelector('input[type=file]');
+        mediaCollectionWrapper.insertBefore(newFormContainer, addMediaButton);
+        mediaIndex++;
 
         if (file) {
-            // If a File object is provided (from file input or webcam)
             const dataTransfer = new DataTransfer();
             dataTransfer.items.add(file);
             fileInput.files = dataTransfer.files;
-            
-            // Display preview for the added file
-            displayMediaPreview(file, previewsContainer);
-        } else if (imageUrl) {
-            // If an imageUrl is provided (for existing media)
-            displayMediaPreview(imageUrl, previewsContainer, true);
+
+            const previewWrapper = displayPreview(file);
+            if (previewWrapper) {
+                previewWrapper.querySelector('.remove-media-btn').addEventListener('click', () => {
+                    newFormContainer.remove();
+                    previewWrapper.remove();
+                });
+            }
         }
 
-        // Add event listener for file input change
+        return fileInput;
+    };
+
+    // Clic sur "Ajouter une photo"
+    addMediaButton?.addEventListener('click', () => {
+        const fileInput = addMediaForm();
         if (fileInput) {
-            fileInput.addEventListener('change', (event) => {
-                const file = event.target.files[0];
-                if (file) {
-                    displayMediaPreview(file, previewsContainer);
+            fileInput.click(); // Ouvre le sélecteur de fichier
+
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    const previewWrapper = displayPreview(e.target.files[0]);
+                     if (previewWrapper) {
+                        previewWrapper.querySelector('.remove-media-btn').addEventListener('click', () => {
+                            fileInput.closest('.media-item').remove();
+                            previewWrapper.remove();
+                        });
+                    }
                 }
             });
         }
-
-        index++;
-    };
-
-    if (addButton) {
-        addButton.addEventListener('click', () => addMediaForm());
-    }
-
-    // Function to display media preview
-    const displayMediaPreview = (source, container, isUrl = false) => {
-        let previewElement;
-        let previewWrapper = document.createElement('div');
-        previewWrapper.classList.add('media-preview-item');
-
-        if (isUrl) {
-            previewElement = document.createElement('img');
-            previewElement.src = source.startsWith('http') ? source : `/upload/products/${source}`;
-            previewElement.style.maxWidth = '100px';
-            previewElement.style.maxHeight = '100px';
-        } else {
-            const file = source;
-            if (file.type.startsWith('image/')) {
-                previewElement = document.createElement('img');
-                const reader = new FileReader();
-                reader.onload = (e) => { previewElement.src = e.target.result; };
-                reader.readAsDataURL(file);
-            } else if (file.type.startsWith('video/')) {
-                previewElement = document.createElement('video');
-                previewElement.controls = true;
-                const reader = new FileReader();
-                reader.onload = (e) => { previewElement.src = e.target.result; };
-                reader.readAsDataURL(file);
-            } else {
-                previewElement = document.createElement('span');
-                previewElement.textContent = `Fichier: ${file.name}`;
-            }
-            previewElement.style.maxWidth = '100px';
-            previewElement.style.maxHeight = '100px';
-        }
-        
-        previewWrapper.appendChild(previewElement);
-        container.appendChild(previewWrapper);
-    };
-
-    // Gérer les médias existants lors du chargement de la page (pour la page d'édition)
-    wrapper.querySelectorAll('input[type="file"]').forEach(fileInput => {
-        const mediaId = fileInput.id.match(/_(\d+)_file$/);
-        if (mediaId && fileInput.dataset.imageUrl) {
-            const imageUrl = fileInput.dataset.imageUrl;
-            displayMediaPreview(imageUrl, previewsContainer, true);
-        }
     });
 
-    // Fonction pour ajouter dynamiquement un champ média avec une data URI (photo ou vidéo)
-    function addMediaDataUri(dataUri) {
-        const prototype = wrapper.dataset.prototype;
-        const newFormHtml = prototype.replace(/__name__/g, index);
-        const newFormElement = document.createElement('div');
-        newFormElement.innerHTML = newFormHtml;
-        newFormElement.classList.add('media-item');
-        wrapper.insertBefore(newFormElement, addButton);
-
-        // Trouver l'input (file ou text/hidden) du champ média
-        const input = newFormElement.querySelector('input[type="file"], input[type="text"], input[type="hidden"]');
-        if (input) {
-            input.type = 'hidden'; // On force hidden pour éviter l'ouverture du file picker
-            input.value = dataUri;
-        }
-
-        // Afficher l'aperçu
-        let previewElement;
-        if (dataUri.startsWith('data:image')) {
-            previewElement = document.createElement('img');
-            previewElement.src = dataUri;
-            previewElement.style.maxWidth = '100px';
-            previewElement.style.maxHeight = '100px';
-        } else if (dataUri.startsWith('data:video')) {
-            previewElement = document.createElement('video');
-            previewElement.src = dataUri;
-            previewElement.controls = true;
-            previewElement.style.maxWidth = '100px';
-            previewElement.style.maxHeight = '100px';
-        }
-        if (previewElement) {
-            const previewWrapper = document.createElement('div');
-            previewWrapper.classList.add('media-preview-item');
-            previewWrapper.appendChild(previewElement);
-            previewsContainer.appendChild(previewWrapper);
-        }
-        index++;
-    }
-
-    // 2. Ajout de la photo capturée (webcam)
-    const addCapturedPhotoBtn = document.getElementById('add-captured-photo');
-    const webcamImageData = document.getElementById('webcam-image-data');
-    if (addCapturedPhotoBtn && webcamImageData) {
-        addCapturedPhotoBtn.addEventListener('click', function() {
-            if (webcamImageData.value) {
-                addMediaDataUri(webcamImageData.value);
-            }
-        });
-    }
-
-    // 3. Ajout de la vidéo capturée (webcam)
-    const addCapturedVideoBtn = document.getElementById('add-captured-video');
-    const videoDataInput = document.getElementById('video-data');
-    if (addCapturedVideoBtn && videoDataInput) {
-        addCapturedVideoBtn.addEventListener('click', function() {
-            if (videoDataInput.value) {
-                addMediaDataUri(videoDataInput.value);
-            }
-        });
-    }
-});
-
-// --- Logique de paiement Stripe ---
-document.addEventListener('DOMContentLoaded', function() {
-    const paymentPage = document.querySelector('.container.mt-5'); // Cibler un élément unique à la page de paiement
-    if (!paymentPage || typeof Stripe === 'undefined' || !clientSecret || !stripePublicKey || !confirmOrderUrl) {
-        return; // Ne rien faire si on n'est pas sur la page de paiement ou si les variables ne sont pas définies
-    }
-
-    const stripe = Stripe(stripePublicKey);
-    const elements = stripe.elements({ clientSecret });
-    const paymentElement = elements.create('payment');
-    paymentElement.mount('#payment-element');
-
-    const submitButton = document.getElementById('submit');
-    const paymentMessage = document.getElementById('payment-message');
-
-    submitButton.addEventListener('click', async (e) => {
-        e.preventDefault();
-        submitButton.disabled = true;
-        paymentMessage.textContent = '';
-
-        const { error } = await stripe.confirmPayment({
-            elements,
-            confirmParams: {
-                return_url: window.location.origin + confirmOrderUrl,
-            },
-            redirect: 'if_required',
-        });
-
-        if (error) {
-            if (error.type === "card_error" || error.type === "validation_error") {
-                paymentMessage.textContent = error.message;
-            } else {
-                paymentMessage.textContent = "Une erreur inattendue est survenue.";
-            }
-            submitButton.disabled = false;
-        } else {
-            // Le paiement a été confirmé côté client par Stripe.
-            // Maintenant, finaliser la commande côté serveur.
-            fetch(confirmOrderUrl, {
-                method: 'POST',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ /* Pas besoin d'envoyer de données ici, tout est en session */ })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showFlash(data.message, 'success');
-                    if (data.redirect) {
-                        window.location.href = data.redirect;
-                    }
-                } else {
-                    showFlash(data.message, 'error');
-                    if (data.redirect) {
-                        window.location.href = data.redirect;
-                    }
-                }
-            })
-            .catch(error => {
-                console.error('Erreur lors de la finalisation de la commande:', error);
-                showFlash('Erreur réseau lors de la finalisation de la commande.', 'error');
-            });
-        }
-    });
-});
-
-// --- Gestion de la capture photo via webcam ---
-document.addEventListener('DOMContentLoaded', function() {
+    // --- Gestion de la webcam (photo) ---
     const startWebcamBtn = document.getElementById('start-webcam');
     const capturePhotoBtn = document.getElementById('capture-photo');
     const retakePhotoBtn = document.getElementById('retake-photo');
     const addCapturedPhotoBtn = document.getElementById('add-captured-photo');
     const webcamVideo = document.getElementById('webcam-video');
     const webcamCanvas = document.getElementById('webcam-canvas');
-    const webcamImageData = document.getElementById('webcam-image-data');
+    let photoStream = null;
 
-    let stream = null;
-    let photoDataUrl = null;
-
-    if (!startWebcamBtn || !capturePhotoBtn || !retakePhotoBtn || !addCapturedPhotoBtn || !webcamVideo || !webcamCanvas || !webcamImageData) {
-        return; // Les éléments ne sont pas présents sur la page
-    }
-
-    // Démarrer la webcam
-    startWebcamBtn.addEventListener('click', async function() {
+    startWebcamBtn?.addEventListener('click', async () => {
         try {
-            stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            webcamVideo.srcObject = stream;
+            photoStream = await navigator.mediaDevices.getUserMedia({ video: true });
+            webcamVideo.srcObject = photoStream;
             webcamVideo.style.display = 'block';
-            webcamCanvas.style.display = 'none';
-            capturePhotoBtn.style.display = 'inline-block';
-            retakePhotoBtn.style.display = 'none';
-            addCapturedPhotoBtn.style.display = 'none';
             startWebcamBtn.style.display = 'none';
-        } catch (err) {
-            alert('Impossible d\'accéder à la caméra : ' + err.message);
-        }
+            capturePhotoBtn.style.display = 'inline-block';
+        } catch (err) { alert(`Erreur webcam: ${err.message}`); }
     });
 
-    // Capturer la photo
-    capturePhotoBtn.addEventListener('click', function() {
-        const context = webcamCanvas.getContext('2d');
+    capturePhotoBtn?.addEventListener('click', () => {
         webcamCanvas.width = webcamVideo.videoWidth;
         webcamCanvas.height = webcamVideo.videoHeight;
-        context.drawImage(webcamVideo, 0, 0, webcamCanvas.width, webcamCanvas.height);
-        photoDataUrl = webcamCanvas.toDataURL('image/png');
-        webcamImageData.value = photoDataUrl;
-        webcamCanvas.style.display = 'block';
+        webcamCanvas.getContext('2d').drawImage(webcamVideo, 0, 0);
         webcamVideo.style.display = 'none';
+        webcamCanvas.style.display = 'block';
         capturePhotoBtn.style.display = 'none';
         retakePhotoBtn.style.display = 'inline-block';
         addCapturedPhotoBtn.style.display = 'inline-block';
-        // Arrêter la webcam pour économiser les ressources
-        if (stream) {
-            stream.getTracks().forEach(track => track.stop());
-            stream = null;
+        if (photoStream) {
+            photoStream.getTracks().forEach(track => track.stop());
+            photoStream = null;
         }
     });
 
-    // Reprendre la photo
-    retakePhotoBtn.addEventListener('click', async function() {
-        try {
-            stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            webcamVideo.srcObject = stream;
-            webcamVideo.style.display = 'block';
-            webcamCanvas.style.display = 'none';
-            capturePhotoBtn.style.display = 'inline-block';
-            retakePhotoBtn.style.display = 'none';
-            addCapturedPhotoBtn.style.display = 'none';
-            startWebcamBtn.style.display = 'none';
-        } catch (err) {
-            alert('Impossible d\'accéder à la caméra : ' + err.message);
-        }
+    retakePhotoBtn?.addEventListener('click', () => {
+        webcamCanvas.style.display = 'none';
+        startWebcamBtn.style.display = 'inline-block';
+        retakePhotoBtn.style.display = 'none';
+        addCapturedPhotoBtn.style.display = 'none';
+        startWebcamBtn.click();
     });
 
-    // Ajouter la photo capturée au formulaire (l'input hidden est déjà rempli)
-    addCapturedPhotoBtn.addEventListener('click', function() {
-        // Ici, tu peux éventuellement afficher un aperçu ailleurs ou déclencher une action
-        alert('Photo capturée prête à être envoyée avec le formulaire !');
-        // Tu peux aussi masquer la section webcam si tu veux
+    addCapturedPhotoBtn?.addEventListener('click', () => {
+        const dataURI = webcamCanvas.toDataURL('image/png');
+        const file = dataURItoFile(dataURI, `capture-${Date.now()}.png`);
+        addMediaForm(file);
+
+        // Réinitialiser l'interface de capture
+        webcamCanvas.style.display = 'none';
+        retakePhotoBtn.style.display = 'none';
+        addCapturedPhotoBtn.style.display = 'none';
+        startWebcamBtn.style.display = 'inline-block';
+        alert('Photo ajoutée !');
     });
-
-    // Nettoyer le flux webcam à la fermeture de la page
-    window.addEventListener('beforeunload', function() {
-        if (stream) {
-            stream.getTracks().forEach(track => track.stop());
-        }
-    });
-});
-
-// --- Gestion de l'enregistrement vidéo via webcam ---
-document.addEventListener('DOMContentLoaded', function() {
-    const startVideoWebcamBtn = document.getElementById('start-video-webcam');
-    const startRecordingBtn = document.getElementById('start-recording');
-    const stopRecordingBtn = document.getElementById('stop-recording');
-    const retakeVideoBtn = document.getElementById('retake-video');
-    const addCapturedVideoBtn = document.getElementById('add-captured-video');
-    const videoPreview = document.getElementById('video-record-preview');
-    const videoDataInput = document.getElementById('video-data');
-
-    let videoStream = null;
-    let mediaRecorder = null;
-    let recordedChunks = [];
-    let recordedBlob = null;
-
-    if (!startVideoWebcamBtn || !startRecordingBtn || !stopRecordingBtn || !retakeVideoBtn || !addCapturedVideoBtn || !videoPreview || !videoDataInput) {
-        return; // Les éléments ne sont pas présents sur la page
-    }
-
-    // Activer la webcam pour la vidéo
-    startVideoWebcamBtn.addEventListener('click', async function() {
-        try {
-            videoStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            videoPreview.srcObject = videoStream;
-            videoPreview.style.display = 'block';
-            videoPreview.controls = false;
-            startRecordingBtn.style.display = 'inline-block';
-            stopRecordingBtn.style.display = 'none';
-            retakeVideoBtn.style.display = 'none';
-            addCapturedVideoBtn.style.display = 'none';
-            startVideoWebcamBtn.style.display = 'none';
-        } catch (err) {
-            alert('Impossible d\'accéder à la caméra : ' + err.message);
-        }
-    });
-
-    // Démarrer l'enregistrement
-    startRecordingBtn.addEventListener('click', function() {
-        if (!videoStream) return;
-        recordedChunks = [];
-        mediaRecorder = new MediaRecorder(videoStream, { mimeType: 'video/webm' });
-        mediaRecorder.ondataavailable = function(e) {
-            if (e.data.size > 0) recordedChunks.push(e.data);
-        };
-        mediaRecorder.onstop = function() {
-            recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
-            const videoUrl = URL.createObjectURL(recordedBlob);
-            videoPreview.srcObject = null;
-            videoPreview.src = videoUrl;
-            videoPreview.controls = true;
-            videoPreview.style.display = 'block';
-            // Encoder la vidéo en base64 pour l'envoyer dans l'input hidden
-            const reader = new FileReader();
-            reader.onloadend = function() {
-                videoDataInput.value = reader.result;
-            };
-            reader.readAsDataURL(recordedBlob);
-            stopRecordingBtn.style.display = 'none';
-            retakeVideoBtn.style.display = 'inline-block';
-            addCapturedVideoBtn.style.display = 'inline-block';
-        };
-        mediaRecorder.start();
-        startRecordingBtn.style.display = 'none';
-        stopRecordingBtn.style.display = 'inline-block';
-        retakeVideoBtn.style.display = 'none';
-        addCapturedVideoBtn.style.display = 'none';
-    });
-
-    // Arrêter l'enregistrement
-    stopRecordingBtn.addEventListener('click', function() {
-        if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-            mediaRecorder.stop();
-        }
-        if (videoStream) {
-            videoStream.getTracks().forEach(track => track.stop());
-            videoStream = null;
-        }
-    });
-
-    // Recommencer l'enregistrement
-    retakeVideoBtn.addEventListener('click', async function() {
-        try {
-            videoStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            videoPreview.srcObject = videoStream;
-            videoPreview.controls = false;
-            videoPreview.style.display = 'block';
-            startRecordingBtn.style.display = 'inline-block';
-            stopRecordingBtn.style.display = 'none';
-            retakeVideoBtn.style.display = 'none';
-            addCapturedVideoBtn.style.display = 'none';
-            startVideoWebcamBtn.style.display = 'none';
-        } catch (err) {
-            alert('Impossible d\'accéder à la caméra : ' + err.message);
-        }
-    });
-
-    // Ajouter la vidéo capturée au formulaire (l'input hidden est déjà rempli)
-    addCapturedVideoBtn.addEventListener('click', function() {
-        alert('Vidéo capturée prête à être envoyée avec le formulaire !');
-        // Tu peux aussi masquer la section vidéo si tu veux
-    });
-
-    // Nettoyer le flux webcam à la fermeture de la page
-    window.addEventListener('beforeunload', function() {
-        if (videoStream) {
-            videoStream.getTracks().forEach(track => track.stop());
-        }
-    });
-});
+}

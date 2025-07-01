@@ -2,78 +2,63 @@
 
 {% block title %}Ajouter un produit{% endblock %}
 
-{% block stylesheets %}
-   
-{% endblock %}
-
 {% block body %}
 <main class="add-main-bg">
     <section class="product-header">
         <div class="container">
             <h1 class="game-title">AJOUTER UN PRODUIT</h1>
-            <div class="media-preview-block">
-                <span class="media-preview-text">Aperçu image/vidéo<br><small>(à venir)</small></span>
-            </div>
         </div>
     </section>
     <section class="product-detail">
         <div class="container">
-            <div class="product-content add-product-flex">
-                <!-- Bloc médias à gauche (optionnel, pour l'instant vide) -->
-                <div class="product-gallery add-media-preview">
-                    <span>Aperçu image/vidéo<small>(à venir)</small></span>
-                </div>
-                <!-- Formulaire à droite -->
-                <div class="product-info add-form-encadre">
-                    <h2 class="product-add-title add-form-title">Ajouter un produit</h2>
-                    {{ form_start(form, {'attr': {'class': 'product-add-form', 'aria-labelledby': 'product-add-title'}}) }}
-                        {{ form_errors(form) }}
-                        <div class="detail-item">
-                            {{ form_row(form.extension) }}
-                        </div>
-                        <div class="detail-item">{{ form_row(form.description, {'attr': {'aria-label': 'Description du produit'}}) }}</div>
-                        <div class="detail-item">
-                            <div class="pokemon-card-image-preview">
-                                <img src="" alt="Aperçu de la carte Pokémon" style="max-width: 150px; display: none;" data-pokemon-card-image-target="imagePreview">
-                            </div>
-                        </div>
-                        <div class="detail-item">
-                            <label class="add-media-label">Médias (photo)</label>
-                            <div class="media-collection-wrapper d-flex align-items-center gap-2" data-prototype="{{ form_widget(form.media.vars.prototype)|e('html_attr') }}">
-                                {{ form_widget(form.media) }}
-                                <button type="button" class="add-media-button btn btn-secondary" style="margin-left: 10px;">Ajouter une photo</button>
-                            </div>
-                            <small class="form-text text-muted">Ajouter une photo (ou prendre une photo)</small>
-                            <div class="media-previews" id="media-previews-add"></div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="webcam-capture-section mt-3">
-                                <h3>Prendre une photo</h3>
-                                <video id="webcam-video" autoplay style="width: 100%; max-width: 320px; display: none;"></video>
-                                <canvas id="webcam-canvas" style="display: none;"></canvas>
-                                <button type="button" id="start-webcam" class="btn btn-info mt-2">Activer la webcam</button>
-                                <button type="button" id="capture-photo" class="btn btn-success mt-2" style="display: none;">Prendre la photo</button>
-                                <button type="button" id="retake-photo" class="btn btn-warning mt-2" style="display: none;">Reprendre</button>
-                                <button type="button" id="add-captured-photo" class="btn btn-primary mt-2" style="display: none;">Ajouter la photo capturée</button>
-                                <input type="hidden" id="webcam-image-data" class="webcam-image-data-input">
-                            </div>
-                        </div>
-                        <div class="video-capture-section mt-3">
-                            <h3>Enregistrer une vidéo</h3>
-                            <video id="video-record-preview" controls style="width: 100%; max-width: 320px; display: none;"></video>
-                            <button type="button" id="start-video-webcam" class="btn btn-info mt-2">Activer la webcam (vidéo)</button>
-                            <button type="button" id="start-recording" class="btn btn-success mt-2" style="display: none;">Démarrer l'enregistrement</button>
-                            <button type="button" id="stop-recording" class="btn btn-danger mt-2" style="display: none;">Arrêter l'enregistrement</button>
-                            <button type="button" id="retake-video" class="btn btn-warning mt-2" style="display: none;">Recommencer</button>
-                            <button type="button" id="add-captured-video" class="btn btn-primary mt-2" style="display: none;">Ajouter la vidéo</button>
-                            <input type="hidden" id="video-data" class="video-data-input">
-                        </div>
+            {{ form_start(form, {'attr': {'class': 'product-add-form', 'novalidate': 'novalidate'}}) }}
+                
+                {{ form_errors(form) }}
+
+                <div class="product-content add-product-flex">
+                    <!-- Formulaire principal à gauche -->
+                    <div class="product-info add-form-encadre">
+                        <h2 class="product-add-title add-form-title">Détails du produit</h2>
+                        <div class="detail-item">{{ form_row(form.extension) }}</div>
+                        <div class="detail-item">{{ form_row(form.description) }}</div>
                         <div class="detail-item mt-4">
-                        <button type="submit" class="btn-add" aria-label="Ajouter le produit">Ajouter le produit</button>
+                            <button type="submit" class="btn-add">Ajouter le produit</button>
                         </div>
-                    {{ form_end(form) }}
+                    </div>
+
+                    <!-- Bloc médias à droite -->
+                    <div class="product-gallery add-media-preview">
+                        <h3 class="add-form-title">Médias</h3>
+                        
+                        {# Le conteneur pour les champs de formulaire de média (cachés) #}
+                        <div class="media-collection-wrapper" data-prototype="{{ form_widget(form.media.vars.prototype)|e('html_attr') }}">
+                            {# Les formulaires de médias existants (pour l'édition) seront rendus ici #}
+                            {{ form_widget(form.media) }}
+                        </div>
+
+                        {# Le conteneur pour les aperçus visibles #}
+                        <div class="media-previews"></div>
+
+                        {# Boutons d'action pour ajouter des médias #}
+                        <div class="media-actions mt-3">
+                            <button type="button" class="btn btn-secondary add-media-button">Ajouter une photo</button>
+                        </div>
+
+                        {# Section pour la capture webcam #}
+                        <div class="webcam-capture-section mt-3">
+                            <h4>Ou prendre une photo</h4>
+                            <video class="webcam-video"></video>
+                            <canvas class="webcam-canvas" style="display: none;"></canvas>
+                            <div class="webcam-controls mt-2">
+                                <button type="button" class="btn btn-info start-webcam-btn">Activer la webcam</button>
+                                <button type="button" class="btn btn-success capture-photo-btn">Capturer</button>
+                                <button type="button" class="btn btn-warning retake-photo-btn">Reprendre</button>
+                                <button type="button" class="btn btn-primary add-captured-photo-btn">Ajouter la photo</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            {{ form_end(form) }}
         </div>
     </section>
 </main>
@@ -81,5 +66,6 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('js/ajax.js') }}"></script>
+    {# On charge le script dédié, avec defer pour qu'il s'exécute après le parsing du DOM #}
+    <script src="{{ asset('js/product-form.js') }}" defer></script>
 {% endblock %}
