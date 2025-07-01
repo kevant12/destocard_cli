@@ -22,10 +22,21 @@ class ProductFormType extends AbstractType
     {
         $builder
             ->add('title', TextType::class, [
-                'label' => 'Titre de l\'annonce',
+                'label' => 'Nom / Titre de l\'annonce',
                 'constraints' => [
                     new NotBlank(['message' => 'Le titre ne peut pas être vide.']),
                 ],
+                'attr' => ['placeholder' => 'Ex: Dracaufeu']
+            ])
+            ->add('number', TextType::class, [
+                'label' => 'Numéro',
+                'required' => false,
+                'attr' => ['placeholder' => 'Ex: 4/102']
+            ])
+             ->add('category', TextType::class, [
+                'label' => 'Catégorie',
+                'required' => false,
+                'attr' => ['placeholder' => 'Ex: Carte Pokémon']
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description',
@@ -39,20 +50,13 @@ class ProductFormType extends AbstractType
                     new PositiveOrZero(['message' => 'Le prix doit être positif.']),
                 ],
             ])
-            ->add('quantity', NumberType::class, [
-                'label' => 'Quantité',
-                'constraints' => [
-                    new NotBlank(['message' => 'La quantité est obligatoire.']),
-                    new PositiveOrZero(['message' => 'La quantité doit être positive.']),
-                ],
-            ])
             ->add('imageFiles', FileType::class, [
                 'label' => 'Photos de votre article (fichiers PNG, JPG)',
                 'multiple' => true,
-                'mapped' => false, // Ne pas mapper ce champ directement à une propriété de l'entité
+                'mapped' => false,
                 'required' => false,
                 'constraints' => [
-                    new All([ // Appliquer les contraintes à chaque fichier
+                    new All([
                         new File([
                             'maxSize' => '5M',
                             'mimeTypes' => [

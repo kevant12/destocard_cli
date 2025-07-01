@@ -11,7 +11,7 @@
 <section class="container">
     <div class="page-header">
         <h1 class="site-title">Mes Articles en Vente</h1>
-        <a href="{{ path('app_pokemon_card_index') }}" class="btn btn--primary">Vendre une nouvelle carte</a>
+        <a href="{{ path('app_product_new') }}" class="btn btn--primary">Mettre un nouvel article en vente</a>
     </div>
 
     {# Les messages flash (succès, erreur) peuvent être ajoutés ici si nécessaire #}
@@ -19,7 +19,7 @@
     {% if pagination is empty %}
         <div class="text-center" style="padding: 4rem 0;">
             <p>Vous n'avez pas encore d'articles en vente.</p>
-            <p>Cliquez sur "Vendre une nouvelle carte" pour commencer !</p>
+            <p>Cliquez sur "Mettre un nouvel article en vente" pour commencer !</p>
         </div>
     {% else %}
         <div class="layout-grid">

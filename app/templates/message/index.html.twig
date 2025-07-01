@@ -9,10 +9,13 @@
         <p>Vous n'avez pas encore de conversation.</p>
     {% else %}
         <ul>
-            {% for user in conversations %}
+            {% for conversation in conversations %}
                 <li>
-                    <a href="{{ path('app_message_conversation', {'id': user.id}) }}">
-                        {{ user.firstname }} {{ user.lastname }} ({{ user.email }})
+                    <a href="{{ path('app_message_conversation', {'id': conversation.otherUser.id}) }}">
+                        {{ conversation.otherUser.firstname }} {{ conversation.otherUser.lastname }} ({{ conversation.otherUser.email }})
+                        {% if conversation.unreadCount > 0 %}
+                            <span class="badge bg-danger">{{ conversation.unreadCount }}</span>
+                        {% endif %}
                     </a>
                 </li>
             {% endfor %}

@@ -1,8 +1,8 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ product.title }} - Carte Pokémon | Destocard{% endblock %}
+{% block title %}{{ product.title }} | Destocard{% endblock %}
 
-{% block meta_description %}Découvrez {{ product.title }}, une carte Pokémon {{ product.rarity }} de l'extension {{ product.extension }}. Achetez-la sur Destocard !{% endblock %}
+{% block meta_description %}Découvrez {{ product.title }}, en vente sur Destocard !{% endblock %}
 
 {% block body %}
 <div class="product-detail-container">
@@ -11,7 +11,7 @@
     <div class="product-detail-content">
         <div class="product-detail-image">
             {% if product.media|length > 0 %}
-                <img src="{{ asset('upload/products/' ~ product.media|first.imageUrl) }}" alt="{{ product.title }}" class="main-product-image">
+                <img src="{{ asset(product.media|first.path) }}" alt="{{ product.title }}" class="main-product-image">
             {% else %}
                 <img src="{{ asset('images/placeholder.png') }}" alt="Image non disponible" class="main-product-image">
             {% endif %}
@@ -24,15 +24,6 @@
             <div class="product-detail-specs">
                 <p><strong>Catégorie:</strong> {{ product.category }}</p>
                 <p><strong>Quantité disponible:</strong> {{ product.quantity }}</p>
-                {% if product.extension %}
-                    <p><strong>Extension:</strong> {{ product.extension }}</p>
-                {% endif %}
-                {% if product.rarity %}
-                    <p><strong>Rareté:</strong> {{ product.rarity }}</p>
-                {% endif %}
-                {% if product.type %}
-                    <p><strong>Type:</strong> {{ product.type }}</p>
-                {% endif %}
                 {% if product.number %}
                     <p><strong>Numéro:</strong> {{ product.number }}</p>
                 {% endif %}
@@ -62,10 +53,6 @@
 </div>
 {% endblock %}
 
-{% block javascripts %}
-    {{ parent() }}
-{% endblock %}
-
 {% block stylesheets %}
     {{ parent() }}
 {% endblock %}
@@ -81,7 +68,7 @@
       "description": "{{ product.description|default('')|striptags|e('js') }}",
       "image": [
         {% if product.media|length > 0 %}
-          "{{ absolute_url(asset('upload/products/' ~ product.media|first.imageUrl)) }}"
+          "{{ absolute_url(asset(product.media|first.path)) }}"
         {% else %}
           "{{ absolute_url(asset('images/placeholder.png')) }}"
         {% endif %}

@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Modifier l'article : {{ product.title }}{% endblock %}
+{% block title %}Mettre un nouvel article en vente{% endblock %}
 
 {% block body %}
 <div class="form-container">
-    <h1>Modifier l'article</h1>
+    <h1>Mettre un nouvel article en vente</h1>
 
     {{ form_start(form) }}
         <div class="form-columns">
@@ -25,11 +25,10 @@
                 <fieldset>
                     <legend>Photos</legend>
                     <div class="form-row">{{ form_row(form.imageFiles) }}</div>
-                    {# Vous pourriez ajouter ici une prévisualisation des images existantes #}
                 </fieldset>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+        <button type="submit" class="btn btn-primary">Mettre en vente</button>
     {{ form_end(form) }}
 </div>
-{% endblock %}
+{% endblock %} 

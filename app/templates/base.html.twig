@@ -24,8 +24,8 @@
         
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
 
-        {# Le nouveau fichier CSS principal #}
-        <link rel="stylesheet" href="{{ asset('css/main.css')}}">
+        {# Les fichiers CSS #}
+        <link rel="stylesheet" href="{{ asset('css/style.css')}}">
         {% block stylesheets %}{% endblock %}
 
         {# Javascripts #}
@@ -79,8 +79,9 @@
 
                 <nav class="site-header__nav-main">
                     <a href="{{ path('app_home') }}">Accueil</a>
-                    <a href="{{ path('app_pokemon_card_index') }}">Cartes</a>
-                    <a href="{{ path('app_product_index') }}">Produits</a>
+                    {% if app.user %}
+                        <a href="{{ path('app_product_index') }}">Produits</a>
+                    {% endif %}
                 </nav>
 
                 <nav class="site-header__nav-user">
@@ -131,9 +132,9 @@
 
         <nav class="mobile-nav">
             <a href="{{ path('app_home') }}" class="mobile-nav__link" title="Accueil">🏠</a>
-            <a href="{{ path('app_pokemon_card_index') }}" class="mobile-nav__link" title="Cartes">🃏</a>
+            <a href="{{ path('app_product_index') }}" class="mobile-nav__link" title="Produits">🃏</a>
             {% if app.user %}
-                 <a href="{{ path('app_product_sell', {'pokemonCardId': 1}) }}" class="mobile-nav__link" title="Vendre">➕</a>
+                 <a href="{{ path('app_product_new') }}" class="mobile-nav__link" title="Vendre">➕</a>
                 <a href="{{ path('app_message_index') }}" class="mobile-nav__link" title="Messages">✉️</a>
                 <a href="#" class="mobile-nav__link" title="Profil">👤</a>
             {% else %}

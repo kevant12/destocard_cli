@@ -6,8 +6,6 @@ use App\Repository\ProductsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Extension;
-use App\Entity\Serie;
 
 #[ORM\Entity(repositoryClass: ProductsRepository::class)]
 class Products
@@ -38,7 +36,7 @@ class Products
     /**
      * @var Collection<int, Media>
      */
-    #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'products')]
+    #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'products', cascade: ['persist', 'remove'])]
     private Collection $media;
 
     #[ORM\ManyToOne(inversedBy: 'products')]
@@ -56,20 +54,8 @@ class Products
     #[ORM\OneToMany(targetEntity: OrdersProducts::class, mappedBy: 'products', cascade: ['persist', 'remove'])]
     private Collection $ordersProducts;
 
-    #[ORM\ManyToOne(targetEntity: PokemonCard::class)]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?PokemonCard $pokemonCard = null;
-
-    #[ORM\ManyToOne(targetEntity: Extension::class)]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?Extension $extension = null;
-
     #[ORM\Column(type: 'string', length: 100, nullable: true)]
     private ?string $number = null;
-
-    #[ORM\ManyToOne(targetEntity: Serie::class)]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?Serie $serie = null;
 
     public function __construct()
     {
@@ -77,18 +63,6 @@ class Products
         $this->likes = new ArrayCollection();
         $this->ordersProducts = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
-    }
-
-    public function getPokemonCard(): ?PokemonCard
-    {
-        return $this->pokemonCard;
-    }
-
-    public function setPokemonCard(?PokemonCard $pokemonCard): static
-    {
-        $this->pokemonCard = $pokemonCard;
-
-        return $this;
     }
 
     public function getId(): ?int
@@ -267,17 +241,6 @@ class Products
         return $this;
     }
 
-    public function getExtension(): ?Extension
-    {
-        return $this->extension;
-    }
-
-    public function setExtension(?Extension $extension): static
-    {
-        $this->extension = $extension;
-        return $this;
-    }
-
     public function getNumber(): ?string
     {
         return $this->number;
@@ -286,17 +249,6 @@ class Products
     public function setNumber(?string $number): static
     {
         $this->number = $number;
-        return $this;
-    }
-
-    public function getSerie(): ?Serie
-    {
-        return $this->serie;
-    }
-
-    public function setSerie(?Serie $serie): static
-    {
-        $this->serie = $serie;
         return $this;
     }
 }

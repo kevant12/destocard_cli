@@ -16,7 +16,7 @@
                     <li class="message-item">
                         <strong>{{ message.sender.firstname }} :</strong>
                         {{ message.content }}
-                        <span class="message-timestamp">({{ message.expeditionDate|date('d/m/Y H:i') }})</span>
+                        <span class="message-timestamp">({{ message.sentAt|date('d/m/Y H:i') }})</span>
                     </li>
                 {% endfor %}
             </ul>

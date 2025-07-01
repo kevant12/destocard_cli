@@ -37,3 +37,6 @@ services:
     App\Controller\StripeWebhookController:
         arguments:
             $webhookSecret: '%app.stripe.webhook_secret%'
+
+    # Alias pour l'authentificateur de formulaire de connexion
+    Symfony\Component\Security\Http\Authenticator\FormLoginAuthenticator: '@security.authenticator.form_login.main'
