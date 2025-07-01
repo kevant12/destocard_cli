@@ -21,13 +21,17 @@ use App\Entity\Extension;
 #[Route('/product')]
 class ProductController extends AbstractController
 {
+    private EntityManagerInterface $em;
+
     public function __construct(
-        private readonly ProductService $productService,
-        private readonly ProductsRepository $productsRepository,
-        private readonly PokemonCardRepository $pokemonCardRepository,
-        private readonly PaginatorInterface $paginator,
-        private readonly EntityManagerInterface $em
-    ) {}
+        private ProductService $productService,
+        private ProductsRepository $productsRepository,
+        private PokemonCardRepository $pokemonCardRepository,
+        private PaginatorInterface $paginator,
+        EntityManagerInterface $em
+    ) {
+        $this->em = $em;
+    }
 
     /**
      * Affiche tous les produits disponibles
@@ -40,7 +44,7 @@ class ProductController extends AbstractController
         $pagination = $this->paginator->paginate(
             $query,
             $request->query->getInt('page', 1),
-            12
+            10 // Nombre d'éléments par page
         );
 
         return $this->render('product/index.html.twig', [
@@ -51,22 +55,16 @@ class ProductController extends AbstractController
     /**
      * Affiche les produits de l'utilisateur connecté
      */
-    #[Route('/my-articles', name: 'app_user_products')]
+    #[Route('/mes-articles', name: 'app_user_products')]
     #[IsGranted('ROLE_USER')]
     public function userProducts(Request $request): Response
     {
-        $user = $this->getUser();
-        if (!$user) {
-            $this->addFlash('error', 'Vous devez être connecté pour voir vos articles.');
-            return $this->redirectToRoute('app_login');
-        }
-
-        $query = $this->productsRepository->findUserProductsQuery($user->getId());
+        $query = $this->productsRepository->findUserProductsQuery($this->getUser()->getId());
 
         $pagination = $this->paginator->paginate(
             $query,
             $request->query->getInt('page', 1),
-            10
+            10 // Nombre d'éléments par page
         );
 
         return $this->render('product/user_products.html.twig', [
@@ -75,42 +73,62 @@ class ProductController extends AbstractController
     }
 
     /**
-     * Permet à un utilisateur de mettre en vente une carte Pokémon existante.
+     * Ajoute un nouveau produit
      */
-    #[Route('/sell/{pokemonCardId}', name: 'app_product_sell')]
+    #[Route('/add/{pokemonCardId}', name: 'app_product_add', defaults: ['pokemonCardId' => null])]
     #[IsGranted('ROLE_USER')]
-    public function sell(Request $request, int $pokemonCardId): Response
+    public function add(Request $request, ?int $pokemonCardId): Response
     {
-        $pokemonCard = $this->pokemonCardRepository->find($pokemonCardId);
-        if (!$pokemonCard) {
-            $this->addFlash('error', 'Carte Pokémon non trouvée.');
-            return $this->redirectToRoute('app_pokemon_card_index'); // Redirige vers la liste des cartes
-        }
-
         $product = new Products();
-        $product->setPokemonCard($pokemonCard);
-        // Pré-remplir le titre avec le nom de la carte Pokémon
-        $product->setTitle($pokemonCard->getName());
+        $pokemonCard = null;
 
-        $form = $this->createForm(ProductFormType::class, $product);
+        if ($pokemonCardId) {
+            $pokemonCard = $this->pokemonCardRepository->find($pokemonCardId);
+            if ($pokemonCard) {
+                $product->setPokemonCard($pokemonCard);
+                $product->setTitle($pokemonCard->getName());
+                $product->setDescription($pokemonCard->getDescription());
+                $product->setCategory($pokemonCard->getCategory());
+            }
+        }
+        
+        // Récupérer toutes les séries, extensions et cartes pour les champs du formulaire
+        $series = $this->em->getRepository(\App\Entity\Serie::class)->findAll();
+        $extensions = $this->em->getRepository(\App\Entity\Extension::class)->findAll();
+        $pokemonCards = $this->em->getRepository(\App\Entity\PokemonCard::class)->findAll();
+
+        $form = $this->createForm(ProductFormType::class, $product, [
+            'series' => $series,
+            'extensions' => $extensions,
+            'pokemonCards' => $pokemonCards,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $this->getUser();
-            if (!$user) {
-                // Gérer le cas où l'utilisateur n'est pas connecté
-                $this->addFlash('error', 'Vous devez être connecté pour vendre un article.');
-                return $this->redirectToRoute('app_login');
-            }
-            $this->productService->createProduct($product, $user);
+            // Lier la bonne carte au produit
+            $pokemonCard = $form->get('pokemonCard')->getData();
+            $product->setPokemonCard($pokemonCard);
 
-            $this->addFlash('success', 'Article mis en vente avec succès !');
+            // Pré-remplissage automatique si les champs sont vides
+            if ($pokemonCard) {
+                if (!$product->getTitle()) {
+                    $product->setTitle($pokemonCard->getName());
+                }
+                if (method_exists($pokemonCard, 'getDescription') && !$product->getDescription()) {
+                    $product->setDescription($pokemonCard->getDescription());
+                }
+                if (method_exists($pokemonCard, 'getCategory') && !$product->getCategory()) {
+                    $product->setCategory($pokemonCard->getCategory());
+                }
+            }
+
+            $this->productService->createProduct($product, $this->getUser());
+            $this->addFlash('success', 'Article ajouté avec succès !');
             return $this->redirectToRoute('app_user_products');
         }
 
-        return $this->render('product/sell.html.twig', [
-            'form' => $form->createView(),
-            'pokemonCard' => $pokemonCard,
+        return $this->render('product/add.html.twig', [
+            'form' => $form->createView()
         ]);
     }
 
@@ -129,13 +147,7 @@ class ProductController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, Products $product): Response
     {
-        $user = $this->getUser();
-        if (!$user) {
-            $this->addFlash('error', 'Vous devez être connecté pour effectuer cette action.');
-            return $this->redirectToRoute('app_login');
-        }
-
-        if (!$this->productService->canManageProduct($product, $user, $this->isGranted('ROLE_ADMIN'))) {
+        if (!$this->productService->canManageProduct($product, $this->getUser(), $this->isGranted('ROLE_ADMIN'))) {
             throw $this->createAccessDeniedException('Vous ne pouvez pas modifier cet article.');
         }
 
@@ -149,8 +161,7 @@ class ProductController extends AbstractController
         }
 
         return $this->render('product/edit.html.twig', [
-            'form' => $form->createView(),
-            'product' => $product,
+            'form' => $form->createView()
         ]);
     }
 
@@ -161,13 +172,7 @@ class ProductController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function delete(Request $request, Products $product): Response
     {
-        $user = $this->getUser();
-        if (!$user) {
-            $this->addFlash('error', 'Vous devez être connecté pour effectuer cette action.');
-            return $this->redirectToRoute('app_login');
-        }
-
-        if (!$this->productService->canManageProduct($product, $user, $this->isGranted('ROLE_ADMIN'))) {
+        if (!$this->productService->canManageProduct($product, $this->getUser(), $this->isGranted('ROLE_ADMIN'))) {
             throw $this->createAccessDeniedException('Vous ne pouvez pas supprimer cet article.');
         }
 
@@ -242,19 +247,15 @@ class ProductController extends AbstractController
         $sortBy = $request->query->get('sort_by');
         $sortOrder = $request->query->get('sort_order', 'asc');
         $page = $request->query->getInt('page', 1);
-        $limit = 12;
+        $limit = 10; // Nombre d'éléments par page
 
         $productsQuery = $this->productsRepository->searchProductsQuery($query, $category, $rarity, $sortBy, $sortOrder);
 
         $pagination = $this->paginator->paginate(
-            $productsQuery,
-            $page,
-            $limit
+            $productsQuery, // Requête Doctrine, pas les résultats
+            $page, // Numéro de la page actuelle
+            $limit // Nombre d'éléments par page
         );
-
-        // Ajout des catégories et raretés pour les filtres
-        $categories = $this->productsRepository->findDistinctCategories();
-        $rarities = $this->pokemonCardRepository->findDistinctRarities();
 
         return $this->render('product/search_results.html.twig', [
             'pagination' => $pagination,
@@ -263,8 +264,6 @@ class ProductController extends AbstractController
             'selectedRarity' => $rarity,
             'sortBy' => $sortBy,
             'sortOrder' => $sortOrder,
-            'categories' => $categories,
-            'rarities' => $rarities,
         ]);
     }
 

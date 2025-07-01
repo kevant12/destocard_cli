@@ -1,59 +1,73 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Créez votre compte Destocard - Inscription rapide et facile{% endblock %}
+{% block title %}Inscription{% endblock %}
 
 {% block meta_description %}Inscrivez-vous sur Destocard pour accéder à votre espace personnel, acheter et vendre des cartes Pokémon, et gérer votre collection.{% endblock %}
 
-
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
+{% endblock %}
 
 {% block body %}
-<div class="register-container auth-container">
-    <a href="{{ path('app_home') }}" class="back-arrow" title="Retour à l'accueil">&#8592; Accueil</a>
-    <h1 class="register-title text-center">Inscription</h1>
+<div class="auth-page">
+    <div class="auth-card auth-card--register">
+        <h1 class="site-title">Créer un compte</h1>
 
-    {% if error %}
-        <div class="alert alert-error register-error" role="alert">{{ error }}</div>
-    {% endif %}
-    {% for message in app.flashes('error') %}
-        <div class="alert alert-error register-error" role="alert">{{ message }}</div>
-    {% endfor %}
-    {% for message in app.flashes('success') %}
-        <div class="alert alert-success register-success" role="alert">{{ message }}</div>
-    {% endfor %}
-
-    <div class="register-form-block">
-        {{ form_start(registerForm, {'attr': {'class': 'register-form', 'aria-labelledby': 'register-title'}}) }}
-            {{ form_errors(registerForm) }}
-            <div class="register-form-group register-civility-group text-center">
-                <label class="register-civility-label">Civilité</label>
-                <div class="register-civility-inline">
-                    {% for choice in registerForm.civility %}
-                        <label class="register-civility-label-inline">
-                            {{ form_widget(choice) }} {{ form_label(choice) }}
-                        </label>
-                    {% endfor %}
+        {{ form_start(registerForm) }}
+            <div class="form-grid">
+                <div class="form-group form-group--span-2">
+                    <label class="form-label">Civilité</label>
+                    <div class="form-radio-group">
+                        {{ form_widget(registerForm.civility) }}
+                    </div>
+                    {{ form_errors(registerForm.civility) }}
                 </div>
-                {{ form_errors(registerForm.civility) }}
+
+                <div class="form-group">
+                    {{ form_label(registerForm.firstname) }}
+                    {{ form_widget(registerForm.firstname, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(registerForm.firstname) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(registerForm.lastname) }}
+                    {{ form_widget(registerForm.lastname, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(registerForm.lastname) }}
+                </div>
             </div>
-            <div class="register-form-group">{{ form_row(registerForm.firstname, {'attr': {'aria-label': 'Prénom'}}) }}</div>
-            <div class="register-form-group">{{ form_row(registerForm.lastname, {'attr': {'aria-label': 'Nom'}}) }}</div>
-            <div class="register-form-group">{{ form_row(registerForm.email, {'attr': {'aria-label': 'Adresse email'}}) }}</div>
-            <div class="register-form-group">{{ form_row(registerForm.password, {'attr': {'aria-label': 'Mot de passe'}}) }}</div>
-            <div class="register-form-group">{{ form_row(registerForm.phoneNumber, {'attr': {'aria-label': 'Numéro de téléphone'}}) }}</div>
-            <div class="register-form-group register-agree-terms-group">
+
+            <div class="form-group">
+                {{ form_label(registerForm.email) }}
+                {{ form_widget(registerForm.email, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(registerForm.email) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(registerForm.password) }}
+                {{ form_widget(registerForm.password, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(registerForm.password) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(registerForm.phoneNumber) }}
+                {{ form_widget(registerForm.phoneNumber, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(registerForm.phoneNumber) }}
+            </div>
+            
+            <div class="form-group form-check">
                 {{ form_widget(registerForm.agreeTerms) }}
-                <label for="{{ registerForm.agreeTerms.vars.id }}" class="register-civility-label-inline">
-                    J'accepte la récolte des données nécessaires à la gestion de mon compte
-                </label>
+                {{ form_label(registerForm.agreeTerms) }}
                 {{ form_errors(registerForm.agreeTerms) }}
             </div>
-            <button type="submit" class="register-btn btn btn-primary" aria-label="S'inscrire">S'inscrire</button>
-        {{ form_end(registerForm) }}
-    </div>
 
-    <fieldset class="register-login-fieldset">
-        <legend class="register-login-title">Vous avez déjà un compte ?</legend>
-        <a href="{{ path('app_login') }}" class="register-login-link btn btn-primary register-login-link-centered">Se connecter</a>
-    </fieldset>
+            <button type="submit" class="btn btn--primary" style="width:100%; margin-top: 1rem;">S'inscrire</button>
+        {{ form_end(registerForm) }}
+
+        <div class="auth-links">
+            <span>Déjà un compte ?</span>
+            <a href="{{ path('app_login') }}">Connectez-vous</a>
+        </div>
+    </div>
 </div>
 {% endblock %} 

@@ -12,7 +12,7 @@
         {% for product in pagination %}
             <div class="product-card">
                 {% if product.media|length > 0 %}
-                    <img src="{{ asset('upload/products/' ~ product.media|first.imageUrl) }}" alt="{{ product.title }}">
+                    <img src="{{ asset(product.media|first.path) }}" alt="{{ product.title }}">
                 {% else %}
                     <img src="{{ asset('images/placeholder.png') }}" alt="Image non disponible">
                 {% endif %}

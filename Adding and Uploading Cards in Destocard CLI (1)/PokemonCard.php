@@ -5,10 +5,10 @@ namespace App\Entity;
 use App\Repository\PokemonCardRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Validator\Constraints as Assert;
 use App\Entity\Media;
 use Doctrine\ORM\Mapping\OneToOne;
 use Doctrine\ORM\Mapping\JoinColumn;
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Entity\Extension;
 
 #[ORM\Entity(repositoryClass: PokemonCardRepository::class)]
@@ -17,58 +17,53 @@ class PokemonCard
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['pokemon_card:read', 'product:read'])]
+    #[Groups(['product:read'])]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, unique: true, nullable: true)]
-    #[Groups(['pokemon_card:read'])]
+    #[ORM\Column(length: 255, unique: true)]
+    #[Groups(['product:read'])]
     private ?string $apiId = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Le numéro de la carte est obligatoire.")]
-    #[Groups(['pokemon_card:read', 'product:read'])]
+    #[Groups(['product:read'])]
     private ?string $number = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Le nom de la carte est obligatoire.")]
-    #[Groups(['pokemon_card:read', 'product:read'])]
+    #[Groups(['product:read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "La catégorie est obligatoire.")]
-    #[Groups(['pokemon_card:read'])]
+    #[Groups(['product:read'])]
     private ?string $category = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['pokemon_card:read'])]
+    #[Groups(['product:read'])]
     private ?string $specialType = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['pokemon_card:read'])]
+    #[ORM\Column(length: 255)]
+    #[Groups(['product:read'])]
     private ?string $raritySymbol = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "La rareté est obligatoire.")]
-    #[Groups(['pokemon_card:read'])]
+    #[Groups(['product:read'])]
     private ?string $rarityText = null;
 
     #[ORM\Column]
-    #[Groups(['pokemon_card:read'])]
-    private bool $isReversePossible = false;
+    #[Groups(['product:read'])]
+    private ?bool $isReversePossible = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['pokemon_card:read'])]
+    #[Groups(['product:read'])]
     private ?string $subSerie = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: Extension::class)]
     #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull(message: "L'extension est obligatoire.")]
-    #[Groups(['pokemon_card:read'])]
+    #[Groups(['product:read'])]
     private ?Extension $extension = null;
 
-    #[ORM\OneToOne(targetEntity: Media::class, cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(name: "image_id", referencedColumnName: "id", nullable: true)]
-    #[Groups(['pokemon_card:read', 'product:read'])]
+    #[OneToOne(targetEntity: Media::class, cascade: ['persist', 'remove'])]
+    #[JoinColumn(nullable: true)]
+    #[Groups(['product:read'])]
     private ?Media $image = null;
 
     public function getId(): ?int
@@ -81,9 +76,10 @@ class PokemonCard
         return $this->apiId;
     }
 
-    public function setApiId(?string $apiId): static
+    public function setApiId(string $apiId): static
     {
         $this->apiId = $apiId;
+
         return $this;
     }
 
@@ -95,6 +91,7 @@ class PokemonCard
     public function setNumber(string $number): static
     {
         $this->number = $number;
+
         return $this;
     }
 
@@ -106,6 +103,7 @@ class PokemonCard
     public function setName(string $name): static
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -117,6 +115,7 @@ class PokemonCard
     public function setCategory(string $category): static
     {
         $this->category = $category;
+
         return $this;
     }
 
@@ -128,6 +127,7 @@ class PokemonCard
     public function setSpecialType(?string $specialType): static
     {
         $this->specialType = $specialType;
+
         return $this;
     }
 
@@ -136,9 +136,10 @@ class PokemonCard
         return $this->raritySymbol;
     }
 
-    public function setRaritySymbol(?string $raritySymbol): static
+    public function setRaritySymbol(string $raritySymbol): static
     {
         $this->raritySymbol = $raritySymbol;
+
         return $this;
     }
 
@@ -150,10 +151,11 @@ class PokemonCard
     public function setRarityText(string $rarityText): static
     {
         $this->rarityText = $rarityText;
+
         return $this;
     }
 
-    public function isReversePossible(): bool
+    public function isIsReversePossible(): ?bool
     {
         return $this->isReversePossible;
     }
@@ -161,6 +163,7 @@ class PokemonCard
     public function setIsReversePossible(bool $isReversePossible): static
     {
         $this->isReversePossible = $isReversePossible;
+
         return $this;
     }
 
@@ -172,6 +175,7 @@ class PokemonCard
     public function setSubSerie(?string $subSerie): static
     {
         $this->subSerie = $subSerie;
+
         return $this;
     }
 
@@ -194,6 +198,7 @@ class PokemonCard
     public function setImage(?Media $image): static
     {
         $this->image = $image;
+
         return $this;
     }
 }

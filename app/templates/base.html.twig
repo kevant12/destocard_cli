@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <meta name="description" content="{% block meta_description %}Votre boutique spécialisée en cartes Pokémon. Achetez et vendez des cartes rares, des figurines et des accessoires.{% endblock %}">
+        <title>{% block title %}Destocard - Cartes Pokémon{% endblock %}</title>
+        <meta name="description" content="{% block meta_description %}Votre boutique spécialisée pour acheter et vendre des cartes Pokémon.{% endblock %}">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         {# Open Graph / Social Media Tags #}
@@ -24,19 +24,16 @@
         
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
 
-        <link rel="stylesheet" href="{{ asset('css/reset.css')}}"/>
+        {# Le nouveau fichier CSS principal #}
+        <link rel="stylesheet" href="{{ asset('css/main.css')}}">
         {% block stylesheets %}{% endblock %}
-           
-        
-        <link rel="stylesheet" href="{{ asset('css/general.css')}}"/>
 
-
-
-
-        <script src="/js/nav.js" defer></script>
-        <script src="/js/csrf-protection.js" defer></script>
-        <script src="/js/ajax.js" defer></script>
+        {# Javascripts #}
+        <script src="{{ asset('js/nav.js') }}" defer></script>
+        <script src="{{ asset('js/csrf-protection.js') }}" defer></script>
+        <script src="{{ asset('js/ajax.js') }}" defer></script>
         {% block javascripts %}{% endblock %}
+
     {# Schema.org JSON-LD for WebSite and Organization #}
         <script type="application/ld+json">
         {
@@ -74,75 +71,74 @@
         </script>
     </head>
     <body>
-        <header>
-            <div class="logo-header">
-                <video src="{{ asset('media/videos/veo3-ai-video-1750948599536.mp4') }}" autoplay loop muted playsinline class="video" aria-label="Logo animé Destocard" poster="{{ asset('images/logo-destocard.png') }}">
-                </video>
-                <img src="{{ asset('images/logo-destocard.png') }}" alt="Logo Destocard" class="logo-fallback" style="display:none;">
-            </div>
-            <nav>
-                <a href="{{ path('app_home') }}">Accueil</a>
+        <header class="site-header">
+            <div class="container">
+                <a href="{{ path('app_home') }}" class="site-header__logo">
+                    <img src="{{ asset('media/images/logo2redim.png') }}" alt="Logo Destocard">
+                </a>
 
-                {% if app.user %}
+                <nav class="site-header__nav-main">
+                    <a href="{{ path('app_home') }}">Accueil</a>
+                    <a href="{{ path('app_pokemon_card_index') }}">Cartes</a>
                     <a href="{{ path('app_product_index') }}">Produits</a>
-                    <a href="{{ path('app_user_products') }}">Mes Articles</a>
-                    <a href="{{ path('app_message_index') }}">Messages</a>
-                    <a href="{{ path('app_favorites') }}" class="nav-fav">❤️</a>
-                    <a href="{{ path('cart') }}" class="nav-cart">🛒 <span class="cart-badge">0</span></a>
-                    <form method="post" action="{{ path('app_logout') }}" class="nav-inline-form">
-                        <button type="submit">Déconnexion</button>
-                    </form>
-                {% else %}
-                    <form method="get" action="{{ path('app_login') }}" class="nav-inline-form">
-                        <button type="submit">Connexion</button>
-                    </form>
-                    <form method="get" action="{{ path('app_register') }}" class="nav-inline-form">
-                        <button type="submit">Inscription</button>
-                    </form>
-                {% endif %}
+                </nav>
 
-            </nav>
-        </header>
-       <main>{% block body %}{% endblock %}</main>
-
-       <footer class="main-footer">
-            <div class="footer-content">
-                <div class="footer-section about">
-                    <strong>Destocard</strong>
-                    <p>Votre boutique spécialisée en cartes Pokémon. Nous proposons des cartes rares et des produits exclusifs pour les collectionneurs.</p>
-                </div>
-                <div class="footer-section links">
-                    <strong>Liens utiles</strong>
-                    <ul>
-                        <li><a href="#" title="À propos de nous">À propos de nous</a></li>
-                        <li><a href="#" title="Conditions générales">Conditions générales</a></li>
-                        <li><a href="#" title="Politique de confidentialité">Politique de confidentialité</a></li>
-                        <li><a href="#" title="FAQ">FAQ</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section contact">
-                    <strong>Contact</strong>
-                    <ul>
-                        <li><span class="icon">✉</span> <a href="mailto:contact@destocard.fr">contact@destocard.fr</a></li>
-                        <li><span class="icon">📞</span> 01 23 45 67 89</li>
-                        <li class="social-icons">
-                            <a href="#" aria-label="Twitter"><span role="img" aria-label="Twitter">🐦</span></a>
-                            <a href="#" aria-label="Facebook"><span role="img" aria-label="Facebook">📘</span></a>
-                            <a href="#" aria-label="Autre réseau"><span role="img" aria-label="Autre réseau">💙</span></a>
-                        </li>
-                    </ul>
-                </div>
+                <nav class="site-header__nav-user">
+                    {% if app.user %}
+                        <a href="{{ path('app_user_products') }}">Mes Articles</a>
+                        <a href="{{ path('app_message_index') }}">Messages</a>
+                        <a href="{{ path('cart') }}" title="Panier">🛒</a>
+                        <a href="{{ path('app_logout') }}" class="btn btn--secondary">Déconnexion</a>
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="btn btn--secondary">Connexion</a>
+                        <a href="{{ path('app_register') }}" class="btn btn--primary">Inscription</a>
+                    {% endif %}
+                </nav>
             </div>
-            <div class="footer-bottom">
-                &copy; 2023 Destocard. Tous droits réservés.
+        </header>
+
+        <main>
+            {% block body %}{% endblock %}
+        </main>
+
+       <footer class="site-footer">
+            <div class="container">
+                <div class="site-footer__content">
+                    <div class="footer-section">
+                        <h3>Destocard</h3>
+                        <p>Votre boutique spécialisée en cartes Pokémon.</p>
+                    </div>
+                    <div class="footer-section">
+                        <h3>Liens utiles</h3>
+                        <ul>
+                            <li><a href="#">À propos</a></li>
+                            <li><a href="#">Conditions générales</a></li>
+                            <li><a href="#">FAQ</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-section">
+                        <h3>Contact</h3>
+                        <ul>
+                            <li><a href="mailto:contact@destocard.fr">contact@destocard.fr</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="site-footer__bottom">
+                    &copy; {{ "now"|date("Y") }} Destocard. Tous droits réservés.
+                </div>
             </div>
         </footer>
 
-        <nav class="mobile-footer-nav">
-            <a href="#" class="mobile-footer-icon" title="Profil"><span class="footer-ico">&#128100;</span></a>
-            <a href="{{ path('app_message_index') }}" class="mobile-footer-icon" title="Messages"><span class="footer-ico">&#9993;</span></a>
-            <a href="#" class="mobile-footer-icon" title="Ajouter"><span class="footer-ico">&#10133;</span></a>
-            <a href="#" class="mobile-footer-icon" title="Menu"><span class="footer-ico">&#9776;</span></a>
+        <nav class="mobile-nav">
+            <a href="{{ path('app_home') }}" class="mobile-nav__link" title="Accueil">🏠</a>
+            <a href="{{ path('app_pokemon_card_index') }}" class="mobile-nav__link" title="Cartes">🃏</a>
+            {% if app.user %}
+                 <a href="{{ path('app_product_sell', {'pokemonCardId': 1}) }}" class="mobile-nav__link" title="Vendre">➕</a>
+                <a href="{{ path('app_message_index') }}" class="mobile-nav__link" title="Messages">✉️</a>
+                <a href="#" class="mobile-nav__link" title="Profil">👤</a>
+            {% else %}
+                <a href="{{ path('app_login') }}" class="mobile-nav__link" title="Connexion">👤</a>
+            {% endif %}
         </nav>
     </body>
 </html>

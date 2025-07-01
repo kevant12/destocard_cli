@@ -4,7 +4,6 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-    app.uploads_directory: '%kernel.project_dir%/public/uploads/products'
     app.stripe.public_key: '%env(STRIPE_PUBLIC_KEY)%'
     app.stripe.secret_key: '%env(STRIPE_SECRET_KEY)%'
     app.stripe.webhook_secret: '%env(STRIPE_WEBHOOK_SECRET)%'
@@ -25,9 +24,9 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
-    App\Service\FileUploaderService:
-        arguments:
-            $targetDirectory: '%app.uploads_directory%'
+    App\Service\MediaUploadService:
+        bind:
+            $projectDir: '%kernel.project_dir%'
 
     App\Service\StripeService:
         arguments:

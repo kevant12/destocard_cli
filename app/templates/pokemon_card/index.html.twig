@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Base de données des cartes Pokémon{% endblock %}
+
+{% block body %}
+<section class="container">
+    <div class="page-header">
+        <h1 class="site-title">Toutes les Cartes Pokémon</h1>
+        {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('app_pokemon_card_new') }}" class="btn btn--primary">Ajouter une carte</a>
+        {% endif %}
+    </div>
+    
+    <div class="layout-grid">
+        {% for card in pagination %}
+            <div class="card">
+                <a href="{{ path('app_pokemon_card_show', {'id': card.id}) }}" class="card__image-container">
+                    {% if card.image and card.image.path %}
+                        <img src="{{ asset(card.image.path) }}" alt="{{ card.name }}">
+                    {% else %}
+                        <img src="{{ asset('images/placeholder.png') }}" alt="Image non disponible">
+                    {% endif %}
+                </a>
+                <div class="card__body">
+                    <h2 class="card__title">
+                        <a href="{{ path('app_pokemon_card_show', {'id': card.id}) }}">
+                            {{ card.name }}
+                        </a>
+                    </h2>
+                    <p class="card__subtitle">{{ card.number }} - {{ card.extension.name }}</p>
+                </div>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <div class="card__footer">
+                        <a href="{{ path('app_pokemon_card_edit', {'id': card.id}) }}" class="btn btn--secondary" style="width: 100%;">Modifier</a>
+                    </div>
+                {% endif %}
+            </div>
+        {% else %}
+            <p class="text-center">Aucune carte trouvée.</p>
+        {% endfor %}
+    </div>
+
+    <div class="pagination">
+        {{ knp_pagination_render(pagination) }}
+    </div>
+</section>
+{% endblock %} 

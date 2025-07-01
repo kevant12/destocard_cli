@@ -1,99 +1,60 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Mes Articles{% endblock %}
+{% block title %}Mes Articles en Vente{% endblock %}
 
-{% block body %}
-    <a href="{{ path('app_home') }}" class="back-arrow" title="Retour à l'accueil">&#8592; Accueil</a>
-    <div class="container">
-        <div class="products-header" style="display: flex; flex-direction: column; align-items: center; margin: 48px auto 24px auto; max-width: 900px;">
-            <h1>Mes Articles</h1>
-            <div >
-                <a href="{{ path('app_product_add') }}" class="add-to-cart-form">Ajouter un article</a>
-            </div>
-        </div>
-
-        {% for message in app.flashes('success') %}
-            <div class="alert alert-success">{{ message }}</div>
-        {% endfor %}
-
-        {% for message in app.flashes('error') %}
-            <div class="alert alert-error">{{ message }}</div>
-        {% endfor %}
-
-        {% if pagination is empty %}
-            <div class="user-products-empty">
-                <p>Vous n'avez pas encore d'articles en vente.</p>
-                <p>Cliquez sur "Ajouter un article" pour commencer !</p>
-            </div>
-        {% else %}
-            <div class="products-grid">
-                {% for product in pagination %}
-                    <div class="product-card {% if product.quantity == 0 %}unavailable{% endif %}" data-id="{{ product.id }}">
-                        {% if product.media|length > 0 %}
-                            <img src="{{ asset('upload/products/' ~ product.media|first.imageUrl) }}"
-                                 alt="{{ product.title }}"
-                                 class="product-image">
-                        {% endif %}
-
-                        <div class="product-info">
-                            <h3 class="product-title">{{ product.title }}</h3>
-                            <p class="product-price">{{ product.price|number_format(2, ',', ' ') }} €</p>
-                            <p>{{ product.description|slice(0, 100) }}{% if product.description|length > 100 %}...{% endif %}</p>
-
-                            <div class="product-status {% if product.quantity > 0 %}status-available{% else %}status-unavailable{% endif %}">
-                                {{ product.quantity > 0 ? 'Disponible' : 'Indisponible' }}
-                            </div>
-                        </div>
-
-                        <div class="product-actions">
-                            <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn btn-edit">
-                                Modifier
-                            </a>
-
-                            <form method="post" action="{{ path('app_product_delete', {'id': product.id}) }}"
-                                  class="user-products-action-form"
-                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?');">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ product.id) }}">
-                                <button type="submit" class="btn btn-delete" aria-label="Supprimer l'article {{ product.title }}">Supprimer</button>
-                            </form>
-
-                            <form method="post" action="{{ path('app_product_toggle', {'id': product.id}) }}" class="user-products-action-form">
-                                <button type="submit" class="btn btn-toggle" aria-label="{{ product.quantity > 0 ? 'Masquer' : 'Afficher' }} l'article {{ product.title }}">
-                                    {{ product.quantity > 0 ? 'Masquer' : 'Afficher' }}
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-
-            <div class="navigation text-center">
-                {{ knp_pagination_render(pagination) }}
-            </div>
-        {% endif %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/user-products.css') }}">
 {% endblock %}
 
-{% block javascripts %}
-    {{ parent() }}
-    <script defer>
-        // Sélection des éléments
-        const productCards = document.querySelectorAll('.product-card');
-        const toggleButtons = document.querySelectorAll('.btn-toggle');
+{% block body %}
+<section class="container">
+    <div class="page-header">
+        <h1 class="site-title">Mes Articles en Vente</h1>
+        <a href="{{ path('app_pokemon_card_index') }}" class="btn btn--primary">Vendre une nouvelle carte</a>
+    </div>
 
-        // Gestion du toggle de disponibilité
-        toggleButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                const card = button.closest('.product-card');
-                const status = card.querySelector('.product-status');
-                const isAvailable = !card.classList.contains('unavailable');
+    {# Les messages flash (succès, erreur) peuvent être ajoutés ici si nécessaire #}
 
-                // Mise à jour visuelle
-                card.classList.toggle('unavailable');
-                status.textContent = isAvailable ? 'Indisponible' : 'Disponible';
-                status.classList.toggle('status-available');
-                status.classList.toggle('status-unavailable');
-                button.textContent = isAvailable ? 'Afficher' : 'Masquer';
-            });
-        });
-    </script>
+    {% if pagination is empty %}
+        <div class="text-center" style="padding: 4rem 0;">
+            <p>Vous n'avez pas encore d'articles en vente.</p>
+            <p>Cliquez sur "Vendre une nouvelle carte" pour commencer !</p>
+        </div>
+    {% else %}
+        <div class="layout-grid">
+            {% for product in pagination %}
+                <div class="card product-card--user {% if product.quantity == 0 %}is-unavailable{% endif %}">
+                    <a href="{{ path('app_product_show', {'id': product.id}) }}" class="card__image-container">
+                        {% if product.media|first and product.media|first.path %}
+                            <img src="{{ asset(product.media|first.path) }}" alt="{{ product.title }}">
+                        {% else %}
+                            <img src="{{ asset('images/placeholder.png') }}" alt="Image non disponible">
+                        {% endif %}
+                    </a>
+                    <div class="card__body">
+                        <h2 class="card__title">
+                            <a href="{{ path('app_product_show', {'id': product.id}) }}">{{ product.title }}</a>
+                        </h2>
+                        <p class="card__subtitle">{{ product.price|number_format(2, ',', ' ') }} € - Quantité : {{ product.quantity }}</p>
+                        <div class="product-status-badge {% if product.quantity > 0 %}is-available{% else %}is-unavailable{% endif %}">
+                            {{ product.quantity > 0 ? 'En stock' : 'Épuisé' }}
+                        </div>
+                    </div>
+                    <div class="card__footer" style="display:flex; gap: 0.5rem;">
+                        <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn btn--secondary" style="flex-grow:1;">Modifier</a>
+                        <form method="post" action="{{ path('app_product_delete', {'id': product.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ product.id) }}">
+                            <button class="btn btn--secondary" style="background-color: var(--color-error); border-color: var(--color-error); color: white;">🗑️</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="pagination">
+            {{ knp_pagination_render(pagination) }}
+        </div>
+    {% endif %}
+</section>
 {% endblock %}

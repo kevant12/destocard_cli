@@ -23,7 +23,7 @@ class Products
     #[ORM\Column]
     private ?int $quantity = null;
 
-    #[ORM\Column(options: ['default' => 'CURRENT_TIMESTAMP'])]
+    #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(length: 100)]
@@ -75,6 +75,8 @@ class Products
     {
         $this->media = new ArrayCollection();
         $this->likes = new ArrayCollection();
+        $this->ordersProducts = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getPokemonCard(): ?PokemonCard
@@ -235,14 +237,32 @@ class Products
         return $this;
     }
 
-    public function getOrdersProducts(): ?OrdersProducts
+    /**
+     * @return Collection<int, OrdersProducts>
+     */
+    public function getOrdersProducts(): Collection
     {
         return $this->ordersProducts;
     }
 
-    public function setOrdersProducts(?OrdersProducts $ordersProducts): static
+    public function addOrdersProduct(OrdersProducts $ordersProduct): static
     {
-        $this->ordersProducts = $ordersProducts;
+        if (!$this->ordersProducts->contains($ordersProduct)) {
+            $this->ordersProducts->add($ordersProduct);
+            $ordersProduct->setProducts($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrdersProduct(OrdersProducts $ordersProduct): static
+    {
+        if ($this->ordersProducts->removeElement($ordersProduct)) {
+            // set the owning side to null (unless already changed)
+            if ($ordersProduct->getProducts() === $this) {
+                $ordersProduct->setProducts(null);
+            }
+        }
 
         return $this;
     }

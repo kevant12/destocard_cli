@@ -2,7 +2,7 @@ services:
   php:
     build: # Fabrique une image à partir d'un Dockerfile
       context: ./php # context = endroit où se trouve Dockerfile pour PHP
-    container_name: php_symfony
+    container_name: php_symfony2
     ports:
       - 8080:80 # 8080 port externe, 80 port dans l'image (EXPOSE 80)
     volumes:
@@ -10,7 +10,7 @@ services:
       - ./apache/default.conf:/etc/apache2/sites-enabled/000-default.conf
   database:
     image: mysql:8.0
-    container_name: mysql_symfony
+    container_name: mysql_symfony2
     environment:
       MYSQL_ROOT_PASSWORD: cequejeveux # paramètre obligatoire, mot de passe d'administration de mysql
       MYSQL_DATABASE: base_symfony

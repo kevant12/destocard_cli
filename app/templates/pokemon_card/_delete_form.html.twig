@@ -1,0 +1,4 @@
+<form method="post" action="{{ path('app_pokemon_card_delete', {'id': pokemon_card.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette carte ? Cette action est irréversible.');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ pokemon_card.id) }}">
+    <button class="btn btn-danger">Supprimer</button>
+</form> 

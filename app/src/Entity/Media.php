@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\MediaRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MediaRepository::class)]
 class Media
@@ -12,18 +13,35 @@ class Media
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['product:read', 'pokemon_card:read'])]
     private ?int $id = null;
 
-    #[ORM\Column(length: 100, nullable: true)]
-    #[Groups(['product:read'])]
-    private ?string $image_url = null;
+    #[ORM\Column(length: 255)]
+    #[Groups(['product:read', 'pokemon_card:read'])]
+    private ?string $fileName = null;
 
-    #[ORM\Column(length: 100, nullable: true)]
-    private ?string $video_url = null;
+    #[ORM\Column(length: 255)]
+    #[Groups(['pokemon_card:read'])]
+    private ?string $originalName = null;
+
+    #[ORM\Column(length: 255)]
+    #[Groups(['pokemon_card:read'])]
+    private ?string $path = null;
+
+    #[ORM\Column(length: 100)]
+    #[Groups(['pokemon_card:read'])]
+    private ?string $mimeType = null;
+
+    #[ORM\Column]
+    #[Groups(['pokemon_card:read'])]
+    private ?int $size = null;
 
     #[ORM\ManyToOne(inversedBy: 'media')]
     private ?Products $products = null;
 
+    /**
+     * @var UploadedFile|null
+     */
     private ?UploadedFile $file = null;
 
     public function getId(): ?int
@@ -31,27 +49,58 @@ class Media
         return $this->id;
     }
 
-    public function getImageUrl(): ?string
+    public function getFileName(): ?string
     {
-        return $this->image_url;
+        return $this->fileName;
     }
 
-    public function setImageUrl(?string $image_url): static
+    public function setFileName(string $fileName): self
     {
-        $this->image_url = $image_url;
-
+        $this->fileName = $fileName;
         return $this;
     }
 
-    public function getVideoUrl(): ?string
+    public function getOriginalName(): ?string
     {
-        return $this->video_url;
+        return $this->originalName;
     }
 
-    public function setVideoUrl(?string $video_url): static
+    public function setOriginalName(?string $originalName): self
     {
-        $this->video_url = $video_url;
+        $this->originalName = $originalName;
+        return $this;
+    }
 
+    public function getPath(): ?string
+    {
+        return $this->path;
+    }
+
+    public function setPath(string $path): self
+    {
+        $this->path = $path;
+        return $this;
+    }
+
+    public function getMimeType(): ?string
+    {
+        return $this->mimeType;
+    }
+
+    public function setMimeType(?string $mimeType): self
+    {
+        $this->mimeType = $mimeType;
+        return $this;
+    }
+
+    public function getSize(): ?int
+    {
+        return $this->size;
+    }
+
+    public function setSize(?int $size): self
+    {
+        $this->size = $size;
         return $this;
     }
 
@@ -60,10 +109,9 @@ class Media
         return $this->products;
     }
 
-    public function setProducts(?Products $products): static
+    public function setProducts(?Products $products): self
     {
         $this->products = $products;
-
         return $this;
     }
 
@@ -72,10 +120,9 @@ class Media
         return $this->file;
     }
 
-    public function setFile(?UploadedFile $file): static
+    public function setFile(?UploadedFile $file): self
     {
         $this->file = $file;
-
         return $this;
     }
 }

@@ -12,43 +12,48 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class ProductService
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private FileUploaderService $fileUploaderService
+        private readonly EntityManagerInterface $entityManager,
+        private readonly MediaUploadService $mediaUploadService
     ) {}
 
-    public function createProduct(Products $product, Users $user): void
+    public function createProduct(Products $product, Users $user, array $imageFiles = []): void
     {
         $product->setUsers($user);
-        $product->setCreatedAt(new \DateTimeImmutable());
-        
-        $this->handleMediaUpload($product);
+
+        foreach ($imageFiles as $imageFile) {
+            if ($imageFile instanceof UploadedFile) {
+                $media = $this->mediaUploadService->uploadImage($imageFile, 'products');
+                $product->addMedium($media); // Assurez-vous que addMedium existe et fonctionne
+            }
+        }
 
         $this->entityManager->persist($product);
         $this->entityManager->flush();
     }
 
-    public function updateProduct(Products $product): void
+    public function updateProduct(Products $product, array $imageFiles = []): void
     {
-        $this->handleMediaUpload($product);
-        $this->entityManager->flush();
-    }
-
-    private function handleMediaUpload(Products $product): void
-    {
-        foreach ($product->getMedia() as $media) {
-            $file = $media->getFile(); // Supposons que vous ayez une méthode getFile() dans votre entité Media
-            if ($file instanceof UploadedFile) {
-                $fileName = $this->fileUploaderService->upload($file);
-                $media->setImageUrl($fileName);
-                $media->setFile(null); // Supprime le fichier temporaire après l'upload
+        foreach ($imageFiles as $imageFile) {
+            if ($imageFile instanceof UploadedFile) {
+                $media = $this->mediaUploadService->uploadImage($imageFile, 'products');
+                $product->addMedium($media);
             }
         }
+        
+        // La logique pour supprimer des images existantes pourrait être ajoutée ici
+        
+        $this->entityManager->flush();
     }
 
     public function deleteProduct(Products $product): bool
     {
-        if ($product->getOrdersProducts()) {
+        if (!$product->getOrdersProducts()->isEmpty()) {
             return false;
+        }
+
+        // Supprimer les médias associés du système de fichiers
+        foreach ($product->getMedia() as $media) {
+            $this->mediaUploadService->removeImage($media);
         }
 
         $this->entityManager->remove($product);

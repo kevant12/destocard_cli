@@ -16,20 +16,26 @@ class Messages
     #[ORM\Column(length: 255)]
     private ?string $content = null;
 
-    #[ORM\Column(options: ['default' => 'CURRENT_TIMESTAMP'])]
-    private ?\DateTimeImmutable $expeditionDate = null;
+    #[ORM\Column]
+    private ?\DateTimeImmutable $sentAt = null;
 
     #[ORM\Column(length: 255)]
     private ?string $status = null;
 
     #[ORM\Column]
-    private ?bool $isRead = false;
+    private bool $isRead = false;
 
-    #[ORM\ManyToOne(inversedBy: 'sender')]
+    #[ORM\ManyToOne(inversedBy: 'sentMessages')]
     private ?Users $sender = null;
 
-    #[ORM\ManyToOne(inversedBy: 'receper')]
-    private ?Users $receper = null;
+    #[ORM\ManyToOne(inversedBy: 'receivedMessages')]
+    private ?Users $recipient = null;
+
+    public function __construct()
+    {
+        $this->sentAt = new \DateTimeImmutable();
+        $this->isRead = false;
+    }
 
     public function getId(): ?int
     {
@@ -48,14 +54,14 @@ class Messages
         return $this;
     }
 
-    public function getExpeditionDate(): ?\DateTimeImmutable
+    public function getSentAt(): ?\DateTimeImmutable
     {
-        return $this->expeditionDate;
+        return $this->sentAt;
     }
 
-    public function setExpeditionDate(\DateTimeImmutable $expeditionDate): static
+    public function setSentAt(\DateTimeImmutable $sentAt): static
     {
-        $this->expeditionDate = $expeditionDate;
+        $this->sentAt = $sentAt;
 
         return $this;
     }
@@ -72,6 +78,18 @@ class Messages
         return $this;
     }
 
+    public function isRead(): bool
+    {
+        return $this->isRead;
+    }
+
+    public function setIsRead(bool $isRead): static
+    {
+        $this->isRead = $isRead;
+
+        return $this;
+    }
+
     public function getSender(): ?Users
     {
         return $this->sender;
@@ -84,14 +102,14 @@ class Messages
         return $this;
     }
 
-    public function getReceper(): ?Users
+    public function getRecipient(): ?Users
     {
-        return $this->receper;
+        return $this->recipient;
     }
 
-    public function setReceper(?Users $receper): static
+    public function setRecipient(?Users $recipient): static
     {
-        $this->receper = $receper;
+        $this->recipient = $recipient;
 
         return $this;
     }

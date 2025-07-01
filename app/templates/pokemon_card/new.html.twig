@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer une nouvelle carte Pokémon{% endblock %}
+
+{% block body %}
+<main class="main-bg">
+    <section class="container my-5">
+        <h1 class="game-title mb-4">Créer une nouvelle carte Pokémon</h1>
+
+        <div class="card">
+            <div class="card-body">
+                {{ include('pokemon_card/_form.html.twig', {'button_label': 'Créer la carte'}) }}
+            </div>
+        </div>
+        
+        <a href="{{ path('app_pokemon_card_index') }}" class="btn btn-secondary mt-3">Retour à la liste</a>
+    </section>
+</main>
+{% endblock %} 
