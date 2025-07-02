@@ -36,16 +36,12 @@ class MediaUploadService
     public function uploadImage(UploadedFile $file, string $subDirectory): Media
     {
         $media = new Media();
-        $media->setOriginalName($file->getClientOriginalName());
-        $media->setMimeType($file->getMimeType());
-        $media->setSize($file->getSize());
         $media->setFile($file); // Storing the file temporarily for potential further processing
 
         $fileName = $this->generateUniqueFileName($file);
         $media->setFileName($fileName);
         
         $targetDirectory = $this->getTargetDirectory($subDirectory);
-        $media->setPath('/uploads/' . $subDirectory . '/' . $fileName);
 
         try {
             $file->move($targetDirectory, $fileName);
@@ -80,21 +76,18 @@ class MediaUploadService
      * Removes an image file and its associated Media entity.
      *
      * @param Media $media The Media entity to remove.
+     * @param string $subDirectory The subdirectory where the file is stored.
      * @return bool True on success, false on failure.
      */
-    public function removeImage(Media $media): bool
+    public function removeImage(Media $media, string $subDirectory): bool
     {
-        $filePath = $this->basePath . str_replace('/uploads', '', $media->getPath());
+        $filePath = $this->getTargetDirectory($subDirectory) . '/' . $media->getFileName();
 
         try {
             if ($this->filesystem->exists($filePath)) {
                 $this->filesystem->remove($filePath);
             }
             
-            // The Media entity should be removed from the database by the caller
-            // $this->em->remove($media);
-            // $this->em->flush();
-
             return true;
         } catch (\Exception $e) {
             $this->logger->error('Failed to remove file: ' . $e->getMessage());
@@ -130,16 +123,15 @@ class MediaUploadService
      * Get the full public URL for a media entity.
      *
      * @param Media|null $media
+     * @param string $subDirectory The subdirectory for the media entity.
      * @return string|null
      */
-    public function getUrl(?Media $media): ?string
+    public function getUrl(?Media $media, string $subDirectory): ?string
     {
-        if (!$media || !$media->getPath()) {
+        if (!$media || !$media->getFileName()) {
             return null;
         }
-        // Assuming the app is hosted at the root of the domain.
-        // Modify if your app is in a subdirectory.
-        return $media->getPath();
+        return '/uploads/' . $subDirectory . '/' . $media->getFileName();
     }
 
     /**

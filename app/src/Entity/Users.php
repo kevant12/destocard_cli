@@ -45,17 +45,11 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 20)]
     private ?string $phoneNumber = null;
 
-    #[ORM\Column(options: ['default' => 'CURRENT_TIMESTAMP'])]
+    #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $lastLogin = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?int $averageRating = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?int $ratingCount = null;
 
     #[ORM\Column(nullable: true)]
     private ?bool $isVerified = false;
@@ -116,6 +110,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
         $this->likes = new ArrayCollection();
         $this->sentMessages = new ArrayCollection();
         $this->receivedMessages = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -263,30 +258,6 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getAverageRating(): ?int
-    {
-        return $this->averageRating;
-    }
-
-    public function setAverageRating(?int $averageRating): static
-    {
-        $this->averageRating = $averageRating;
-
-        return $this;
-    }
-
-    public function getRatingCount(): ?int
-    {
-        return $this->ratingCount;
-    }
-
-    public function setRatingCount(?int $ratingCount): static
-    {
-        $this->ratingCount = $ratingCount;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Addresses>
      */
@@ -389,6 +360,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->likes->contains($like)) {
             $this->likes->add($like);
+            $like->addLike($this);
         }
 
         return $this;
@@ -396,7 +368,9 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeLike(Products $like): static
     {
-        $this->likes->removeElement($like);
+        if ($this->likes->removeElement($like)) {
+            $like->removeLike($this);
+        }
 
         return $this;
     }

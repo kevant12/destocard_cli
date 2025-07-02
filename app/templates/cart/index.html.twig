@@ -27,7 +27,7 @@
                             <td class="cart-product-name">{{ item.product.title }}</td>
                             <td class="cart-product-image">
                                 {% if item.product.media|first %}
-                                    <img src="{{ asset(item.product.media|first.path) }}" alt="{{ item.product.title }}" style="width: 50px; height: 50px; object-fit: cover;">
+                                    <img src="{{ asset('uploads/products/' ~ item.product.media|first.fileName) }}" alt="{{ item.product.title }}" style="width: 50px; height: 50px; object-fit: cover;">
                                 {% else %}
                                     <img src="{{ asset('images/placeholder.png') }}" alt="Image non disponible" style="width: 50px; height: 50px; object-fit: cover;">
                                 {% endif %}

@@ -10,8 +10,8 @@
 
     <div class="product-detail-content">
         <div class="product-detail-image">
-            {% if product.media|length > 0 %}
-                <img src="{{ asset(product.media|first.path) }}" alt="{{ product.title }}" class="main-product-image">
+            {% if product.media|first %}
+                <img src="{{ asset('uploads/products/' ~ product.media|first.fileName) }}" alt="{{ product.title }}" class="main-product-image">
             {% else %}
                 <img src="{{ asset('images/placeholder.png') }}" alt="Image non disponible" class="main-product-image">
             {% endif %}
@@ -72,8 +72,8 @@
       "name": "{{ product.title }}",
       "description": "{{ product.description|default('')|striptags|e('js') }}",
       "image": [
-        {% if product.media|length > 0 %}
-          "{{ absolute_url(asset(product.media|first.path)) }}"
+        {% if product.media|first %}
+          "{{ absolute_url(asset('uploads/products/' ~ product.media|first.fileName)) }}"
         {% else %}
           "{{ absolute_url(asset('images/placeholder.png')) }}"
         {% endif %}

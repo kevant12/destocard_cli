@@ -53,7 +53,7 @@ class ProductService
 
         // Supprimer les médias associés du système de fichiers
         foreach ($product->getMedia() as $media) {
-            $this->mediaUploadService->removeImage($media);
+            $this->mediaUploadService->removeImage($media, 'products');
         }
 
         $this->entityManager->remove($product);

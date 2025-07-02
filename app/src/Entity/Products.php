@@ -21,7 +21,7 @@ class Products
     #[ORM\Column]
     private ?int $quantity = null;
 
-    #[ORM\Column]
+    #[ORM\Column(options: ["default" => "CURRENT_TIMESTAMP"])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(length: 100)]

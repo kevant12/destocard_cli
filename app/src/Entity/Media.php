@@ -45,50 +45,6 @@ class Media
         return $this;
     }
 
-    public function getOriginalName(): ?string
-    {
-        return $this->originalName;
-    }
-
-    public function setOriginalName(?string $originalName): self
-    {
-        $this->originalName = $originalName;
-        return $this;
-    }
-
-    public function getPath(): ?string
-    {
-        return $this->path;
-    }
-
-    public function setPath(string $path): self
-    {
-        $this->path = $path;
-        return $this;
-    }
-
-    public function getMimeType(): ?string
-    {
-        return $this->mimeType;
-    }
-
-    public function setMimeType(?string $mimeType): self
-    {
-        $this->mimeType = $mimeType;
-        return $this;
-    }
-
-    public function getSize(): ?int
-    {
-        return $this->size;
-    }
-
-    public function setSize(?int $size): self
-    {
-        $this->size = $size;
-        return $this;
-    }
-
     public function getProducts(): ?Products
     {
         return $this->products;

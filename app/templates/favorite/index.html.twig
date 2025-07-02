@@ -12,8 +12,10 @@
         <div class="products-grid">
             {% for product in favorites %}
                 <div class="product-card">
-                    {% if product.media|length > 0 %}
-                        <img src="{{ asset('upload/' ~ product.media|first.fileName) }}" alt="{{ product.title }}">
+                    {% if product.media|first %}
+                        <img src="{{ asset('uploads/products/' ~ product.media|first.fileName) }}" alt="{{ product.title }}">
+                    {% else %}
+                        <img src="{{ asset('images/placeholder.png') }}" alt="Image non disponible">
                     {% endif %}
                     <h3>{{ product.title }}</h3>
                     <p class="price">{{ product.price }} €</p>

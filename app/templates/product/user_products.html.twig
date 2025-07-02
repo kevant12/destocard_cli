@@ -26,8 +26,8 @@
             {% for product in pagination %}
                 <div class="card product-card--user {% if product.quantity == 0 %}is-unavailable{% endif %}">
                     <a href="{{ path('app_product_show', {'id': product.id}) }}" class="card__image-container">
-                        {% if product.media|first and product.media|first.path %}
-                            <img src="{{ asset(product.media|first.path) }}" alt="{{ product.title }}">
+                        {% if product.media|first %}
+                            <img src="{{ asset('uploads/products/' ~ product.media|first.fileName) }}" alt="{{ product.title }}">
                         {% else %}
                             <img src="{{ asset('images/placeholder.png') }}" alt="Image non disponible">
                         {% endif %}
