@@ -1,163 +1,118 @@
 /**
- * product-form.js
- * Gère l'ajout de médias (upload et webcam) pour le formulaire de produit.
- * Conçu pour être utilisé avec l'attribut defer, sans dépendances.
+ * DESTOCARD - PRODUCT FORM MANAGEMENT
+ * Gestion des formulaires de produits avec webcam et prévisualisation
+ * 
+ * Script chargé avec defer - fonctions disponibles pour utilisation manuelle
  */
 
-// On attend que le DOM soit prêt, mais sans utiliser DOMContentLoaded pour rester simple
-const productForm = document.querySelector('form.product-add-form');
-
-if (productForm) {
-    // --- Éléments du DOM ---
-    const mediaCollectionWrapper = productForm.querySelector('.media-collection-wrapper');
-    const addFileBtn = productForm.querySelector('.add-media-button');
-    const previewsContainer = productForm.querySelector('.media-previews');
-
-    // Webcam
-    const startWebcamBtn = productForm.querySelector('.start-webcam-btn');
-    const capturePhotoBtn = productForm.querySelector('.capture-photo-btn');
-    const retakePhotoBtn = productForm.querySelector('.retake-photo-btn');
-    const addCapturedPhotoBtn = productForm.querySelector('.add-captured-photo-btn');
-    const webcamVideo = productForm.querySelector('.webcam-video');
-    const webcamCanvas = productForm.querySelector('.webcam-canvas');
-    const webcamWrapper = productForm.querySelector('.webcam-capture-section');
-
-    let mediaIndex = mediaCollectionWrapper?.querySelectorAll('.media-item').length || 0;
-    let photoStream = null;
-
-    // --- Fonctions Utilitaires ---
-
-    /**
-     * Affiche un aperçu d'un fichier image et retourne l'élément d'aperçu.
-     * @param {File|string} source - Un objet File ou une Data URI.
-     * @returns {HTMLElement|null} L'élément wrapper de l'aperçu.
-     */
-    const displayPreview = (source) => {
-        if (!previewsContainer) return null;
-
-        const previewWrapper = document.createElement('div');
-        previewWrapper.className = 'media-preview-item';
-
-        const img = document.createElement('img');
-        img.src = (typeof source === 'string') ? source : URL.createObjectURL(source);
+/**
+ * Initialise la prévisualisation des images
+ */
+function initImagePreview() {
+    const fileInput = document.querySelector('input[type="file"][multiple]');
+    const previewContainer = document.getElementById('image-preview-container');
+    
+    if (!fileInput || !previewContainer) return;
+    
+    fileInput.addEventListener('change', function() {
+        previewContainer.innerHTML = '';
         
-        img.onload = () => {
-            if (typeof source !== 'string') {
-                URL.revokeObjectURL(img.src); // Libère la mémoire pour les objets File
-            }
-        };
-
-        const removeButton = document.createElement('button');
-        removeButton.className = 'remove-media-btn';
-        removeButton.textContent = '×';
-        removeButton.title = 'Supprimer ce média';
-        removeButton.type = 'button';
-
-        previewWrapper.appendChild(img);
-        previewWrapper.appendChild(removeButton);
-        previewsContainer.appendChild(previewWrapper);
-
-        return previewWrapper;
-    };
-
-    /**
-     * Ajoute un nouveau champ de formulaire MediaType au DOM.
-     * @returns {HTMLElement|null} Le conteneur du nouveau champ de formulaire.
-     */
-    const addMediaFormPrototype = () => {
-        const prototype = mediaCollectionWrapper?.dataset.prototype;
-        if (!prototype) {
-            console.error("Le prototype de collection de médias est introuvable.");
-            return null;
-        }
-
-        const newFormHtml = prototype.replace(/__name__/g, mediaIndex);
-        const newFormContainer = document.createElement('div');
-        newFormContainer.className = 'media-item';
-        newFormContainer.style.display = 'none'; // Le champ est caché, géré par l'aperçu
-        newFormContainer.innerHTML = newFormHtml;
-
-        mediaCollectionWrapper.appendChild(newFormContainer);
-        mediaIndex++;
-
-        return newFormContainer;
-    };
-
-    // --- Logique Principale ---
-
-    // 1. Ajout via sélecteur de fichier
-    addFileBtn?.addEventListener('click', () => {
-        const formContainer = addMediaFormPrototype();
-        if (!formContainer) return;
-
-        const fileInput = formContainer.querySelector('input[type=file]');
-        fileInput.click(); // Ouvre le dialogue de fichier
-
-        fileInput.addEventListener('change', () => {
-            if (fileInput.files.length > 0) {
-                const file = fileInput.files[0];
-                const previewWrapper = displayPreview(file);
-                if (previewWrapper) {
-                    previewWrapper.querySelector('.remove-media-btn').addEventListener('click', () => {
-                        formContainer.remove();
-                        previewWrapper.remove();
-                    });
-                }
-            } else {
-                formContainer.remove(); // Si l'utilisateur annule la sélection
+        Array.from(this.files).forEach(file => {
+            if (file.type.startsWith('image/')) {
+                const img = document.createElement('img');
+                img.className = 'img-preview';
+                img.src = URL.createObjectURL(file);
+                img.onload = () => URL.revokeObjectURL(img.src);
+                previewContainer.appendChild(img);
             }
         });
     });
+}
 
-    // 2. Ajout via Webcam
-    startWebcamBtn?.addEventListener('click', async () => {
+/**
+ * Initialise la gestion de la webcam
+ */
+function initWebcamModal() {
+    const webcamButton = document.getElementById('webcam-button');
+    const modal = document.getElementById('webcam-modal');
+    const video = document.getElementById('webcam-video');
+    const canvas = document.getElementById('webcam-canvas');
+    const captureButton = document.getElementById('capture-button');
+    const closeButton = document.getElementById('close-webcam-button');
+    const fileInput = document.querySelector('input[type="file"][multiple]');
+    
+    if (!webcamButton || !modal || !video || !canvas || !captureButton || !closeButton || !fileInput) {
+        return;
+    }
+    
+    let stream = null;
+
+    // Ouvrir la webcam
+    webcamButton.addEventListener('click', async function() {
         try {
-            photoStream = await navigator.mediaDevices.getUserMedia({ video: true });
-            webcamVideo.srcObject = photoStream;
-            webcamWrapper.classList.add('is-capturing');
-            webcamWrapper.classList.remove('is-captured');
+            stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            video.srcObject = stream;
+            modal.style.display = 'flex';
+            modal.setAttribute('aria-hidden', 'false');
         } catch (err) {
-            alert(`Erreur d'accès à la webcam: ${err.message}`);
+            console.error('Erreur webcam:', err);
+            alert('Impossible d\'accéder à la webcam : ' + err.message);
         }
     });
 
-    capturePhotoBtn?.addEventListener('click', () => {
-        webcamCanvas.width = webcamVideo.videoWidth;
-        webcamCanvas.height = webcamVideo.videoHeight;
-        webcamCanvas.getContext('2d').drawImage(webcamVideo, 0, 0);
-
-        if (photoStream) {
-            photoStream.getTracks().forEach(track => track.stop());
-            photoStream = null;
-        }
-        webcamWrapper.classList.remove('is-capturing');
-        webcamWrapper.classList.add('is-captured');
-    });
-
-    addCapturedPhotoBtn?.addEventListener('click', () => {
-        const dataURI = webcamCanvas.toDataURL('image/png');
-        const formContainer = addMediaFormPrototype();
-        if (!formContainer) return;
-
-        const fileInput = formContainer.querySelector('input[type=file]');
-        // C'est ici que la magie opère pour le transformer
-        fileInput.type = 'hidden';
-        fileInput.value = dataURI;
-
-        const previewWrapper = displayPreview(dataURI);
-        if (previewWrapper) {
-            previewWrapper.querySelector('.remove-media-btn').addEventListener('click', () => {
-                formContainer.remove();
-                previewWrapper.remove();
-            });
-        }
+    // Capturer une photo
+    captureButton.addEventListener('click', function() {
+        const context = canvas.getContext('2d');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0);
         
-        webcamWrapper.classList.remove('is-captured');
-        alert('Photo ajoutée !');
+        canvas.toBlob(function(blob) {
+            const file = new File([blob], 'webcam_capture.png', { type: 'image/png' });
+            
+            // Créer un nouveau FileList avec le fichier capturé
+            const dt = new DataTransfer();
+            // Ajouter les fichiers existants
+            Array.from(fileInput.files).forEach(f => dt.items.add(f));
+            // Ajouter la nouvelle capture
+            dt.items.add(file);
+            fileInput.files = dt.files;
+            
+            // Déclencher l'événement change pour la prévisualisation
+            fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+            
+            // Fermer la modal
+            closeWebcam();
+        }, 'image/png');
     });
 
-    retakePhotoBtn?.addEventListener('click', () => {
-        webcamWrapper.classList.remove('is-captured');
-        startWebcamBtn.click();
+    // Fermer la webcam
+    closeButton.addEventListener('click', closeWebcam);
+
+    // Fermer la modal en cliquant à l'extérieur
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeWebcam();
+        }
     });
+
+    // Fermer avec Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.style.display === 'flex') {
+            closeWebcam();
+        }
+    });
+
+    /**
+     * Ferme la webcam et la modal
+     */
+    function closeWebcam() {
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+            stream = null;
+        }
+        modal.style.display = 'none';
+        modal.setAttribute('aria-hidden', 'true');
+        video.srcObject = null;
+    }
 }

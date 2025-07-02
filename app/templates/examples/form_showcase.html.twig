@@ -1,0 +1,292 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Showcase des Formulaires - Destocard{% endblock %}
+
+{% block body %}
+<div class="form-container">
+    <h1 class="site-title">Showcase des Formulaires Destocard</h1>
+    <p class="text-center">Démonstration du système de formulaires complet</p>
+
+    {# Formulaire d'authentification type #}
+    <section class="form-page">
+        <div class="auth-card">
+            <h2 class="site-title">Formulaire d'Authentification</h2>
+            
+            <form method="post">
+                <div class="form-group">
+                    <label for="email" class="form-label form-required">Email</label>
+                    <input type="email" id="email" class="form-control" placeholder="votre@email.com" required>
+                    <div class="form-help">Nous ne partagerons jamais votre email</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label form-required">Mot de passe</label>
+                    <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+                </div>
+
+                <div class="form-check">
+                    <input type="checkbox" id="remember" class="form-check-input">
+                    <label for="remember" class="form-check-label">Se souvenir de moi</label>
+                </div>
+
+                <div class="form-actions form-actions--center">
+                    <button type="submit" class="btn btn--primary">Se connecter</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    {# Formulaire de produit avancé #}
+    <section>
+        <h2>Formulaire de Produit (Layout Avancé)</h2>
+        
+        <form method="post" enctype="multipart/form-data">
+            <div class="form-columns">
+                <div class="form-column-left">
+                    <fieldset>
+                        <legend>Informations Produit</legend>
+                        
+                        <div class="form-group">
+                            <label for="title" class="form-label form-required">Titre du produit</label>
+                            <input type="text" id="title" class="form-control" placeholder="Ex: Dracaufeu Holographique">
+                            <div class="form-counter">0/100 caractères</div>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="category" class="form-label">Catégorie</label>
+                                <select id="category" class="form-control">
+                                    <option value="">Choisir une catégorie</option>
+                                    <option value="cards">Cartes à collectionner</option>
+                                    <option value="figures">Figurines</option>
+                                    <option value="accessories">Accessoires</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="price" class="form-label form-required">Prix (€)</label>
+                                <input type="number" id="price" class="form-control" min="0" step="0.01" placeholder="0.00">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">État du produit</label>
+                            <div class="form-radio-group">
+                                <div class="form-check">
+                                    <input type="radio" id="new" name="condition" value="new" class="form-check-input">
+                                    <label for="new" class="form-check-label">Neuf</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="radio" id="excellent" name="condition" value="excellent" class="form-check-input">
+                                    <label for="excellent" class="form-check-label">Excellent</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="radio" id="good" name="condition" value="good" class="form-check-input">
+                                    <label for="good" class="form-check-label">Bon</label>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="form-column-right">
+                    <fieldset>
+                        <legend>Description & Médias</legend>
+                        
+                        <div class="form-group">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea id="description" class="form-control" rows="5" placeholder="Décrivez votre article en détail..."></textarea>
+                            <div class="form-help">Une bonne description augmente vos chances de vente</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Photos du produit</label>
+                            <div class="form-image-upload">
+                                <div class="form-file-input">
+                                    <input type="file" id="images" multiple accept="image/*">
+                                    <label for="images" class="form-file-label">
+                                        📷 Choisir des photos
+                                    </label>
+                                </div>
+                                <button type="button" class="btn btn--secondary">📱 Webcam</button>
+                            </div>
+                            <div id="image-preview-container"></div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn--secondary">Aperçu</button>
+                <button type="submit" class="btn btn--primary">Publier l'annonce</button>
+            </div>
+        </form>
+    </section>
+
+    {# Formulaire de recherche avec filtres #}
+    <section>
+        <h2>Filtres de Recherche</h2>
+        
+        <div class="search-filters">
+            <form method="get">
+                <div class="form-inline">
+                    <div class="form-group">
+                        <label for="search" class="form-label">Rechercher</label>
+                        <input type="search" id="search" class="form-control" placeholder="Nom de carte, Pokémon...">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="filter-category" class="form-label">Catégorie</label>
+                        <select id="filter-category" class="form-control">
+                            <option value="">Toutes</option>
+                            <option value="cards">Cartes</option>
+                            <option value="figures">Figurines</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="filter-price" class="form-label">Prix max (€)</label>
+                        <input type="number" id="filter-price" class="form-control" min="0" placeholder="100">
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn--primary">🔍 Rechercher</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    {# Exemples de validation #}
+    <section>
+        <h2>États de Validation</h2>
+        
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="valid-field" class="form-label">Champ valide</label>
+                <input type="text" id="valid-field" class="form-control valid" value="Valeur correcte">
+                <div class="form-help">✓ Ce champ est valide</div>
+            </div>
+
+            <div class="form-group">
+                <label for="invalid-field" class="form-label">Champ invalide</label>
+                <input type="email" id="invalid-field" class="form-control is-invalid" value="email-invalide">
+                <div class="form-error">Veuillez saisir une adresse email valide</div>
+            </div>
+
+            <div class="form-group">
+                <label for="disabled-field" class="form-label">Champ désactivé</label>
+                <input type="text" id="disabled-field" class="form-control" value="Non modifiable" disabled>
+            </div>
+
+            <div class="form-group">
+                <label for="loading-field" class="form-label">Champ en chargement</label>
+                <div class="form-loading">
+                    <input type="text" id="loading-field" class="form-control" placeholder="Chargement...">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# Formulaire avec icônes #}
+    <section>
+        <h2>Formulaire avec Icônes</h2>
+        
+        <div class="form-grid">
+            <div class="form-group-icon">
+                <label for="email-icon" class="form-label">Email avec icône</label>
+                <div class="form-icon">📧</div>
+                <input type="email" id="email-icon" class="form-control" placeholder="votre@email.com">
+            </div>
+
+            <div class="form-group-icon">
+                <label for="phone-icon" class="form-label">Téléphone avec icône</label>
+                <div class="form-icon">📱</div>
+                <input type="tel" id="phone-icon" class="form-control" placeholder="06 12 34 56 78">
+            </div>
+        </div>
+    </section>
+
+    {# Guide d'utilisation #}
+    <section style="margin-top: 3rem; padding: 2rem; background-color: var(--surface-elevated); border-radius: var(--border-radius-lg);">
+        <h2>Guide d'Utilisation</h2>
+        
+        <h3>Classes Principales</h3>
+        <ul>
+            <li><code>.form-container</code> - Conteneur principal pour les formulaires</li>
+            <li><code>.form-columns</code> - Layout en 2 colonnes responsive</li>
+            <li><code>.form-grid</code> - Grille flexible pour plusieurs champs</li>
+            <li><code>.form-group</code> - Groupe de champ avec espacement</li>
+            <li><code>.form-label</code> - Label stylisé et accessible</li>
+            <li><code>.form-control</code> - Champ de saisie standard</li>
+            <li><code>.form-actions</code> - Conteneur pour les boutons d'action</li>
+        </ul>
+
+        <h3>Classes de Validation</h3>
+        <ul>
+            <li><code>.valid</code> - État valide (bordure verte)</li>
+            <li><code>.is-invalid</code> - État invalide (bordure rouge)</li>
+            <li><code>.form-error</code> - Message d'erreur</li>
+            <li><code>.form-help</code> - Texte d'aide</li>
+        </ul>
+
+        <h3>Composants Spéciaux</h3>
+        <ul>
+            <li><code>.form-check</code> - Checkbox/Radio button</li>
+            <li><code>.form-radio-group</code> - Groupe de radio buttons</li>
+            <li><code>.form-file-input</code> - Upload de fichier stylisé</li>
+            <li><code>.search-filters</code> - Panneau de filtres</li>
+            <li><code>.form-loading</code> - État de chargement</li>
+        </ul>
+    </section>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Compteur de caractères
+    const titleInput = document.getElementById('title');
+    const counter = titleInput.parentNode.querySelector('.form-counter');
+    
+    titleInput.addEventListener('input', function() {
+        const length = this.value.length;
+        counter.textContent = `${length}/100 caractères`;
+        
+        if (length > 80) {
+            counter.className = 'form-counter warning';
+        } else if (length > 95) {
+            counter.className = 'form-counter error';
+        } else {
+            counter.className = 'form-counter';
+        }
+    });
+
+    // Prévisualisation des images
+    const fileInput = document.getElementById('images');
+    const previewContainer = document.getElementById('image-preview-container');
+    
+    fileInput.addEventListener('change', function() {
+        previewContainer.innerHTML = '';
+        
+        Array.from(this.files).forEach(file => {
+            if (file.type.startsWith('image/')) {
+                const img = document.createElement('img');
+                img.className = 'img-preview';
+                img.src = URL.createObjectURL(file);
+                img.onload = () => URL.revokeObjectURL(img.src);
+                previewContainer.appendChild(img);
+            }
+        });
+    });
+
+    // Validation en temps réel de l'email
+    const emailField = document.getElementById('invalid-field');
+    emailField.addEventListener('input', function() {
+        const isValid = this.value.includes('@') && this.value.includes('.');
+        this.className = isValid ? 'form-control valid' : 'form-control is-invalid';
+    });
+});
+</script>
+{% endblock %} 

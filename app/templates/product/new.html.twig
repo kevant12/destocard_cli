@@ -3,7 +3,7 @@
 {% block title %}Mettre un nouvel article en vente{% endblock %}
 
 {% block body %}
-<div class="form-container container">
+<div class="form-container">
     <h1 class="site-title">Mettre un nouvel article en vente</h1>
 
     {{ form_start(form) }}
@@ -11,43 +11,84 @@
             <div class="form-column-left">
                 <fieldset>
                     <legend>Détails de l'article</legend>
-                    <div class="form-row">{{ form_row(form.title) }}</div>
-                    <div class="form-row">{{ form_row(form.number) }}</div>
-                    <div class="form-row">{{ form_row(form.category) }}</div>
-                    <div class="form-row">{{ form_row(form.price) }}</div>
+                    
+                    <div class="form-group">
+                        {{ form_label(form.title, null, {'attr': {'class': 'form-label form-required'}}) }}
+                        {{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Ex: Dracaufeu Holographique'}}) }}
+                        {{ form_errors(form.title) }}
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            {{ form_label(form.number, null, {'attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.number, {'attr': {'class': 'form-control', 'placeholder': 'Ex: 4/102'}}) }}
+                            {{ form_errors(form.number) }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.category, null, {'attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.category, {'attr': {'class': 'form-control', 'placeholder': 'Ex: Carte Pokémon'}}) }}
+                            {{ form_errors(form.category) }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.price, null, {'attr': {'class': 'form-label form-required'}}) }}
+                        {{ form_widget(form.price, {'attr': {'class': 'form-control', 'min': '0', 'step': '0.01', 'placeholder': '0.00'}}) }}
+                        {{ form_errors(form.price) }}
+                        <div class="form-help">Prix en euros (€)</div>
+                    </div>
                 </fieldset>
             </div>
+
             <div class="form-column-right">
                 <fieldset>
-                    <legend>Description</legend>
-                    <div class="form-row">{{ form_row(form.description) }}</div>
-                </fieldset>
-                <fieldset>
-                    <legend>Photos</legend>
-                    <div class="form-row">
-                        {{ form_label(form.imageFiles) }}
+                    <legend>Description & Médias</legend>
+                    
+                    <div class="form-group">
+                        {{ form_label(form.description, null, {'attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': '5', 'placeholder': 'Décrivez votre article en détail...'}}) }}
+                        {{ form_errors(form.description) }}
+                        <div class="form-help">Une bonne description augmente vos chances de vente</div>
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.imageFiles, 'Photos de votre article', {'attr': {'class': 'form-label'}}) }}
                         <div class="form-image-upload">
-                             {{ form_widget(form.imageFiles) }}
-                             <button type="button" id="webcam-button" class="btn btn--secondary" aria-label="Utiliser la webcam pour prendre une photo">Webcam</button>
+                            <div class="form-file-input">
+                                {{ form_widget(form.imageFiles, {'attr': {'accept': 'image/*', 'multiple': true}}) }}
+                                <label for="{{ form.imageFiles.vars.id }}" class="form-file-label">
+                                    📷 Choisir des photos (PNG, JPG)
+                                </label>
+                            </div>
+                            <button type="button" id="webcam-button" class="btn btn--secondary" aria-label="Utiliser la webcam pour prendre une photo">
+                                📱 Webcam
+                            </button>
                         </div>
                         {{ form_errors(form.imageFiles) }}
+                        <div class="form-help">Formats acceptés : PNG, JPG - Taille max : 5MB par fichier</div>
                         <div id="image-preview-container"></div>
                     </div>
                 </fieldset>
             </div>
         </div>
-        <button type="submit" class="btn btn--primary">Mettre en vente</button>
+
+        <div class="form-actions">
+            <a href="{{ path('app_user_products') }}" class="btn btn--secondary">Annuler</a>
+            <button type="submit" class="btn btn--primary">🚀 Mettre en vente</button>
+        </div>
     {{ form_end(form) }}
 </div>
 
 {# Modale pour la webcam #}
 <div id="webcam-modal" class="webcam-modal" style="display: none;" aria-hidden="true" role="dialog">
     <div class="webcam-modal-content">
+        <h3>Prendre une photo avec la webcam</h3>
         <video id="webcam-video" autoplay playsinline aria-label="Aperçu de la webcam"></video>
         <canvas id="webcam-canvas" style="display: none;"></canvas>
         <div class="webcam-controls">
-            <button type="button" id="capture-button" class="btn btn--primary" aria-label="Capturer la photo">Prendre la photo</button>
-            <button type="button" id="close-webcam-button" class="btn btn--secondary" aria-label="Fermer la webcam">Fermer</button>
+            <button type="button" id="capture-button" class="btn btn--primary" aria-label="Capturer la photo">📸 Prendre la photo</button>
+            <button type="button" id="close-webcam-button" class="btn btn--secondary" aria-label="Fermer la webcam">❌ Fermer</button>
         </div>
     </div>
 </div>
@@ -55,5 +96,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('js/webcam.js') }}" defer></script>
+    <script src="{{ asset('js/product-form.js') }}" defer></script>
 {% endblock %} 

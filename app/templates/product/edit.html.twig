@@ -4,32 +4,150 @@
 
 {% block body %}
 <div class="form-container">
-    <h1>Modifier l'article</h1>
+    <h1 class="site-title">Modifier l'article</h1>
 
     {{ form_start(form) }}
         <div class="form-columns">
             <div class="form-column-left">
                 <fieldset>
                     <legend>Détails de l'article</legend>
-                    <div class="form-row">{{ form_row(form.title) }}</div>
-                    <div class="form-row">{{ form_row(form.number) }}</div>
-                    <div class="form-row">{{ form_row(form.category) }}</div>
-                    <div class="form-row">{{ form_row(form.price) }}</div>
+                    
+                    <div class="form-group">
+                        {{ form_label(form.title, null, {'attr': {'class': 'form-label form-required'}}) }}
+                        {{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Ex: Dracaufeu Holographique'}}) }}
+                        {{ form_errors(form.title) }}
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            {{ form_label(form.number, null, {'attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.number, {'attr': {'class': 'form-control', 'placeholder': 'Ex: 4/102'}}) }}
+                            {{ form_errors(form.number) }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.category, null, {'attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.category, {'attr': {'class': 'form-control', 'placeholder': 'Ex: Carte Pokémon'}}) }}
+                            {{ form_errors(form.category) }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.price, null, {'attr': {'class': 'form-label form-required'}}) }}
+                        {{ form_widget(form.price, {'attr': {'class': 'form-control', 'min': '0', 'step': '0.01', 'placeholder': '0.00'}}) }}
+                        {{ form_errors(form.price) }}
+                        <div class="form-help">Prix en euros (€)</div>
+                    </div>
                 </fieldset>
             </div>
+
             <div class="form-column-right">
                 <fieldset>
-                    <legend>Description</legend>
-                    <div class="form-row">{{ form_row(form.description) }}</div>
-                </fieldset>
-                <fieldset>
-                    <legend>Photos</legend>
-                    <div class="form-row">{{ form_row(form.imageFiles) }}</div>
-                    {# Vous pourriez ajouter ici une prévisualisation des images existantes #}
+                    <legend>Description & Médias</legend>
+                    
+                    <div class="form-group">
+                        {{ form_label(form.description, null, {'attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': '5', 'placeholder': 'Décrivez votre article en détail...'}}) }}
+                        {{ form_errors(form.description) }}
+                        <div class="form-help">Une bonne description augmente vos chances de vente</div>
+                    </div>
+
+                    {% if form.imageFiles is defined %}
+                    <div class="form-group">
+                        {{ form_label(form.imageFiles, 'Nouvelles photos', {'attr': {'class': 'form-label'}}) }}
+                        <div class="form-image-upload">
+                            <div class="form-file-input">
+                                {{ form_widget(form.imageFiles, {'attr': {'accept': 'image/*', 'multiple': true}}) }}
+                                <label for="{{ form.imageFiles.vars.id }}" class="form-file-label">
+                                    📷 Ajouter de nouvelles photos
+                                </label>
+                            </div>
+                        </div>
+                        {{ form_errors(form.imageFiles) }}
+                        <div class="form-help">Laissez vide pour conserver les photos actuelles</div>
+                        <div id="image-preview-container"></div>
+                    </div>
+                    {% endif %}
+
+                    {# Affichage des images existantes #}
+                    {% if product.media|length > 0 %}
+                    <div class="form-group">
+                        <label class="form-label">Photos actuelles</label>
+                        <div class="current-images">
+                            {% for media in product.media %}
+                                <div class="current-image-item">
+                                    <img src="{{ asset('uploads/products/' ~ media.fileName) }}" alt="{{ product.title }}" class="img-preview">
+                                    <small>{{ media.fileName }}</small>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="form-help">Pour supprimer ou remplacer ces images, contactez le support</div>
+                    </div>
+                    {% endif %}
                 </fieldset>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+
+        <div class="form-actions">
+            <a href="{{ path('app_user_products') }}" class="btn btn--secondary">Annuler</a>
+            <button type="submit" class="btn btn--primary">💾 Enregistrer les modifications</button>
+        </div>
     {{ form_end(form) }}
 </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Prévisualisation des nouvelles images
+            const fileInput = document.querySelector('input[type="file"][multiple]');
+            const previewContainer = document.getElementById('image-preview-container');
+            
+            if (fileInput && previewContainer) {
+                fileInput.addEventListener('change', function() {
+                    previewContainer.innerHTML = '';
+                    
+                    Array.from(this.files).forEach(file => {
+                        if (file.type.startsWith('image/')) {
+                            const img = document.createElement('img');
+                            img.className = 'img-preview';
+                            img.src = URL.createObjectURL(file);
+                            img.onload = () => URL.revokeObjectURL(img.src);
+                            previewContainer.appendChild(img);
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+    
+    <style>
+        .current-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .current-image-item {
+            text-align: center;
+        }
+
+        .current-image-item img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: var(--border-radius-md);
+            border: 2px solid var(--border-color);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .current-image-item small {
+            display: block;
+            color: var(--muted-text-color);
+            font-size: var(--font-size-xs);
+            word-break: break-all;
+        }
+    </style>
 {% endblock %}
