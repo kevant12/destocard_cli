@@ -32,7 +32,7 @@
             <div class="product-detail-actions">
                 {% if app.user %}
                     <button 
-                        class="favorite-toggle-btn {% if app.user and product in app.user.likes %}is-liked{% endif %}"
+                        class="btn-like {% if app.user and product in app.user.likes %}is-liked{% endif %}"
                         data-product-id="{{ product.id }}"
                         data-csrf-token="{{ csrf_token('toggle_favorite' ~ product.id) }}"
                         title="{% if app.user and product in app.user.likes %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}"
@@ -96,44 +96,6 @@
     }
     </script>
     <script>
-        const favoriteButtons = document.querySelectorAll('.favorite-toggle-btn');
-
-        favoriteButtons.forEach(button => {
-            button.addEventListener('click', async (e) => {
-                e.preventDefault();
-                const productId = button.dataset.productId;
-                const csrfToken = button.dataset.csrfToken;
-                const url = `/favorite/toggle/${productId}`;
-
-                try {
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: new URLSearchParams({ '_token': csrfToken })
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('La réponse du réseau n\'était pas bonne.');
-                    }
-
-                    const data = await response.json();
-
-                    if (data.success) {
-                        button.classList.toggle('is-liked', data.isLiked);
-                    } else {
-                        console.error('Erreur lors de la mise à jour des favoris:', data.error);
-                    }
-
-                } catch (error) {
-                    console.error('Il y a eu un problème avec l\'opération fetch:', error);
-                }
-            });
-        });
-    </script>
-    <script>
         const addToCartForm = document.querySelector('.add-to-cart-form');
 
         if (addToCartForm) {
@@ -179,7 +141,7 @@
 
                     } else {
                         console.error('Erreur lors de l\'ajout au panier:', data.error);
-                        // Optionnel: afficher l'erreur à l'utilisateur
+                        alert(data.error);
                     }
 
                 } catch (error) {

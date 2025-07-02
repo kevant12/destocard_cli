@@ -115,41 +115,6 @@ class CartController extends AbstractController
         ]);
     }
 
-    #[Route('/cart/update/{id}', name: 'cart_update', methods: ['POST'])]
-    public function updateQuantity(int $id, Request $request): Response
-    {
-        // Valider le jeton CSRF
-        if (!$this->isCsrfTokenValid('cart_update' . $id, $request->request->get('_token'))) {
-            return $this->json(['success' => false, 'error' => 'Jeton CSRF invalide.'], 403);
-        }
-
-        try {
-            $quantity = (int) $request->request->get('quantity', 1);
-            $result = $this->cartService->updateQuantity($id, $quantity);
-
-            if ($request->isXmlHttpRequest()) {
-                return $this->json([
-                    'success' => true,
-                    'cartCount' => $result['cartCount'],
-                    'total' => $result['total'],
-                    'itemTotal' => $result['itemTotal']
-                ]);
-            }
-
-            return $this->redirectToRoute('cart');
-        } catch (\Exception $e) {
-            if ($request->isXmlHttpRequest()) {
-                return $this->json([
-                    'success' => false,
-                    'error' => $e->getMessage()
-                ], 400);
-            }
-
-            $this->addFlash('error', $e->getMessage());
-            return $this->redirectToRoute('cart');
-        }
-    }
-
     #[Route('/cart/remove/{id}', name: 'cart_remove', methods: ['POST'])]
     public function removeItem(int $id, Request $request): Response
     {

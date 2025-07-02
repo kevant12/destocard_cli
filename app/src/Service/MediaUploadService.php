@@ -50,8 +50,8 @@ class MediaUploadService
         try {
             $file->move($targetDirectory, $fileName);
         } catch (FileException $e) {
-            $this->logger->error('Failed to upload file: ' . $e->getMessage());
-            throw new FileException('Une erreur est survenue lors du téléversement du fichier.');
+            
+            throw new FileException($e->getMessage());
         }
 
         // The Media entity is not persisted here, caller should persist it.

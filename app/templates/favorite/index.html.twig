@@ -13,13 +13,16 @@
             {% for product in favorites %}
                 <div class="product-card">
                     {% if product.media|length > 0 %}
-                        <img src="{{ asset('upload/' ~ product.media|first.name) }}" alt="{{ product.title }}">
+                        <img src="{{ asset('upload/' ~ product.media|first.fileName) }}" alt="{{ product.title }}">
                     {% endif %}
                     <h3>{{ product.title }}</h3>
                     <p class="price">{{ product.price }} €</p>
                     <p class="description">{{ product.description }}</p>
                     <div class="product-actions">
-                        <button class="like-button active" data-product-id="{{ product.id }}" aria-label="Retirer {{ product.title }} des favoris">
+                        <button class="btn-like active" 
+                                data-product-id="{{ product.id }}" 
+                                data-csrf-token="{{ csrf_token('toggle_favorite' ~ product.id) }}"
+                                aria-label="Retirer {{ product.title }} des favoris">
                             ❤️
                         </button>
                         <form method="post" action="{{ path('add_to_cart', {'id': product.id}) }}" class="add-to-cart-form">
@@ -39,34 +42,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script>
-        document.querySelectorAll('.like-button').forEach(button => {
-            button.addEventListener('click', async () => {
-                const productId = button.dataset.productId;
-                try {
-                    const response = await fetch(`/favorite/toggle/${productId}`, {
-                        method: 'POST',
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    });
-                    const data = await response.json();
-                    if (data.success) {
-                        if (!data.isLiked) {
-                            // Supprimer la carte du produit de l'affichage
-                            button.closest('.product-card').remove();
-                            // Si c'était le dernier favori, afficher le message "pas de favoris"
-                            const remainingCards = document.querySelectorAll('.product-card');
-                            if (remainingCards.length === 0) {
-                                const container = document.querySelector('.favorites-container');
-                                container.innerHTML = '<h1>Mes Favoris</h1><p>Vous n\'avez pas encore de favoris.</p>';
-                            }
-                        }
-                    }
-                } catch (error) {
-                    console.error('Erreur lors de la mise à jour des favoris:', error);
-                }
-            });
-        });
-    </script>
+    {# La logique est maintenant dans public/js/ajax.js #}
 {% endblock %}

@@ -21,7 +21,10 @@
                 <p class="description">{{ product.description }}</p>
                 <div class="product-actions">
                     {% if app.user %}
-                        <button class="like-button {% if product in app.user.likes %}active{% endif %}" data-product-id="{{ product.id }}" aria-label="Ajouter {{ product.title }} aux favoris">
+                        <button class="btn-like {% if product in app.user.likes %}active{% endif %}" 
+                                data-product-id="{{ product.id }}"
+                                data-csrf-token="{{ csrf_token('toggle_favorite' ~ product.id) }}"
+                                aria-label="Ajouter {{ product.title }} aux favoris">
                             ❤️
                         </button>
                     {% endif %}
@@ -45,5 +48,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    {# Le script AJAX pour les favoris et le panier est déjà dans ajax.js #}
+    {# La logique est maintenant dans public/js/ajax.js #}
 {% endblock %}

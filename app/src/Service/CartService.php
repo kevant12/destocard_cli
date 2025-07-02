@@ -90,8 +90,8 @@ class CartService
             if ($product) {
                 $fullCart[] = [
                     'product' => $product,
-                    'quantity' => $item['quantity'],
-                    'totalItemPrice' => $product->getPrice() * $item['quantity']
+                    'quantity' => 1,
+                    'totalItemPrice' => $product->getPrice()
                 ];
             }
         }
@@ -112,11 +112,18 @@ class CartService
             throw new \Exception('Produit non trouvé');
         }
 
+        // Vérifier si le produit est déjà dans le panier
         if (isset($cart[$productId])) {
-            $cart[$productId]['quantity']++;
-        } else {
-            $cart[$productId] = ['quantity' => 1];
+            throw new \Exception('Ce produit est déjà dans votre panier');
         }
+
+        // Vérifier le stock
+        if ($product->getQuantity() <= 0) {
+            throw new \Exception('Ce produit n\'est plus en stock');
+        }
+
+        // Ajouter le produit au panier (1 seul exemplaire)
+        $cart[$productId] = ['quantity' => 1];
 
         $this->session->set('cart', $cart);
 
@@ -129,39 +136,13 @@ class CartService
 
     public function updateQuantity(int $productId, int $quantity): array
     {
-        $cart = $this->getCart();
-        $product = $this->productsRepository->find($productId);
-
-        if (!$product) {
-            throw new \Exception('Produit non trouvé');
-        }
-
-        if ($quantity <= 0) {
-            unset($cart[$productId]);
-        } else {
-            // Vérifier si la quantité demandée est disponible
-            $availableQuantity = $product->getQuantity();
-            $quantity = min($quantity, $availableQuantity);
-
-            $cart[$productId] = ['quantity' => $quantity];
-        }
-
-        $this->session->set('cart', $cart);
-
-        $fullCart = $this->getFullCart();
-        $itemTotal = 0;
-        foreach ($fullCart as $item) {
-            if ($item['product']->getId() === $productId) {
-                $itemTotal = $item['totalItemPrice'];
-                break;
-            }
-        }
-
+        // Cette méthode n'est plus nécessaire car on ne peut avoir qu'1 exemplaire
+        // On peut la garder pour la compatibilité mais elle ne fait rien
         return [
-            'cart' => $fullCart,
+            'cart' => $this->getFullCart(),
             'total' => $this->calculateTotal(),
             'cartCount' => $this->getCartCount(),
-            'itemTotal' => $itemTotal
+            'itemTotal' => 0
         ];
     }
 
@@ -188,18 +169,14 @@ class CartService
 
     public function getCartCount(): int
     {
-        $count = 0;
-        foreach ($this->getFullCart() as $item) {
-            $count += $item['quantity'];
-        }
-        return $count;
+        return count($this->getCart());
     }
 
     public function calculateTotal(): float
     {
         $total = 0;
         foreach ($this->getFullCart() as $item) {
-            $total += $item['product']->getPrice() * $item['quantity'];
+            $total += $item['totalItemPrice'];
         }
         return $total;
     }
@@ -208,8 +185,7 @@ class CartService
     {
         $cart = $this->getCart();
         $errors = [];
-        $updatedCartSession = []; // Nouveau tableau pour la session
-        $fullCart = []; // Nouveau tableau pour le panier complet avec les objets Product
+        $fullCart = [];
 
         foreach ($cart as $productId => $item) {
             $product = $this->productsRepository->find($productId);
@@ -218,37 +194,24 @@ class CartService
                 continue;
             }
 
-            $availableQuantity = $product->getQuantity();
-            $requestedQuantity = $item['quantity'];
-
-            if ($availableQuantity < $requestedQuantity) {
-                if ($availableQuantity > 0) {
-                    $updatedCartSession[$productId] = ['quantity' => $availableQuantity];
-                    $errors[] = "La quantité du produit {$product->getTitle()} a été ajustée à {$availableQuantity} (stock disponible).";
-                } else {
-                    $errors[] = "Le produit {$product->getTitle()} n'est plus en stock.";
-                    // Ne pas ajouter au updatedCartSession si stock = 0
-                    continue; // Passer au produit suivant
-                }
-            } else {
-                $updatedCartSession[$productId] = ['quantity' => $requestedQuantity];
+            // Vérifier si le produit est en stock
+            if ($product->getQuantity() <= 0) {
+                $errors[] = "Le produit {$product->getTitle()} n'est plus en stock.";
+                continue;
             }
 
-            // Ajouter au fullCart pour le retour
+            // Ajouter au panier complet (toujours 1 exemplaire)
             $fullCart[] = [
                 'product' => $product,
-                'quantity' => $updatedCartSession[$productId]['quantity'],
-                'totalItemPrice' => $product->getPrice() * $updatedCartSession[$productId]['quantity']
+                'quantity' => 1,
+                'totalItemPrice' => $product->getPrice()
             ];
         }
-
-        // Mettre à jour la session avec le panier ajusté
-        $this->session->set('cart', $updatedCartSession);
 
         return [
             'valid' => empty($errors),
             'errors' => $errors,
-            'cart' => $fullCart // Retourne le panier complet avec les objets Product
+            'cart' => $fullCart
         ];
     }
 } 

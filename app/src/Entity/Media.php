@@ -20,21 +20,6 @@ class Media
     #[Groups(['product:read', 'pokemon_card:read'])]
     private ?string $fileName = null;
 
-    #[ORM\Column(length: 255)]
-    #[Groups(['pokemon_card:read'])]
-    private ?string $originalName = null;
-
-    #[ORM\Column(length: 255)]
-    #[Groups(['pokemon_card:read'])]
-    private ?string $path = null;
-
-    #[ORM\Column(length: 100)]
-    #[Groups(['pokemon_card:read'])]
-    private ?string $mimeType = null;
-
-    #[ORM\Column]
-    #[Groups(['pokemon_card:read'])]
-    private ?int $size = null;
 
     #[ORM\ManyToOne(inversedBy: 'media')]
     private ?Products $products = null;

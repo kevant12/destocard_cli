@@ -33,15 +33,7 @@
                                 {% endif %}
                             </td>
                             <td class="cart-product-price">{{ item.product.price|number_format(2, ',', ' ') }} €</td>
-                            <td>
-                                <input type="number" 
-                                       class="cart-quantity-input" 
-                                       value="{{ item.quantity }}" 
-                                       min="0" 
-                                       data-product-id="{{ item.product.id }}"
-                                       data-csrf-token="{{ csrf_token('cart_update' ~ item.product.id) }}"
-                                       aria-label="Quantité pour {{ item.product.title }}">
-                            </td>
+                            <td class="cart-quantity">1</td>
                             <td class="cart-item-total">{{ item.totalItemPrice|number_format(2, ',', ' ') }} €</td>
                             <td>
                                 <button class="cart-remove-btn" 
