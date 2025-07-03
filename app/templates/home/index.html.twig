@@ -53,34 +53,4 @@
     </section>
 
 </div>
-{% endblock %}
-
-{% block javascripts %}
-<script>
-    const grid = document.getElementById('products-grid');
-    const grid2x2Btn = document.getElementById('grid-2x2');
-    const grid3x3Btn = document.getElementById('grid-3x3');
-    const grid4x4Btn = document.getElementById('grid-4x4');
-    const buttons = [grid2x2Btn, grid3x3Btn, grid4x4Btn];
-
-    function setActive(button) {
-        buttons.forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-    }
-
-    grid2x2Btn.addEventListener('click', () => {
-        grid.className = 'products-grid grid-2x2';
-        setActive(grid2x2Btn);
-    });
-
-    grid3x3Btn.addEventListener('click', () => {
-        grid.className = 'products-grid grid-3x3';
-        setActive(grid3x3Btn);
-    });
-
-    grid4x4Btn.addEventListener('click', () => {
-        grid.className = 'products-grid'; // default is 4x4
-        setActive(grid4x4Btn);
-    });
-</script>
 {% endblock %} 

@@ -11,27 +11,7 @@
     {% else %}
         <div class="products-grid">
             {% for product in favorites %}
-                <div class="product-card">
-                    {% if product.media|first %}
-                        <img src="{{ asset('uploads/products/' ~ product.media|first.fileName) }}" alt="{{ product.title }}">
-                    {% else %}
-                        <img src="{{ asset('images/placeholder.png') }}" alt="Image non disponible">
-                    {% endif %}
-                    <h3>{{ product.title }}</h3>
-                    <p class="price">{{ product.price }} €</p>
-                    <p class="description">{{ product.description }}</p>
-                    <div class="product-actions">
-                        <button class="btn-like active" 
-                                data-product-id="{{ product.id }}" 
-                                data-csrf-token="{{ csrf_token('toggle_favorite' ~ product.id) }}"
-                                aria-label="Retirer {{ product.title }} des favoris">
-                            ❤️
-                        </button>
-                        <form method="post" action="{{ path('add_to_cart', {'id': product.id}) }}" class="add-to-cart-form">
-                            <button type="submit" aria-label="Ajouter {{ product.title }} au panier">Ajouter au panier</button>
-                        </form>
-                    </div>
-                </div>
+                {% include 'partials/_product_card.html.twig' with {'product': product} %}
             {% endfor %}
         </div>
     {% endif %}

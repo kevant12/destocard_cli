@@ -12,7 +12,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: UsersRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-#[UniqueEntity(fields: ['email'], message: 'Cet email est déjà utilisé. Veuillez vous connecter ou en choisir un autre.')]
+#[UniqueEntity(fields: ['email'], message: 'L\'email est déjà utilisé. Veuillez vous connecter ou en choisir un autre.')]
 class Users implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -95,13 +95,13 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Messages>
      */
-    #[ORM\OneToMany(targetEntity: Messages::class, mappedBy: 'sender', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(targetEntity: Messages::class, mappedBy: 'sender')]
     private Collection $sentMessages;
 
     /**
      * @var Collection<int, Messages>
      */
-    #[ORM\OneToMany(targetEntity: Messages::class, mappedBy: 'recipient', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(targetEntity: Messages::class, mappedBy: 'recipient')]
     private Collection $receivedMessages;
 
     public function __construct()

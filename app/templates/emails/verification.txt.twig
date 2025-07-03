@@ -1,3 +1,20 @@
+{#
+    templates/emails/verification.txt.twig
+    ========================================
+
+    Version "texte brut" de l'email de vérification.
+    Elle sert de fallback pour les clients de messagerie qui ne peuvent
+    pas afficher le HTML.
+
+    Logique :
+    - Fournit les mêmes informations essentielles que la version HTML.
+    - L'URL de vérification est affichée en texte complet pour être facilement
+      copiée et collée dans un navigateur.
+
+    Variables Clés :
+    - `user`: L'entité `Users` du nouvel utilisateur.
+    - `verificationUrl`: L'URL complète de vérification.
+#}
 Bonjour {{ user.firstname }},
 
 Merci de vous être inscrit sur Destocard. Pour activer votre compte et commencer à explorer notre collection de cartes Pokémon, veuillez visiter le lien suivant :

@@ -1,11 +1,23 @@
+{#
+    templates/product/user_products.html.twig
+    ===========================================
+
+    Cette page affiche la liste des articles mis en vente par l'utilisateur connecté.
+    Elle sert de tableau de bord pour que le vendeur puisse gérer ses annonces.
+
+    Logique :
+    - Affiche une grille de cartes produits, similaire à la page d'accueil ou d'index.
+    - Chaque carte contient des actions spécifiques au vendeur : "Modifier" et "Supprimer".
+    - La suppression est gérée par un formulaire POST pour des raisons de sécurité (évite la suppression via un simple lien GET).
+    - Utilise le KnpPaginatorBundle pour gérer de grandes listes d'articles.
+
+    Variables Clés :
+    - `pagination`: Objet du KnpPaginatorBundle contenant les produits de l'utilisateur.
+#}
 {% extends 'base.html.twig' %}
 
 {% block title %}Mes Articles en Vente{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/user-products.css') }}">
-{% endblock %}
+{% block meta_description %}Gérez vos articles en vente sur Destocard. Modifiez, supprimez ou ajoutez de nouvelles annonces pour vos cartes Pokémon et autres objets de collection.{% endblock %}
 
 {% block body %}
 <section class="container">
@@ -14,17 +26,12 @@
         <a href="{{ path('app_product_new') }}" class="btn btn--primary">Mettre un nouvel article en vente</a>
     </div>
 
-    {# Les messages flash (succès, erreur) peuvent être ajoutés ici si nécessaire #}
+    {# Les messages flash (succès, erreur) sont affichés ici. #}
 
-    {% if pagination is empty %}
-        <div class="text-center" style="padding: 4rem 0;">
-            <p>Vous n'avez pas encore d'articles en vente.</p>
-            <p>Cliquez sur "Mettre un nouvel article en vente" pour commencer !</p>
-        </div>
-    {% else %}
+    {% if pagination.getTotalItemCount > 0 %}
         <div class="layout-grid">
             {% for product in pagination %}
-                <div class="card product-card--user {% if product.quantity == 0 %}is-unavailable{% endif %}">
+                <div class="card product-card--user">
                     <a href="{{ path('app_product_show', {'id': product.id}) }}" class="card__image-container">
                         {% if product.media|first %}
                             <img src="{{ asset('uploads/products/' ~ product.media|first.fileName) }}" alt="{{ product.title }}">
@@ -36,16 +43,20 @@
                         <h2 class="card__title">
                             <a href="{{ path('app_product_show', {'id': product.id}) }}">{{ product.title }}</a>
                         </h2>
-                        <p class="card__subtitle">{{ product.price|number_format(2, ',', ' ') }} € - Quantité : {{ product.quantity }}</p>
-                        <div class="product-status-badge {% if product.quantity > 0 %}is-available{% else %}is-unavailable{% endif %}">
-                            {{ product.quantity > 0 ? 'En stock' : 'Épuisé' }}
-                        </div>
+                        <p class="card__subtitle">{{ product.price|number_format(2, ',', ' ') }} €</p>
                     </div>
                     <div class="card__footer">
+                        {# Action pour modifier l'article. #}
                         <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn btn--secondary">Modifier</a>
+                        
+                        {# 
+                            Action pour supprimer l'article.
+                            Enveloppée dans un formulaire POST avec un token CSRF pour la sécurité.
+                            `onsubmit` demande une confirmation à l'utilisateur avant de soumettre.
+                        #}
                         <form method="post" action="{{ path('app_product_delete', {'id': product.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?');">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ product.id) }}">
-                            <button class="btn btn--secondary">🗑️</button>
+                            <button class="btn btn--secondary">🗑️ Supprimer</button>
                         </form>
                     </div>
                 </div>
@@ -54,6 +65,11 @@
 
         <div class="pagination">
             {{ knp_pagination_render(pagination) }}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p>Vous n'avez pas encore d'articles en vente.</p>
+            <p>Cliquez sur "Mettre un nouvel article en vente" pour commencer !</p>
         </div>
     {% endif %}
 </section>

@@ -1,3 +1,25 @@
+{#
+    templates/cart/checkout.html.twig
+    ===================================
+
+    Ce template gère la page de "checkout", l'étape intermédiaire entre le panier
+    et le paiement. L'utilisateur y sélectionne son adresse de livraison et son
+    mode de livraison.
+
+    Logique Clé :
+    - Formulaire de sélection : Utilise `CheckoutFormType` pour afficher les adresses
+      enregistrées et les options de livraison.
+    - Interactivité JavaScript : `checkout.js` et `address.js` gèrent :
+        - L'ajout dynamique d'une nouvelle adresse via une modale (AJAX).
+        - La mise à jour en temps réel du coût total lorsque le mode de livraison change.
+    - Préparation au paiement : Une fois ce formulaire soumis, le contrôleur crée une
+      "Payment Intent" auprès de Stripe et redirige vers la page de paiement.
+    
+    Variables Clés :
+    - `form`: L'objet FormView de `CheckoutFormType`.
+    - `cart`: Le contenu du panier, pour afficher le récapitulatif.
+    - `total`: Le total des produits (hors frais de port).
+#}
 {% extends 'base.html.twig' %}
 
 {% block title %}Finaliser la commande{% endblock %}
@@ -6,6 +28,7 @@
 <div class="container">
     <h1 class="mt-5 mb-4">Finaliser la commande</h1>
 
+    {# Boucles pour afficher tous les types de messages flash (succès, erreur, etc.) #}
     {% for message in app.flashes('success') %}
         <div class="alert alert-success" role="alert">
             {{ message }}
@@ -23,24 +46,30 @@
     {% endfor %}
 
     <div class="row">
+        {# Colonne principale pour le formulaire #}
         <div class="col-md-8">
             <h2>Adresse de livraison et mode de livraison</h2>
             {{ form_start(form) }}
+                {# Champ pour sélectionner l'adresse de livraison #}
                 <div class="mb-3">
                     {{ form_row(form.deliveryAddress) }}
                     <div class="mt-2">
+                        {# Le bouton pour ajouter une nouvelle adresse est géré en JS (address.js) via une modale. #}
                         <button type="button" class="btn btn-outline-primary" id="add-address-checkout">
                             ➕ Ajouter une nouvelle adresse
                         </button>
                     </div>
                 </div>
+                {# Champ pour sélectionner le mode de livraison #}
                 <div class="mb-3">
                     {{ form_row(form.deliveryMethod) }}
                 </div>
-                {{ form_widget(form.shippingCost) }} {# Champ caché pour le coût de livraison #}
+                {# Champ caché pour stocker le coût de livraison, qui sera mis à jour par JavaScript. #}
+                {{ form_widget(form.shippingCost) }}
                 <button type="submit" class="btn btn-primary">Confirmer la commande</button>
             {{ form_end(form) }}
         </div>
+        {# Colonne latérale pour le récapitulatif du panier #}
         <div class="col-md-4">
             <h2>Votre panier</h2>
             <ul class="list-group mb-3">
@@ -61,14 +90,21 @@
         </div>
     </div>
 </div>
+{# Le conteneur pour la modale d'adresse sera injecté ici par JavaScript. #}
+<div id="modal-container"></div>
 {% endblock %}
 
 {% block javascripts %}
     <script>
-        // Variables Twig pour le JS
+        {# 
+            On passe des données de Twig à JavaScript.
+            - `addressRoutes` est utilisé par `address.js` pour connaître les URL des API.
+            - `checkoutData` est utilisé par `checkout.js` pour initialiser les calculs de totaux.
+        #}
         window.addressRoutes = {
             newModal: '{{ path('app_address_new_modal') }}',
-            create: '{{ path('app_address_create') }}'
+            create: '{{ path('app_address_create') }}',
+            list: '{{ path('app_address_list', {'type': 'shipping'}) }}'
         };
         window.checkoutData = {
             initialTotal: {{ total|number_format(2, '.', '') }}

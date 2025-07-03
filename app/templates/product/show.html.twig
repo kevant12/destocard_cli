@@ -2,12 +2,10 @@
 
 {% block title %}{{ product.title }} | Destocard{% endblock %}
 
-{% block meta_description %}Découvrez {{ product.title }}, en vente sur Destocard !{% endblock %}
+{% block meta_description %}Découvrez {{ product.title }}, en vente sur Destocard ! {{ product.description|striptags|slice(0, 100) }}...{% endblock %}
 
 {% block body %}
 <div class="product-detail-container">
-    <h1 class="product-detail-title">{{ product.title }}</h1>
-
     <div class="product-detail-content">
         <div class="product-detail-image">
             {% if product.media|first %}
@@ -18,53 +16,57 @@
         </div>
 
         <div class="product-detail-info">
-            <p class="product-detail-price">{{ product.price }} €</p>
-            <p class="product-detail-description">{{ product.description|default('Pas de description disponible.') }}</p>
+            <h1 class="product-detail-title">{{ product.title }}</h1>
+            <p class="product-detail-price">{{ product.price|number_format(2, ',', ' ') }} €</p>
+            <p class="product-detail-description">{{ product.description|default('Pas de description disponible.')|nl2br }}</p>
             
             <div class="product-detail-specs">
-                <p><strong>Catégorie:</strong> {{ product.category }}</p>
-                <p><strong>Quantité disponible:</strong> {{ product.quantity }}</p>
+                <p><strong>Vendeur :</strong> {{ product.users.firstname }}</p>
+                <p><strong>Catégorie :</strong> {{ product.category }}</p>
                 {% if product.number %}
-                    <p><strong>Numéro:</strong> {{ product.number }}</p>
+                    <p><strong>Numéro :</strong> {{ product.number }}</p>
                 {% endif %}
             </div>
 
             <div class="product-detail-actions">
                 {% if app.user %}
                     <button 
-                        class="btn-like {% if app.user and product in app.user.likes %}is-liked{% endif %}"
+                        class="btn-like {% if product in app.user.likes %}active{% endif %}"
                         data-product-id="{{ product.id }}"
                         data-csrf-token="{{ csrf_token('toggle_favorite' ~ product.id) }}"
-                        title="{% if app.user and product in app.user.likes %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}"
-                        aria-label="{% if app.user and product in app.user.likes %}Retirer {{ product.title }} des favoris{% else %}Ajouter {{ product.title }} aux favoris{% endif %}">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="heart-icon" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                        title="{% if product in app.user.likes %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}"
+                        aria-label="Ajouter ou retirer des favoris">
+                        ❤️
                     </button>
+                    <form method="post" action="{{ path('add_to_cart', {'id': product.id}) }}" class="add-to-cart-form inline-form">
+                        <button type="submit" class="btn btn--primary add-to-cart-btn" aria-label="Ajouter au panier">Ajouter au panier</button>
+                    </form>
+                {% else %}
+                    <button class="btn-like auth-required" aria-label="Ajouter aux favoris (connexion requise)">❤️</button>
+                    <button class="btn btn--primary auth-required">Ajouter au panier</button>
                 {% endif %}
-                <form method="post" action="{{ path('add_to_cart', {'id': product.id}) }}" class="add-to-cart-form">
-                    <input type="hidden" name="_token" value="{{ csrf_token('add_to_cart' ~ product.id) }}">
-                    <button type="submit" class="btn btn-primary" aria-label="Ajouter {{ product.title }} au panier">Ajouter au panier</button>
-                </form>
+            </div>
 
-                {% if app.user and (product.users == app.user or is_granted('ROLE_ADMIN')) %}
-                    <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn btn-secondary">Modifier</a>
+            {% if app.user and (product.users == app.user or is_granted('ROLE_ADMIN')) %}
+                <div class="product-management-actions">
+                    <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn btn--secondary">Modifier l'article</a>
                     <form method="post" action="{{ path('app_product_delete', {'id': product.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?');" class="inline-form">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ product.id) }}">
                         <button type="submit" class="btn btn-danger">Supprimer</button>
                     </form>
-                {% endif %}
-            </div>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
 {% endblock %}
 
-{# Schema.org Product Markup #}
 {% block javascripts %}
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "Product",
-      "name": "{{ product.title }}",
+      "name": "{{ product.title|e('js') }}",
       "description": "{{ product.description|default('')|striptags|e('js') }}",
       "image": [
         {% if product.media|first %}
@@ -74,75 +76,13 @@
         {% endif %}
       ],
       "sku": "{{ product.id }}",
-      "mpn": "{{ product.number }}",
-      "brand": {
-        "@type": "Brand",
-        "name": "Destocard"
-      },
       "offers": {
         "@type": "Offer",
         "url": "{{ app.request.uri }}",
         "priceCurrency": "EUR",
         "price": "{{ product.price }}",
-        "itemCondition": "https://schema.org/UsedCondition", {# Ou NewCondition, RefurbishedCondition, etc. #}
-        "availability": "{% if product.quantity > 0 %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}"
+        "itemCondition": "https://schema.org/UsedCondition"
       }
-      {# Vous pouvez ajouter d'autres propriétés comme "aggregateRating", "review", "color", "size", etc. #}
     }
-    </script>
-    <script>
-        const addToCartForm = document.querySelector('.add-to-cart-form');
-
-        if (addToCartForm) {
-            addToCartForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-
-                const url = addToCartForm.action;
-                const formData = new FormData(addToCartForm);
-
-                try {
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        body: new URLSearchParams(formData),
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error('La réponse du réseau n\'était pas bonne.');
-                    }
-
-                    const data = await response.json();
-
-                    if (data.success) {
-                        // Mettre à jour le compteur du panier
-                        const cartCountElement = document.querySelector('.cart-count');
-                        if (cartCountElement) {
-                            cartCountElement.textContent = data.cartCount;
-                            cartCountElement.style.display = data.cartCount > 0 ? 'inline-block' : 'none';
-                        }
-                        
-                        // Afficher une confirmation visuelle sur le bouton
-                        const button = addToCartForm.querySelector('button[type="submit"]');
-                        const originalText = button.textContent;
-                        button.textContent = 'Ajouté !';
-                        button.disabled = true;
-
-                        setTimeout(() => {
-                            button.textContent = originalText;
-                            button.disabled = false;
-                        }, 2000);
-
-                    } else {
-                        console.error('Erreur lors de l\'ajout au panier:', data.error);
-                        alert(data.error);
-                    }
-
-                } catch (error) {
-                    console.error('Il y a eu un problème avec l\'opération fetch:', error);
-                }
-            });
-        }
     </script>
 {% endblock %}

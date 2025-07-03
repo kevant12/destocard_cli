@@ -1,12 +1,37 @@
+{#
+    templates/base.html.twig
+    ========================
+
+    Ce fichier est le squelette de base pour toutes les pages du site.
+    Chaque autre template "étendra" ce fichier et remplira les blocs
+    spécifiques comme `title`, `body`, et `javascripts`.
+
+    Principes Clés :
+    - DRY (Don't Repeat Yourself) : Tous les éléments communs (header, footer,
+      CSS/JS globaux) sont définis ici une seule fois.
+    - SEO & Accessibilité : Contient les balises meta essentielles, les
+      données structurées (Schema.org), et respecte les bonnes pratiques
+      pour le référencement et l'accessibilité.
+    - Bloc System : Utilise le système de blocs de Twig pour permettre
+      aux templates enfants de surcharger des parties spécifiques.
+#}
 <!DOCTYPE html>
 <html lang="fr">
     <head>
         <meta charset="UTF-8">
+        {# Le titre de la page. Peut être surchargé par les templates enfants. #}
         <title>{% block title %}Destocard - Cartes Pokémon{% endblock %}</title>
+        {# La méta-description, cruciale pour le SEO. #}
         <meta name="description" content="{% block meta_description %}Votre boutique spécialisée pour acheter et vendre des cartes Pokémon.{% endblock %}">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        {# Open Graph / Social Media Tags #}
+        {# 
+            SECTION: Open Graph / Social Media Tags
+            ---------------------------------------
+            Ces balises `meta` contrôlent l'apparence de vos liens lorsqu'ils sont
+            partagés sur les réseaux sociaux comme Facebook, Twitter, LinkedIn, etc.
+            Elles sont essentielles pour une présentation professionnelle.
+        #}
         {% block open_graph %}
             <meta property="og:title" content="{% block og_title %}{{ block('title') }}{% endblock %}">
             <meta property="og:description" content="{% block og_description %}{{ block('meta_description') }}{% endblock %}">
@@ -14,7 +39,7 @@
             <meta property="og:url" content="{{ app.request.uri }}">
             <meta property="og:image" content="{{ absolute_url(asset('images/logo-destocard.png')) }}"> {# Remplacez par le chemin de votre image par défaut #}
             <meta property="og:image:alt" content="Logo Destocard - Boutique de cartes Pokémon">
-            {# Twitter Card (similaire à Open Graph) #}
+            {# Twitter Card utilise des balises similaires à Open Graph. #}
             <meta name="twitter:card" content="summary_large_image">
             <meta name="twitter:title" content="{% block twitter_title %}{{ block('og_title') }}{% endblock %}">
             <meta name="twitter:description" content="{% block twitter_description %}{{ block('og_description') }}{% endblock %}">
@@ -22,13 +47,31 @@
         {% endblock %}
         
         
+        {#
+            Favicon SVG pour une icône de haute qualité et légère.
+            C'est une technique moderne pour gérer les favicons.
+        #}
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
 
-        {# Les fichiers CSS #}
+        {# 
+            SECTION: Feuilles de Style (CSS)
+            --------------------------------
+            La feuille de style principale `style.css` est chargée sur toutes les pages.
+            Le bloc `stylesheets` permet aux templates enfants d'ajouter des
+            styles spécifiques à leur page si nécessaire.
+        #}
         <link rel="stylesheet" href="{{ asset('css/style.css')}}">
         {% block stylesheets %}{% endblock %}
 
-        {# Javascripts #}
+        {#
+            SECTION: Scripts JavaScript
+            ---------------------------
+            Tous les scripts sont chargés avec l'attribut `defer`.
+            [[memory:1998723]] `defer` garantit que :
+            1. Le script est téléchargé en parallèle du parsing HTML, sans le bloquer.
+            2. Le script n'est exécuté qu'une fois que le DOM est entièrement construit.
+            Ceci rend l'utilisation de `DOMContentLoaded` dans nos scripts redondante.
+        #}
         <script src="/js/nav.js" defer></script>
         <script src="/js/csrf-protection.js" defer></script>
         <script src="/js/notifications.js" defer></script>
@@ -40,9 +83,16 @@
         <script src="{{ asset('js/address.js') }}" defer></script>
         <script src="{{ asset('js/checkout.js') }}" defer></script>
         <script src="{{ asset('js/product-form.js') }}" defer></script>
+        {# Bloc pour les scripts spécifiques à une page. #}
         {% block javascripts %}{% endblock %}
 
-    {# Schema.org JSON-LD for WebSite and Organization #}
+    {# 
+        SECTION: Données Structurées (Schema.org)
+        -----------------------------------------
+        Ce script JSON-LD est invisible pour l'utilisateur mais crucial pour le SEO.
+        Il décrit la nature du site ("WebSite") et de l'organisation ("Organization")
+        à Google, ce qui peut améliorer l'affichage dans les résultats de recherche (Rich Snippets).
+    #}
         <script type="application/ld+json">
         {
           "@context": "https://schema.org",
@@ -78,7 +128,17 @@
         }
         </script>
     </head>
-    <body>
+    {# 
+        L'attribut `data-is-authenticated` est une astuce pour passer l'état de connexion de l'utilisateur
+        de Twig (côté serveur) à JavaScript (côté client) de manière simple et propre.
+        C'est utilisé par `auth-guard.js` pour les redirections.
+    #}
+    <body data-is-authenticated="{{ app.user ? 'true' : 'false' }}">
+        {#
+            Le Header est commun à toutes les pages.
+            Il contient le logo, la navigation principale et la navigation utilisateur.
+            Il est `sticky` pour rester visible au défilement.
+        #}
         <header class="site-header">
             <div class="container">
                 <a href="{{ path('app_home') }}" class="site-header__logo">
@@ -87,6 +147,7 @@
 
                 <nav class="site-header__nav-main" role="navigation" aria-label="Navigation principale">
                     <a href="{{ path('app_home') }}">Accueil</a>
+                    {# La navigation s'adapte en fonction de l'état de connexion de l'utilisateur (`app.user`) #}
                     {% if app.user %}
                         <a href="{{ path('app_product_index') }}">Produits</a>
                     {% endif %}
@@ -110,7 +171,12 @@
             </div>
         </header>
 
+        {#
+            Le contenu principal de la page.
+            C'est ici que les templates enfants injecteront leur contenu via le `block body`.
+        #}
         <main>
+            {# Affiche les "flash messages" (notifications de succès, d'erreur, etc.) #}
             <div class="container">
                 {% for label, messages in app.flashes %}
                     {% for message in messages %}
@@ -123,6 +189,7 @@
             {% block body %}{% endblock %}
         </main>
 
+       {# Le Footer est commun à toutes les pages. #}
        <footer class="site-footer">
             <div class="container">
                 <div class="site-footer__content">
@@ -151,6 +218,7 @@
             </div>
         </footer>
 
+        {# La navigation mobile, affichée en bas de l'écran sur les petits appareils. #}
         <nav class="mobile-nav" role="navigation" aria-label="Navigation mobile">
             <a href="{{ path('app_home') }}" class="mobile-nav__link" title="Accueil" aria-label="Accueil">🏠</a>
             <a href="{{ path('app_product_index') }}" class="mobile-nav__link" title="Produits" aria-label="Produits">🃏</a>

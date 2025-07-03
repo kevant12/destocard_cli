@@ -22,35 +22,59 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Http\Authenticator\FormLoginAuthenticator;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
+/**
+ * Contrôleur gérant toutes les logiques de sécurité qui ne sont pas
+ * automatiquement interceptées par le pare-feu de Symfony.
+ * Cela inclut l'inscription, la vérification par email, et la
+ * réinitialisation de mot de passe.
+ */
 class SecurityController extends AbstractController
 {
+    /**
+     * Affiche le formulaire de connexion.
+     * Le traitement de la soumission du formulaire est géré par le pare-feu de Symfony,
+     * cette méthode n'est donc exécutée que pour afficher la page (requête GET).
+     *
+     * @param AuthenticationUtils $authenticationUtils Service de Symfony pour obtenir les infos de la dernière tentative de connexion.
+     * @return Response
+     */
     #[Route('/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        // Si l'utilisateur est déjà connecté, rediriger
+        // Redirige l'utilisateur s'il est déjà connecté.
         if ($this->getUser()) {
             return $this->redirectToRoute('app_home');
         }
 
-        // get the login error if there is one
+        // Récupère l'erreur de connexion s'il y en a une (ex: "mot de passe invalide").
         $error = $authenticationUtils->getLastAuthenticationError();
-        // last username entered by the user
+        
+        // Récupère le dernier email saisi par l'utilisateur pour pré-remplir le champ.
         $lastUsername = $authenticationUtils->getLastUsername();
 
+        // Rend le template en passant les informations nécessaires.
         return $this->render('security/login.html.twig', [
             'last_username' => $lastUsername,
             'error' => $error,
         ]);
     }
 
+    /**
+     * Gère la déconnexion.
+     * Cette méthode est volontairement vide. Le pare-feu de Symfony intercepte
+     * toutes les requêtes vers la route 'app_logout' et gère la déconnexion.
+     * La méthode existe uniquement pour que la route puisse être définie.
+     */
     #[Route('/logout', name: 'app_logout')]
     public function logout(): void
     {
-        // Le code ici ne sera jamais exécuté
-        // Le composant de sécurité de Symfony intercepte la requête avant
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 
+    /**
+     * Gère le processus d'inscription d'un nouvel utilisateur.
+     * Contrairement au login, cette méthode gère à la fois l'affichage (GET) et le traitement (POST) du formulaire.
+     */
     #[Route('/register', name: 'app_register')]
     public function register(
         Request $request, 
@@ -59,43 +83,55 @@ class SecurityController extends AbstractController
         MailerInterface $mailer,
         TokenGeneratorInterface $tokenGenerator
     ): Response {
-        // Si l'utilisateur est déjà connecté, rediriger
+        // Redirige si l'utilisateur est déjà connecté.
         if ($this->getUser()) {
             return $this->redirectToRoute('app_home');
         }
 
+        // Crée un nouvel objet utilisateur et le formulaire associé.
         $user = new Users();
         $form = $this->createForm(RegisterFormType::class, $user);
+
+        // Analyse la requête et hydrate l'objet $user avec les données du formulaire.
         $form->handleRequest($request);
 
+        // Traitement uniquement si le formulaire est soumis et valide.
+        // La validation inclut les contraintes définies dans le FormType ET sur l'entité (ex: UniqueEntity).
         if ($form->isSubmitted() && $form->isValid()) {
-            // Hasher le mot de passe
+            // Étape 1 : Hasher le mot de passe pour ne JAMAIS le stocker en clair.
             $user->setPassword(
                 $passwordHasher->hashPassword($user, $form->get('password')->getData())
             );
             
-            // Créer le token de vérification et définir les valeurs par défaut
+            // Étape 2 : Créer un token de vérification sécurisé et unique.
             $token = $tokenGenerator->generateToken();
             $user->setVerificationToken($token);
-            $user->setVerificationTokenExpiresAt(new \DateTimeImmutable('+24 hours'));
-            $user->setIsVerified(false);
+            $user->setVerificationTokenExpiresAt(new \DateTimeImmutable('+24 hours')); // Le token n'est valide que 24h.
+            $user->setIsVerified(false); // Le compte est inactif par défaut.
             
-            $entityManager->persist($user);
-            $entityManager->flush();
+            // Étape 3 : Sauvegarder le nouvel utilisateur en base de données.
+            $entityManager->persist($user); // Prépare l'objet pour la sauvegarde.
+            $entityManager->flush();        // Exécute la requête SQL pour insérer l'utilisateur.
 
-            // Envoyer l'email de vérification
+            // Étape 4 : Envoyer l'email de vérification.
             $this->sendVerificationEmail($user, $mailer);
 
+            // Étape 5 : Afficher un message de succès à l'utilisateur sur la prochaine page.
             $this->addFlash('success', 'Inscription réussie ! Veuillez consulter vos emails pour activer votre compte.');
 
+            // Redirige vers la page de connexion après une inscription réussie (Pattern Post-Redirect-Get).
             return $this->redirectToRoute('app_login');
         }
 
+        // Affiche la page d'inscription (soit la première fois, soit après une erreur de validation).
         return $this->render('security/register.html.twig', [
             'registerForm' => $form,
         ]);
     }
 
+    /**
+     * Valide le compte d'un utilisateur via le token reçu par email.
+     */
     #[Route('/verify-email/{token}', name: 'app_verify_email')]
     public function verifyEmail(
         string $token,
@@ -105,8 +141,10 @@ class SecurityController extends AbstractController
         FormLoginAuthenticator $formLoginAuthenticator,
         Request $request
     ): Response {
+        // 1. Trouve l'utilisateur grâce au token.
         $user = $usersRepository->findOneBy(['verificationToken' => $token]);
 
+        // 2. Gère les cas d'erreur : token invalide ou expiré.
         if (!$user) {
             $this->addFlash('error', 'Token de vérification invalide.');
             return $this->redirectToRoute('app_login');
@@ -117,7 +155,7 @@ class SecurityController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        // Activer le compte
+        // 3. Active le compte et invalide le token pour qu'il ne soit plus réutilisable.
         $user->setIsVerified(true);
         $user->setVerificationToken(null);
         $user->setVerificationTokenExpiresAt(null);
@@ -126,7 +164,7 @@ class SecurityController extends AbstractController
 
         $this->addFlash('success', 'Votre compte a été activé avec succès ! Vous êtes maintenant connecté.');
 
-        // Connecter l'utilisateur
+        // 4. Authentifie automatiquement l'utilisateur après vérification pour une meilleure UX.
         return $userAuthenticator->authenticateUser(
             $user,
             $formLoginAuthenticator,
@@ -134,6 +172,9 @@ class SecurityController extends AbstractController
         );
     }
 
+    /**
+     * Gère la demande de réinitialisation de mot de passe.
+     */
     #[Route('/reset-password-request', name: 'app_reset_password_request')]
     public function resetPasswordRequest(
         Request $request,
@@ -149,19 +190,18 @@ class SecurityController extends AbstractController
             $email = $form->get('email')->getData();
             $user = $usersRepository->findOneBy(['email' => $email]);
 
+            // Si un utilisateur correspond à cet email, on génère un token et on envoie l'email.
             if ($user) {
-                // Créer le token de réinitialisation
                 $token = $tokenGenerator->generateToken();
                 $user->setResetToken($token);
                 $user->setResetTokenExpiresAt(new \DateTimeImmutable('+1 hour'));
                 
                 $entityManager->flush();
-
-                // Envoyer l'email de réinitialisation
                 $this->sendResetPasswordEmail($user, $mailer);
             }
 
-            // Toujours afficher le même message pour des raisons de sécurité
+            // Pour des raisons de sécurité, on affiche toujours le même message, que l'email existe ou non.
+            // Cela empêche un attaquant de deviner quels emails sont enregistrés.
             $this->addFlash('success', 'Si un compte existe avec cet email, un lien de réinitialisation a été envoyé.');
 
             return $this->redirectToRoute('app_login');
@@ -172,6 +212,9 @@ class SecurityController extends AbstractController
         ]);
     }
 
+    /**
+     * Gère la réinitialisation effective du mot de passe via le token.
+     */
     #[Route('/reset-password/{token}', name: 'app_reset_password')]
     public function resetPassword(
         string $token,
@@ -182,13 +225,9 @@ class SecurityController extends AbstractController
     ): Response {
         $user = $usersRepository->findOneBy(['resetToken' => $token]);
 
-        if (!$user) {
-            $this->addFlash('error', 'Token de réinitialisation invalide.');
-            return $this->redirectToRoute('app_login');
-        }
-
-        if ($user->getResetTokenExpiresAt() < new \DateTimeImmutable()) {
-            $this->addFlash('error', 'Le token de réinitialisation a expiré.');
+        // Vérifie si le token est valide et non expiré.
+        if (!$user || $user->getResetTokenExpiresAt() < new \DateTimeImmutable()) {
+            $this->addFlash('error', 'Token de réinitialisation invalide ou expiré.');
             return $this->redirectToRoute('app_login');
         }
 
@@ -196,11 +235,11 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Hasher le nouveau mot de passe
+            // Hasher le nouveau mot de passe.
             $hashedPassword = $passwordHasher->hashPassword($user, $form->get('password')->getData());
             $user->setPassword($hashedPassword);
             
-            // Supprimer le token
+            // Invalider le token après utilisation.
             $user->setResetToken(null);
             $user->setResetTokenExpiresAt(null);
             
@@ -216,6 +255,9 @@ class SecurityController extends AbstractController
         ]);
     }
 
+    /**
+     * Méthode privée et réutilisable pour construire et envoyer l'email de vérification.
+     */
     private function sendVerificationEmail(Users $user, MailerInterface $mailer): void
     {
         $email = (new Email())
@@ -238,6 +280,9 @@ class SecurityController extends AbstractController
         $mailer->send($email);
     }
 
+    /**
+     * Méthode privée et réutilisable pour construire et envoyer l'email de réinitialisation de mot de passe.
+     */
     private function sendResetPasswordEmail(Users $user, MailerInterface $mailer): void
     {
         $email = (new Email())

@@ -1,18 +1,39 @@
+{#
+    templates/address/index.html.twig
+    =================================
+
+    Cette page sert de tableau de bord à l'utilisateur pour gérer toutes ses adresses.
+    Elle est conçue pour être très dynamique et interactive, fonctionnant presque
+    comme une "Single Page Application" grâce à JavaScript.
+
+    Logique Clé :
+    - Affichage en grille des adresses existantes.
+    - Toutes les actions (Ajouter, Modifier, Supprimer) sont gérées en AJAX via
+      le script `address.js`, qui communique avec `AddressController`.
+    - Les formulaires d'ajout/modification apparaissent dans une modale sans
+      rechargement de la page.
+
+    Variables Clés :
+    - `addresses`: La collection de toutes les adresses de l'utilisateur connecté.
+#}
 {% extends 'base.html.twig' %}
 
 {% block title %}Mes Adresses{% endblock %}
+{% block meta_description %}Gérez vos adresses de livraison et de facturation sur Destocard pour des commandes plus rapides.{% endblock %}
 
 {% block body %}
 <div class="form-container">
     <div class="page-header">
         <h1 class="site-title">Mes Adresses</h1>
+        {# Ce bouton déclenche l'ouverture de la modale d'ajout via JavaScript. #}
         <button type="button" class="btn btn--primary" id="add-address-btn">
             ➕ Ajouter une adresse
         </button>
     </div>
 
     {% if addresses is empty %}
-        <div class="text-center" style="padding: 4rem 0;">
+        {# Utilisation de la classe .empty-state pour un affichage cohérent des sections vides. #}
+        <div class="empty-state">
             <p>Vous n'avez pas encore d'adresses enregistrées.</p>
             <p>Ajoutez votre première adresse pour faciliter vos commandes !</p>
         </div>
@@ -39,6 +60,8 @@
                     </div>
 
                     <div class="address-card-footer">
+                        {# Ces boutons sont des déclencheurs pour le script `address.js`. #}
+                        {# Ils utilisent des `data-` attributs pour passer l'ID de l'adresse. #}
                         <button type="button" class="btn btn--secondary btn-edit-address" 
                                 data-address-id="{{ address.id }}"
                                 title="Modifier cette adresse">
@@ -57,13 +80,20 @@
     {% endif %}
 </div>
 
-{# Container pour les modals #}
+{# 
+    Conteneur vide qui sera rempli par JavaScript avec le contenu de la modale 
+    (le template _modal_form.html.twig) lorsque l'utilisateur clique sur "Ajouter" ou "Modifier".
+#}
 <div id="modal-container"></div>
 {% endblock %}
 
 {% block javascripts %}
     <script>
-        // Variables Twig pour le JS
+        {# 
+            On passe les routes Symfony nécessaires au script `address.js`.
+            C'est une bonne pratique pour éviter de hardcoder des URLs en JavaScript.
+            Le script utilisera cet objet global `window.addressRoutes` pour ses appels AJAX.
+        #}
         window.addressRoutes = {
             newModal: '{{ path('app_address_new_modal') }}',
             create: '{{ path('app_address_create') }}',

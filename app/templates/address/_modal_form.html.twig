@@ -1,16 +1,37 @@
-{# Template pour la modal de création d'adresse #}
+{#
+    templates/address/_modal_form.html.twig
+    =========================================
 
+    Ce template est un "partiel" : il ne peut pas être affiché seul.
+    Il contient uniquement le HTML du formulaire d'ajout/modification d'adresse
+    et est destiné à être chargé en AJAX dans une modale.
+
+    Logique :
+    - Est rendu par `AddressController::newModal` ou `AddressController::editModal`.
+    - Le formulaire est soumis en AJAX par `address.js` à `AddressController::create`
+      ou `AddressController::update`.
+    - En cas d'erreur de validation, le contrôleur peut renvoyer ce même template
+      ré-affiché avec les messages d'erreur.
+
+    Variables Clés :
+    - `modal_title`: Le titre à afficher dans l'en-tête de la modale.
+    - `form`: L'objet FormView de `AddressFormType`.
+    - `address`: L'entité `Addresses`, soit nouvelle, soit celle en cours d'édition.
+#}
+
+{# L'en-tête de la modale avec le titre dynamique et le bouton de fermeture. #}
 <div class="modal-header">
     <h3 class="modal-title">{{ modal_title }}</h3>
     <button type="button" class="modal-close" aria-label="Fermer">×</button>
 </div>
 
+{# Le corps de la modale contenant le formulaire. #}
 <div class="modal-body">
     {{ form_start(form, {
         'attr': {
             'id': 'address-form',
             'class': 'address-form',
-            'data-address-id': address.id ?? ''
+            'data-address-id': address.id ?? '' {# L'ID est utilisé par JS pour l'URL d'update. #}
         }
     }) }}
     
@@ -66,6 +87,7 @@
     <div class="form-actions">
         <button type="button" class="btn btn--secondary" id="cancel-address">Annuler</button>
         <button type="submit" class="btn btn--primary">
+            {# Le texte du bouton s'adapte s'il s'agit d'une création ou d'une modification. #}
             {% if address.id %}
                 ✏️ Modifier l'adresse
             {% else %}

@@ -1,5 +1,19 @@
-{# templates/security/login.html.twig #}
+{#
+    templates/security/login.html.twig
+    ====================================
 
+    Ce template gère l'affichage de la page de connexion.
+    Son contrôleur associé (`SecurityController::login`) ne fait que rendre ce template.
+    Toute la logique de traitement du formulaire (vérification de l'email et du mot de passe)
+    est interceptée et gérée par le pare-feu de sécurité de Symfony, configuré dans `security.yaml`.
+
+    Variables Clés :
+    - `error`: Un objet d'erreur fourni par Symfony s'il y a eu un problème lors de la
+               dernière tentative de connexion (ex: mot de passe incorrect). Contient
+               `messageKey` et `messageData` pour la traduction.
+    - `last_username`: Le dernier email saisi par l'utilisateur. Utile pour pré-remplir
+                       le champ et améliorer l'expérience utilisateur.
+#}
 {% extends 'base.html.twig' %}
 
 {% block title %}Connexion{% endblock %}
@@ -11,33 +25,55 @@
     <div class="auth-card">
         <h1 class="site-title" id="login-title">Connexion</h1>
 
+        {# Affiche le message d'erreur de connexion s'il y en a un. #}
         {% if error %}
-            <div class="flash-message flash-message--error" role="alert" aria-live="polite">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            <div class="flash-message flash-message--error" role="alert" aria-live="polite">
+                {# `trans` est le filtre de traduction de Symfony. 'security' est le domaine de traduction. #}
+                {{ error.messageKey|trans(error.messageData, 'security') }}
+            </div>
         {% endif %}
 
+        {# 
+            Ce formulaire POST n'a pas besoin de `action` car il poste sur la même URL.
+            Le pare-feu de Symfony intercepte cette requête POST sur `/login`.
+        #}
         <form method="post" aria-labelledby="login-title">
             <div class="form-group">
                 <label for="username" class="form-label">Email</label>
+                {# 
+                    `_username` est le nom attendu par le pare-feu de Symfony pour le champ de l'identifiant.
+                    C'est configurable dans `security.yaml`.
+                #}
                 <input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control" autocomplete="email" required autofocus aria-describedby="username-help">
                 <div id="username-help" class="sr-only">Saisissez votre adresse email</div>
             </div>
 
             <div class="form-group">
                 <label for="password" class="form-label">Mot de passe</label>
+                {# `_password` est le nom attendu par le pare-feu pour le mot de passe. #}
                 <input type="password" name="_password" id="password" class="form-control" autocomplete="current-password" required aria-describedby="password-help">
                 <div id="password-help" class="sr-only">Saisissez votre mot de passe</div>
             </div>
 
+            {# 
+                Protection CSRF (Cross-Site Request Forgery).
+                `csrf_token('authenticate')` génère un token unique lié à l'intention 'authenticate'.
+                Le pare-feu de Symfony vérifiera automatiquement ce token.
+            #}
             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-
-            {# If you want to control the redirect URL after login
-            <input type="hidden" name="_target_path" value="/account"/> #}
+            
+            {# 
+                Optionnel : pour contrôler la redirection après la connexion.
+                Décommenter pour forcer la redirection vers une page spécifique.
+                Ex: <input type="hidden" name="_target_path" value="/account"/> 
+            #}
 
             <button class="btn btn--primary" style="width:100%; margin-top: 1rem;" type="submit">
                 Se connecter
             </button>
         </form>
         
+        {# Liens utiles pour les utilisateurs qui n'ont pas de compte ou ont oublié leur mot de passe. #}
         <div class="auth-links">
             <a href="{{ path('app_reset_password_request') }}">Mot de passe oublié ?</a>
             <span>·</span>

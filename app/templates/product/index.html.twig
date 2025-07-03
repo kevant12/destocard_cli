@@ -1,3 +1,17 @@
+{#
+    templates/product/index.html.twig
+    ===================================
+
+    Ce template affiche la liste de tous les produits disponibles à la vente sur le site.
+    Il est conçu pour présenter une vue paginée des articles pour une meilleure performance
+    et une expérience utilisateur fluide.
+
+    Variables Clés :
+    - `pagination`: Un objet fourni par le KnpPaginatorBundle. Il contient non seulement
+                    les produits de la page actuelle, mais aussi toutes les informations
+                    nécessaires pour afficher les contrôles de pagination (page suivante,
+                    précédente, numéros de page, etc.).
+#}
 {% extends 'base.html.twig' %}
 
 {% block title %}Tous nos produits Pokémon - Cartes, Figurines, Accessoires | Destocard{% endblock %}
@@ -5,39 +19,42 @@
 {% block meta_description %}Parcourez notre vaste sélection de produits Pokémon : cartes à collectionner rares, boosters, figurines, jeux et accessoires. Trouvez la pièce manquante à votre collection chez Destocard !{% endblock %}
 
 {% block body %}
-<div class="products-container">
-    <h1>Nos Produits</h1>
+<div class="container">
+    <h1 class="site-title">Nos Produits</h1>
 
-    <div class="products-grid">
-        {% for product in pagination %}
-            <div class="product-card">
-                {% if product.media|first %}
-                    <img src="{{ asset('uploads/products/' ~ product.media|first.fileName) }}" alt="{{ product.title }}">
-                {% else %}
-                    <img src="{{ asset('images/placeholder.png') }}" alt="Image non disponible">
-                {% endif %}
-                <h3>{{ product.title }}</h3>
-                <p class="price">{{ product.price }} €</p>
-                <p class="description">{{ product.description }}</p>
-                <div class="product-actions">
-                    {% if app.user %}
-                        <button class="btn-like {% if product in app.user.likes %}active{% endif %}" 
-                                data-product-id="{{ product.id }}"
-                                data-csrf-token="{{ csrf_token('toggle_favorite' ~ product.id) }}"
-                                aria-label="Ajouter {{ product.title }} aux favoris">
-                            ❤️
-                        </button>
-                    {% endif %}
-                    <form method="post" action="{{ path('add_to_cart', {'id': product.id}) }}" class="add-to-cart-form">
-                        <button type="submit" aria-label="Ajouter {{ product.title }} au panier">Ajouter au panier</button>
-                    </form>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
+    {#
+        On vérifie si la collection de produits dans la pagination n'est pas vide.
+        `pagination.getTotalItemCount` est une méthode fiable du paginateur pour cela.
+    #}
+    {% if pagination.getTotalItemCount > 0 %}
+        <div class="layout-grid">
+            {# On boucle sur les `items` de l'objet `pagination`. #}
+            {% for product in pagination %}
+                {#
+                    On inclut un template partiel (un "fragment") pour afficher chaque carte produit.
+                    Cela permet de réutiliser le design de la carte produit à plusieurs endroits
+                    (page d'accueil, favoris, résultats de recherche, etc.) sans dupliquer de code.
+                    
+                    On passe la variable `product` au template partiel pour qu'il puisse
+                    afficher les bonnes informations.
+                #}
+                {% include 'partials/_product_card.html.twig' with {'product': product} %}
+            {% endfor %}
+        </div>
 
-    <div class="navigation text-center">
-        {{ knp_pagination_render(pagination) }}
-    </div>
+        {# 
+            Affiche les contrôles de navigation de la pagination (ex: "1, 2, 3, Suivant").
+            `knp_pagination_render` est une fonction Twig fournie par le KnpPaginatorBundle.
+            Elle génère automatiquement le HTML nécessaire.
+        #}
+        <div class="pagination">
+            {{ knp_pagination_render(pagination) }}
+        </div>
+    {% else %}
+        <div class="empty-state">
+             <p>Aucun produit n'est actuellement disponible.</p>
+             <p>Revenez bientôt pour découvrir de nouveaux articles !</p>
+        </div>
+    {% endif %}
 </div>
 {% endblock %}

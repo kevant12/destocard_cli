@@ -1,3 +1,23 @@
+{#
+    templates/cart/index.html.twig
+    ================================
+
+    Ce template affiche la page principale du panier d'achat.
+    Il liste tous les articles ajoutés par l'utilisateur, affiche le total
+    et permet de passer à l'étape suivante (le checkout).
+
+    Logique Clé :
+    - Itération sur les articles : Affiche chaque produit avec sa photo, son nom, son prix.
+    - Actions par article : Permet de supprimer un article du panier.
+    - Résumé : Calcule et affiche le montant total du panier.
+    - Validation : Le contrôleur (`CartController::cart`) vérifie en amont si les
+      produits sont toujours en stock et affiche des avertissements si nécessaire.
+    
+    Variables Clés :
+    - `cart`: Un tableau contenant les informations détaillées de chaque article
+              (objet Product, quantité, prix total de l'article).
+    - `total`: Le montant total de tous les articles dans le panier.
+#}
 {% extends 'base.html.twig' %}
 
 {% block title %}Panier{% endblock %}
@@ -33,9 +53,11 @@
                                 {% endif %}
                             </td>
                             <td class="cart-product-price">{{ item.product.price|number_format(2, ',', ' ') }} €</td>
+                            {# La quantité est actuellement fixée à 1 #}
                             <td class="cart-quantity">1</td>
                             <td class="cart-item-total">{{ item.totalItemPrice|number_format(2, ',', ' ') }} €</td>
                             <td>
+                                {# Le bouton de suppression est géré par `cart.js` en AJAX. #}
                                 <button class="cart-remove-btn" 
                                         data-product-id="{{ item.product.id }}" 
                                         data-csrf-token="{{ csrf_token('cart_remove' ~ item.product.id) }}" 
@@ -55,6 +77,7 @@
                 Total : <span id="cart-total">{{ total|number_format(2, ',', ' ') }}</span> €
             </div>
             <div class="cart-actions">
+                {# Ce formulaire redirige vers la page de checkout. #}
                 <form method="post" action="{{ path('cart_buy') }}">
                     <button type="submit" class="btn btn--primary" aria-label="Procéder au paiement">Passer la commande</button>
                 </form>

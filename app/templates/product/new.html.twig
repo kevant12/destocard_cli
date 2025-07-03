@@ -1,43 +1,45 @@
+{#
+    templates/product/new.html.twig
+    ================================
+
+    Ce template affiche le formulaire de création d'un nouvel article (produit).
+    Il est géré par `ProductController::new`.
+    Ce formulaire est assez complexe car il gère :
+    - Des champs de texte, de prix, et de description.
+    - L'upload de multiples fichiers image.
+    - L'intégration d'une modale pour la capture via webcam.
+
+    Variables Clés :
+    - `form`: L'objet FormView de `ProductFormType` pour construire le formulaire.
+#}
 {% extends 'base.html.twig' %}
 
 {% block title %}Mettre un nouvel article en vente{% endblock %}
+{% block meta_description %}Vendez vos cartes Pokémon et autres objets de collection sur Destocard. Créez votre annonce facilement et rapidement.{% endblock %}
 
 {% block body %}
 <div class="form-container">
     <h1 class="site-title">Mettre un nouvel article en vente</h1>
 
+    {# `form_start` inclut l'attribut `enctype="multipart/form-data"` nécessaire pour l'upload de fichiers. #}
     {{ form_start(form) }}
         <div class="form-columns">
             <div class="form-column-left">
                 <fieldset>
                     <legend>Détails de l'article</legend>
                     
-                    <div class="form-group">
-                        {{ form_label(form.title, null, {'attr': {'class': 'form-label form-required'}}) }}
-                        {{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Ex: Dracaufeu Holographique'}}) }}
-                        {{ form_errors(form.title) }}
-                    </div>
+                    {# 
+                        On utilise ici `form_row` pour les champs simples. C'est un raccourci
+                        qui génère label, widget, et erreurs.
+                    #}
+                    {{ form_row(form.title) }}
 
                     <div class="form-grid">
-                        <div class="form-group">
-                            {{ form_label(form.number, null, {'attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.number, {'attr': {'class': 'form-control', 'placeholder': 'Ex: 4/102'}}) }}
-                            {{ form_errors(form.number) }}
-                        </div>
-
-                        <div class="form-group">
-                            {{ form_label(form.category, null, {'attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.category, {'attr': {'class': 'form-control', 'placeholder': 'Ex: Carte Pokémon'}}) }}
-                            {{ form_errors(form.category) }}
-                        </div>
+                        {{ form_row(form.number) }}
+                        {{ form_row(form.category) }}
                     </div>
-
-                    <div class="form-group">
-                        {{ form_label(form.price, null, {'attr': {'class': 'form-label form-required'}}) }}
-                        {{ form_widget(form.price, {'attr': {'class': 'form-control', 'min': '0', 'step': '0.01', 'placeholder': '0.00'}}) }}
-                        {{ form_errors(form.price) }}
-                        <div class="form-help">Prix en euros (€)</div>
-                    </div>
+                    
+                    {{ form_row(form.price) }}
                 </fieldset>
             </div>
 
@@ -45,28 +47,27 @@
                 <fieldset>
                     <legend>Description & Médias</legend>
                     
-                    <div class="form-group">
-                        {{ form_label(form.description, null, {'attr': {'class': 'form-label'}}) }}
-                        {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': '5', 'placeholder': 'Décrivez votre article en détail...'}}) }}
-                        {{ form_errors(form.description) }}
-                        <div class="form-help">Une bonne description augmente vos chances de vente</div>
-                    </div>
+                    {{ form_row(form.description) }}
 
                     <div class="form-group">
-                        {{ form_label(form.imageFiles, 'Photos de votre article', {'attr': {'class': 'form-label'}}) }}
+                        {{ form_label(form.imageFiles, 'Photos de votre article') }}
                         <div class="form-image-upload">
                             <div class="form-file-input">
-                                {{ form_widget(form.imageFiles, {'attr': {'accept': 'image/*', 'multiple': true}}) }}
+                                {# Le champ `imageFiles` est `mapped` => false, il sera géré manuellement. #}
+                                {{ form_widget(form.imageFiles) }}
+                                {# Le label est lié au widget par l'attribut `for`. #}
                                 <label for="{{ form.imageFiles.vars.id }}" class="form-file-label">
-                                    📷 Choisir des photos (PNG, JPG)
+                                    📷 Choisir des photos
                                 </label>
                             </div>
-                            <button type="button" id="webcam-button" class="btn btn--secondary" aria-label="Utiliser la webcam pour prendre une photo">
+                            <button type="button" id="webcam-button" class="btn btn--secondary" aria-label="Utiliser la webcam">
                                 📱 Webcam
                             </button>
                         </div>
                         {{ form_errors(form.imageFiles) }}
                         <div class="form-help">Formats acceptés : PNG, JPG - Taille max : 5MB par fichier</div>
+                        
+                        {# Ce conteneur sera rempli par JavaScript avec les aperçus des images sélectionnées. #}
                         <div id="image-preview-container"></div>
                     </div>
                 </fieldset>
@@ -80,16 +81,29 @@
     {{ form_end(form) }}
 </div>
 
-{# Modale pour la webcam #}
-<div id="webcam-modal" class="webcam-modal" style="display: none;" aria-hidden="true" role="dialog">
+{# 
+    La modale pour la webcam est cachée par défaut (`display: none`).
+    Elle est gérée entièrement par `product-form.js`.
+#}
+<div id="webcam-modal" class="webcam-modal" style="display: none;" aria-hidden="true" role="dialog" aria-labelledby="webcam-modal-title">
     <div class="webcam-modal-content">
-        <h3>Prendre une photo avec la webcam</h3>
+        <h3 id="webcam-modal-title">Prendre une photo avec la webcam</h3>
         <video id="webcam-video" autoplay playsinline aria-label="Aperçu de la webcam"></video>
+        {# Le canvas est utilisé pour dessiner l'image capturée avant de l'envoyer. #}
         <canvas id="webcam-canvas" style="display: none;"></canvas>
         <div class="webcam-controls">
-            <button type="button" id="capture-button" class="btn btn--primary" aria-label="Capturer la photo">📸 Prendre la photo</button>
+            <button type="button" id="capture-button" class="btn btn--primary" aria-label="Capturer la photo">📸 Capturer</button>
             <button type="button" id="close-webcam-button" class="btn btn--secondary" aria-label="Fermer la webcam">❌ Fermer</button>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+    {#
+        Le script `product-form.js` est responsable de toute l'interactivité de cette page :
+        - Prévisualisation des images sélectionnées.
+        - Ouverture et gestion de la modale webcam.
+        - Capture de l'image depuis la webcam et injection dans le formulaire.
+    #}
 {% endblock %} 

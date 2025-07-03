@@ -2474,35 +2474,6 @@ legend {
 }
 
 /* Styles pour la page "Mes articles" */
-.product-card--user {
-    position: relative;
-}
-
-.product-card--user.is-unavailable {
-    opacity: 0.6;
-    background-color: var(--surface-elevated);
-}
-
-.product-status-badge {
-    position: absolute;
-    top: var(--spacing-md);
-    right: var(--spacing-md);
-    padding: var(--spacing-xs) var(--spacing-sm);
-    border-radius: var(--border-radius-sm);
-    font-size: var(--font-size-xs);
-    font-weight: 600;
-    text-transform: uppercase;
-    color: white;
-}
-
-.product-status-badge.is-available {
-    background-color: var(--success-color);
-}
-
-.product-status-badge.is-unavailable {
-    background-color: var(--muted-text-color);
-}
-
 .card__footer .btn {
     flex-grow: 1;
 }

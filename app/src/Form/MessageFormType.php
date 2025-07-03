@@ -11,18 +11,21 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
 use App\Entity\Messages;
 
+/**
+ * Définit le formulaire pour l'envoi d'un message.
+ * Il est utilisé dans le contexte d'une conversation.
+ */
 class MessageFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            // Champ principal pour le contenu du message.
             ->add('content', TextareaType::class, [
-                'label' => false,
+                'label' => false, // On cache le label pour un design plus épuré.
                 'attr' => ['placeholder' => 'Écrivez votre message...'],
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Le message ne peut pas être vide.'
-                    ]),
+                    new NotBlank(['message' => 'Le message ne peut pas être vide.']),
                     new Length([
                         'min' => 1,
                         'max' => 1000,
@@ -31,6 +34,7 @@ class MessageFormType extends AbstractType
                     ])
                 ]
             ])
+            // Le bouton de soumission.
             ->add('send', SubmitType::class, [
                 'label' => 'Envoyer',
             ]);

@@ -1,3 +1,17 @@
+{#
+    templates/security/register.html.twig
+    =======================================
+
+    Ce template affiche le formulaire d'inscription.
+    Contrairement à la page de connexion, le traitement de ce formulaire
+    (GET et POST) est entièrement géré par notre propre contrôleur: `SecurityController::register`.
+
+    Variable Clé :
+    - `registerForm`: L'objet FormView créé à partir de notre `RegisterFormType`.
+                      Il contient toutes les informations nécessaires pour afficher
+                      le formulaire, y compris les valeurs soumises, les erreurs de
+                      validation, et les tokens CSRF.
+#}
 {% extends 'base.html.twig' %}
 
 {% block title %}Inscription{% endblock %}
@@ -9,13 +23,19 @@
     <div class="auth-card auth-card--register">
         <h1 class="site-title">Créer un compte</h1>
 
+        {# 
+            `form_start(registerForm)`: Affiche la balise d'ouverture <form> avec les
+            attributs corrects (method, action) et le champ CSRF caché.
+        #}
         {{ form_start(registerForm) }}
             <div class="form-grid">
                 <div class="form-group form-group--span-2">
                     <label class="form-label">Civilité</label>
                     <div class="form-radio-group">
+                        {# Affiche les widgets (boutons radio) pour le champ 'civility'. #}
                         {{ form_widget(registerForm.civility) }}
                     </div>
+                    {# Affiche les erreurs de validation pour ce champ, s'il y en a. #}
                     {{ form_errors(registerForm.civility) }}
                 </div>
 

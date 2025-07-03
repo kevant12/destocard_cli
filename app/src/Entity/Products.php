@@ -51,7 +51,7 @@ class Products
     /**
      * @var Collection<int, OrdersProducts>
      */
-    #[ORM\OneToMany(targetEntity: OrdersProducts::class, mappedBy: 'products', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(targetEntity: OrdersProducts::class, mappedBy: 'products')]
     private Collection $ordersProducts;
 
     #[ORM\Column(type: 'string', length: 100, nullable: true)]
