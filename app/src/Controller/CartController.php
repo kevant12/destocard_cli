@@ -87,10 +87,12 @@ class CartController extends AbstractController
                 return $this->json([
                     'success' => true,
                     'cartCount' => $result['cartCount'],
-                    'total' => $result['total']
+                    'total' => $result['total'],
+                    'message' => 'Article ajouté au panier avec succès !'
                 ]);
             }
 
+            $this->addFlash('success', 'Article ajouté au panier avec succès !');
             return $this->redirectToRoute('cart');
         } catch (\Exception $e) {
             if ($request->isXmlHttpRequest()) {

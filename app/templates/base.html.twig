@@ -31,7 +31,11 @@
         {# Javascripts #}
         <script src="/js/nav.js" defer></script>
         <script src="/js/csrf-protection.js" defer></script>
+        <script src="/js/notifications.js" defer></script>
         <script src="/js/ajax.js" defer></script>
+        <script src="/js/cart-counter.js" defer></script>
+        <script src="/js/cart.js" defer></script>
+        <script src="/js/favorites.js" defer></script>
         <script src="/js/theme-switcher.js" defer></script>
         {% block javascripts %}{% endblock %}
 
@@ -92,7 +96,7 @@
                         <a href="{{ path('app_message_index') }}">Messages</a>
                         <a href="{{ path('app_address_index') }}">Mes Adresses</a>
                         <a href="{{ path('cart') }}" class="nav-cart" title="Panier" aria-label="Panier">
-                            🛒 <span class="cart-count" aria-label="Nombre d'articles dans le panier"></span>
+                            🛒 <span class="cart-count" aria-label="Nombre d'articles dans le panier">{{ cartCount ?? 0 }}</span>
                         </a>
                         <a href="{{ path('app_logout') }}" class="btn btn--secondary">Déconnexion</a>
                     {% else %}

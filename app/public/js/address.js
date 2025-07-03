@@ -125,13 +125,17 @@ async function handleFormSubmit(e) {
         const data = await response.json();
         
         if (data.success) {
+            // Afficher notification de succès avec le nouveau système
+            if (window.showAddressSuccess) {
+                window.showAddressSuccess(data.message);
+            } else {
+                showNotification('success', data.message);
+            }
+            
             // Succès - fermer la modal et mettre à jour
             if (window.addressModalCallback) {
                 window.addressModalCallback(data.address);
             }
-            
-            // Afficher un message de succès
-            showNotification('success', data.message);
             
             // Fermer la modal
             if (modal) {
