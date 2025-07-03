@@ -1,0 +1,73 @@
+{# Template pour la modal de création d'adresse #}
+
+<div class="modal-header">
+    <h3 class="modal-title">{{ modal_title }}</h3>
+    <button type="button" class="modal-close" aria-label="Fermer">×</button>
+</div>
+
+<div class="modal-body">
+    {{ form_start(form, {
+        'attr': {
+            'id': 'address-form',
+            'class': 'address-form'
+        }
+    }) }}
+    
+    <div class="form-grid">
+        <div class="form-group">
+            {{ form_label(form.number, null, {'attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.number, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.number) }}
+            {% if form.number.vars.help %}
+                <div class="form-help">{{ form.number.vars.help }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group form-group--span-2">
+            {{ form_label(form.street, null, {'attr': {'class': 'form-label form-required'}}) }}
+            {{ form_widget(form.street, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.street) }}
+        </div>
+    </div>
+
+    <div class="form-grid">
+        <div class="form-group">
+            {{ form_label(form.zipCode, null, {'attr': {'class': 'form-label form-required'}}) }}
+            {{ form_widget(form.zipCode, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.zipCode) }}
+            {% if form.zipCode.vars.help %}
+                <div class="form-help">{{ form.zipCode.vars.help }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.city, null, {'attr': {'class': 'form-label form-required'}}) }}
+            {{ form_widget(form.city, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.city) }}
+        </div>
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.country, null, {'attr': {'class': 'form-label form-required'}}) }}
+        {{ form_widget(form.country, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.country) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.type, null, {'attr': {'class': 'form-label form-required'}}) }}
+        {{ form_widget(form.type, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.type) }}
+        {% if form.type.vars.help %}
+            <div class="form-help">{{ form.type.vars.help }}</div>
+        {% endif %}
+    </div>
+
+    <div class="form-actions">
+        <button type="button" class="btn btn--secondary" id="cancel-address">Annuler</button>
+        <button type="submit" class="btn btn--primary">
+            💾 Enregistrer l'adresse
+        </button>
+    </div>
+
+    {{ form_end(form) }}
+</div> 

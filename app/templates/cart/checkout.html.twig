@@ -28,6 +28,11 @@
             {{ form_start(form) }}
                 <div class="mb-3">
                     {{ form_row(form.deliveryAddress) }}
+                    <div class="mt-2">
+                        <button type="button" class="btn btn-outline-primary" id="add-address-checkout">
+                            ➕ Ajouter une nouvelle adresse
+                        </button>
+                    </div>
                 </div>
                 <div class="mb-3">
                     {{ form_row(form.deliveryMethod) }}
@@ -50,7 +55,7 @@
                 {% endfor %}
                 <li class="list-group-item d-flex justify-content-between">
                     <span>Total (EUR)</span>
-                    <strong>{{ total|number_format(2, ',', ' ') }} €</strong>
+                    <strong id="cart-total">{{ total|number_format(2, ',', ' ') }} €</strong>
                 </li>
             </ul>
         </div>
@@ -60,43 +65,15 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script src="{{ asset('js/checkout.js') }}" defer></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const deliveryMethodRadios = document.querySelectorAll('input[name="checkout_form[deliveryMethod]"]');
-            const shippingCostInput = document.getElementById('checkout_form_shippingCost');
-            const totalElement = document.querySelector('#cart-total');
-            const initialTotal = parseFloat('{{ total|number_format(2, '.', '') }}');
-
-            function updateShippingCost() {
-                let selectedMethod = null;
-                deliveryMethodRadios.forEach(radio => {
-                    if (radio.checked) {
-                        selectedMethod = radio.value;
-                    }
-                });
-
-                let shippingCost = 0;
-                if (selectedMethod === 'standard') {
-                    shippingCost = 5.00;
-                } else if (selectedMethod === 'express') {
-                    shippingCost = 10.00;
-                }
-
-                shippingCostInput.value = shippingCost;
-                updateTotalDisplay(shippingCost);
-            }
-
-            function updateTotalDisplay(shippingCost) {
-                const newTotal = initialTotal + shippingCost;
-                totalElement.textContent = newTotal.toLocaleString('fr-FR', {minimumFractionDigits: 2});
-            }
-
-            deliveryMethodRadios.forEach(radio => {
-                radio.addEventListener('change', updateShippingCost);
-            });
-
-            // Initialiser le coût de livraison au chargement de la page si une option est déjà sélectionnée
-            updateShippingCost();
-        });
+        // Variables Twig pour le JS
+        window.addressRoutes = {
+            newModal: '{{ path('app_address_new_modal') }}',
+            create: '{{ path('app_address_create') }}'
+        };
+        window.checkoutData = {
+            initialTotal: {{ total|number_format(2, '.', '') }}
+        };
     </script>
 {% endblock %}

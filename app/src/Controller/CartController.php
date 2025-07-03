@@ -32,7 +32,16 @@ class CartController extends AbstractController
             return $this->redirectToRoute('cart');
         }
 
-        $form = $this->createForm(CheckoutFormType::class);
+        $user = $this->getUser();
+        
+        // Debug temporaire
+        error_log('=== CHECKOUT DEBUG ===');
+        error_log('User connecté: ' . ($user ? $user->getEmail() . ' (ID: ' . $user->getId() . ')' : 'NON CONNECTÉ'));
+        error_log('Nombre d\'adresses shipping: ' . $user->getAddresses()->filter(function($addr) { return $addr->getType() === 'shipping'; })->count());
+        
+        $form = $this->createForm(CheckoutFormType::class, null, [
+            'user' => $user
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

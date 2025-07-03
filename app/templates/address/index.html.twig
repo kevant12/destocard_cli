@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Adresses{% endblock %}
+
+{% block body %}
+<div class="form-container">
+    <div class="page-header">
+        <h1 class="site-title">Mes Adresses</h1>
+        <button type="button" class="btn btn--primary" id="add-address-btn">
+            ➕ Ajouter une adresse
+        </button>
+    </div>
+
+    {% if addresses is empty %}
+        <div class="text-center" style="padding: 4rem 0;">
+            <p>Vous n'avez pas encore d'adresses enregistrées.</p>
+            <p>Ajoutez votre première adresse pour faciliter vos commandes !</p>
+        </div>
+    {% else %}
+        <div class="addresses-grid">
+            {% for address in addresses %}
+                <div class="address-card" data-address-id="{{ address.id }}">
+                    <div class="address-card-header">
+                        <span class="address-type-badge address-type--{{ address.type }}">
+                            {% if address.type == 'home' %}🏠 Domicile
+                            {% elseif address.type == 'billing' %}🧾 Facturation
+                            {% elseif address.type == 'shipping' %}📦 Livraison
+                            {% else %}📍 Autre
+                            {% endif %}
+                        </span>
+                    </div>
+
+                    <div class="address-card-body">
+                        <div class="address-details">
+                            <strong>{{ address.number }} {{ address.street }}</strong><br>
+                            {{ address.zipCode }} {{ address.city }}<br>
+                            {{ address.country }}
+                        </div>
+                    </div>
+
+                    <div class="address-card-footer">
+                        <button type="button" class="btn btn--secondary btn-edit-address" 
+                                data-address-id="{{ address.id }}">
+                            ✏️ Modifier
+                        </button>
+                        <button type="button" class="btn btn--secondary btn-delete-address" 
+                                data-address-id="{{ address.id }}"
+                                onclick="confirmDeleteAddress({{ address.id }})">
+                            🗑️ Supprimer
+                        </button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+
+{# Container pour les modals #}
+<div id="modal-container"></div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/address.js') }}" defer></script>
+    <script>
+        // Variables Twig pour le JS
+        window.addressRoutes = {
+            newModal: '{{ path('app_address_new_modal') }}',
+            create: '{{ path('app_address_create') }}',
+            delete: '/address/{id}/delete'
+        };
+    </script>
+{% endblock %} 
