@@ -165,4 +165,117 @@ class AddressController extends AbstractController
             'addresses' => $addresses
         ]);
     }
+
+    /**
+     * Affiche la modal d'édition d'adresse (AJAX)
+     */
+    #[Route('/{id}/edit-modal', name: 'app_address_edit_modal', methods: ['GET'])]
+    public function editModal(Addresses $address): Response
+    {
+        // Vérifier que l'adresse appartient à l'utilisateur connecté
+        if ($address->getUsers() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('Cette adresse ne vous appartient pas.');
+        }
+
+        $form = $this->createForm(AddressFormType::class, $address);
+
+        return $this->render('address/_modal_form.html.twig', [
+            'form' => $form,
+            'address' => $address,
+            'modal_title' => 'Modifier l\'adresse'
+        ]);
+    }
+
+    /**
+     * Traite la modification d'adresse via AJAX
+     */
+    #[Route('/{id}/update', name: 'app_address_update', methods: ['POST'])]
+    public function update(Addresses $address, Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        // Vérifier que l'adresse appartient à l'utilisateur connecté
+        if ($address->getUsers() !== $this->getUser()) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Cette adresse ne vous appartient pas.'
+            ], 403);
+        }
+
+        $form = $this->createForm(AddressFormType::class, $address);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->json([
+                'success' => true,
+                'message' => 'Adresse modifiée avec succès !',
+                'address' => [
+                    'id' => $address->getId(),
+                    'label' => sprintf('%s %s, %s %s, %s', 
+                        $address->getNumber(), 
+                        $address->getStreet(), 
+                        $address->getZipCode(), 
+                        $address->getCity(), 
+                        $address->getCountry()
+                    ),
+                    'type' => $address->getType()
+                ]
+            ]);
+        }
+
+        // En cas d'erreur, retourner les erreurs de validation
+        $errors = [];
+        foreach ($form->getErrors(true) as $error) {
+            $errors[] = $error->getMessage();
+        }
+
+        return $this->json([
+            'success' => false,
+            'errors' => $errors,
+            'form_html' => $this->renderView('address/_modal_form.html.twig', [
+                'form' => $form,
+                'address' => $address,
+                'modal_title' => 'Modifier l\'adresse'
+            ])
+        ], 400);
+    }
+
+    /**
+     * Supprime une adresse (AJAX)
+     */
+    #[Route('/{id}/delete', name: 'app_address_delete', methods: ['POST'])]
+    public function delete(Addresses $address, Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        // Vérifier que l'adresse appartient à l'utilisateur connecté
+        if ($address->getUsers() !== $this->getUser()) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Cette adresse ne vous appartient pas.'
+            ], 403);
+        }
+
+        // Vérifier le token CSRF
+        if (!$this->isCsrfTokenValid('delete_address' . $address->getId(), $request->request->get('_token'))) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Token CSRF invalide.'
+            ], 403);
+        }
+
+        // Vérifier que l'adresse n'est pas utilisée dans des commandes
+        if (!$address->getOrders()->isEmpty()) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Impossible de supprimer cette adresse car elle est liée à des commandes.'
+            ], 400);
+        }
+
+        $entityManager->remove($address);
+        $entityManager->flush();
+
+        return $this->json([
+            'success' => true,
+            'message' => 'Adresse supprimée avec succès !'
+        ]);
+    }
 } 

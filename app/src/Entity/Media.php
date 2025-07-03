@@ -34,6 +34,10 @@ class Media
         return $this->id;
     }
 
+    // =========================================================================
+    // SECTION: Getters et Setters
+    // =========================================================================
+
     public function getFileName(): ?string
     {
         return $this->fileName;

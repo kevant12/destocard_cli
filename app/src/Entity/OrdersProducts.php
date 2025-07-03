@@ -32,6 +32,10 @@ class OrdersProducts
         return $this->id;
     }
 
+    // =========================================================================
+    // SECTION: Getters et Setters
+    // =========================================================================
+
     public function getOrders(): ?Orders
     {
         return $this->orders;

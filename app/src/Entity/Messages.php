@@ -42,6 +42,10 @@ class Messages
         return $this->id;
     }
 
+    // =========================================================================
+    // SECTION: Getters et Setters
+    // =========================================================================
+
     public function getContent(): ?string
     {
         return $this->content;

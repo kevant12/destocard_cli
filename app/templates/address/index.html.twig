@@ -40,12 +40,14 @@
 
                     <div class="address-card-footer">
                         <button type="button" class="btn btn--secondary btn-edit-address" 
-                                data-address-id="{{ address.id }}">
+                                data-address-id="{{ address.id }}"
+                                title="Modifier cette adresse">
                             ✏️ Modifier
                         </button>
                         <button type="button" class="btn btn--secondary btn-delete-address" 
                                 data-address-id="{{ address.id }}"
-                                onclick="confirmDeleteAddress({{ address.id }})">
+                                data-csrf-token="{{ csrf_token('delete_address' ~ address.id) }}"
+                                title="Supprimer cette adresse">
                             🗑️ Supprimer
                         </button>
                     </div>
@@ -59,18 +61,14 @@
 <div id="modal-container"></div>
 {% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-{% endblock %}
-
 {% block javascripts %}
-    {{ parent() }}
-    <script src="{{ asset('js/address.js') }}" defer></script>
     <script>
         // Variables Twig pour le JS
         window.addressRoutes = {
             newModal: '{{ path('app_address_new_modal') }}',
             create: '{{ path('app_address_create') }}',
+            editModal: '/address/{id}/edit-modal',
+            update: '/address/{id}/update',
             delete: '/address/{id}/delete'
         };
     </script>

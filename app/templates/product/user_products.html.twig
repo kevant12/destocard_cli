@@ -41,11 +41,11 @@
                             {{ product.quantity > 0 ? 'En stock' : 'Épuisé' }}
                         </div>
                     </div>
-                    <div class="card__footer" style="display:flex; gap: 0.5rem;">
-                        <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn btn--secondary" style="flex-grow:1;">Modifier</a>
+                    <div class="card__footer">
+                        <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn btn--secondary">Modifier</a>
                         <form method="post" action="{{ path('app_product_delete', {'id': product.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?');">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ product.id) }}">
-                            <button class="btn btn--secondary" style="background-color: var(--color-error); border-color: var(--color-error); color: white;">🗑️</button>
+                            <button class="btn btn--secondary">🗑️</button>
                         </form>
                     </div>
                 </div>

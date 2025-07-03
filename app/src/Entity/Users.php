@@ -8,9 +8,11 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: UsersRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[UniqueEntity(fields: ['email'], message: 'Cet email est déjà utilisé. Veuillez vous connecter ou en choisir un autre.')]
 class Users implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -118,20 +120,13 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->id;
     }
 
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): static
-    {
-        $this->email = $email;
-
-        return $this;
-    }
+    // =========================================================================
+    // SECTION: Méthodes requises par les interfaces de sécurité de Symfony
+    // =========================================================================
 
     /**
-     * A visual identifier that represents this user.
+     * Un identifiant visuel qui représente cet utilisateur.
+     * C'est la propriété que Symfony utilisera pour l'authentification (ex: l'email).
      *
      * @see UserInterface
      */
@@ -142,11 +137,12 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @see UserInterface
+     * @return list<string>
      */
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
+        // garantit que chaque utilisateur a au moins ROLE_USER
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
@@ -182,8 +178,25 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
+        // Si vous stockez des données temporaires et sensibles sur l'utilisateur, effacez-les ici.
         // $this->plainPassword = null;
+    }
+
+
+    // =========================================================================
+    // SECTION: Getters et Setters des propriétés
+    // =========================================================================
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): static
+    {
+        $this->email = $email;
+
+        return $this;
     }
 
     public function getFirstname(): ?string
@@ -257,6 +270,71 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function isVerified(): ?bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(?bool $isVerified): static
+    {
+        $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getVerificationToken(): ?string
+    {
+        return $this->verificationToken;
+    }
+
+    public function setVerificationToken(?string $verificationToken): static
+    {
+        $this->verificationToken = $verificationToken;
+
+        return $this;
+    }
+
+    public function getVerificationTokenExpiresAt(): ?\DateTimeImmutable
+    {
+        return $this->verificationTokenExpiresAt;
+    }
+
+    public function setVerificationTokenExpiresAt(?\DateTimeImmutable $verificationTokenExpiresAt): static
+    {
+        $this->verificationTokenExpiresAt = $verificationTokenExpiresAt;
+
+        return $this;
+    }
+
+    public function getResetToken(): ?string
+    {
+        return $this->resetToken;
+    }
+
+    public function setResetToken(?string $resetToken): static
+    {
+        $this->resetToken = $resetToken;
+
+        return $this;
+    }
+
+    public function getResetTokenExpiresAt(): ?\DateTimeImmutable
+    {
+        return $this->resetTokenExpiresAt;
+    }
+
+    public function setResetTokenExpiresAt(?\DateTimeImmutable $resetTokenExpiresAt): static
+    {
+        $this->resetTokenExpiresAt = $resetTokenExpiresAt;
+
+        return $this;
+    }
+
+
+    // =========================================================================
+    // SECTION: Gestion des relations (Collections)
+    // =========================================================================
 
     /**
      * @return Collection<int, Addresses>
@@ -431,66 +509,6 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
                 $receivedMessage->setRecipient(null);
             }
         }
-
-        return $this;
-    }
-
-    public function isVerified(): ?bool
-    {
-        return $this->isVerified;
-    }
-
-    public function setIsVerified(?bool $isVerified): static
-    {
-        $this->isVerified = $isVerified;
-
-        return $this;
-    }
-
-    public function getVerificationToken(): ?string
-    {
-        return $this->verificationToken;
-    }
-
-    public function setVerificationToken(?string $verificationToken): static
-    {
-        $this->verificationToken = $verificationToken;
-
-        return $this;
-    }
-
-    public function getVerificationTokenExpiresAt(): ?\DateTimeImmutable
-    {
-        return $this->verificationTokenExpiresAt;
-    }
-
-    public function setVerificationTokenExpiresAt(?\DateTimeImmutable $verificationTokenExpiresAt): static
-    {
-        $this->verificationTokenExpiresAt = $verificationTokenExpiresAt;
-
-        return $this;
-    }
-
-    public function getResetToken(): ?string
-    {
-        return $this->resetToken;
-    }
-
-    public function setResetToken(?string $resetToken): static
-    {
-        $this->resetToken = $resetToken;
-
-        return $this;
-    }
-
-    public function getResetTokenExpiresAt(): ?\DateTimeImmutable
-    {
-        return $this->resetTokenExpiresAt;
-    }
-
-    public function setResetTokenExpiresAt(?\DateTimeImmutable $resetTokenExpiresAt): static
-    {
-        $this->resetTokenExpiresAt = $resetTokenExpiresAt;
 
         return $this;
     }

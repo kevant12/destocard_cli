@@ -37,12 +37,3 @@
     {% endif %}
 </div>
 {% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    {# La logique est maintenant dans public/js/ajax.js #}
-{% endblock %}

@@ -97,57 +97,25 @@
 {% endblock %}
 
 {% block javascripts %}
-    {{ parent() }}
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Prévisualisation des nouvelles images
-            const fileInput = document.querySelector('input[type="file"][multiple]');
-            const previewContainer = document.getElementById('image-preview-container');
-            
-            if (fileInput && previewContainer) {
-                fileInput.addEventListener('change', function() {
-                    previewContainer.innerHTML = '';
-                    
-                    Array.from(this.files).forEach(file => {
-                        if (file.type.startsWith('image/')) {
-                            const img = document.createElement('img');
-                            img.className = 'img-preview';
-                            img.src = URL.createObjectURL(file);
-                            img.onload = () => URL.revokeObjectURL(img.src);
-                            previewContainer.appendChild(img);
-                        }
-                    });
+        // Prévisualisation des nouvelles images
+        const fileInput = document.querySelector('input[type="file"][multiple]');
+        const previewContainer = document.getElementById('image-preview-container');
+        
+        if (fileInput && previewContainer) {
+            fileInput.addEventListener('change', function() {
+                previewContainer.innerHTML = '';
+                
+                Array.from(this.files).forEach(file => {
+                    if (file.type.startsWith('image/')) {
+                        const img = document.createElement('img');
+                        img.className = 'img-preview';
+                        img.src = URL.createObjectURL(file);
+                        img.onload = () => URL.revokeObjectURL(img.src);
+                        previewContainer.appendChild(img);
+                    }
                 });
-            }
-        });
+            });
+        }
     </script>
-    
-    <style>
-        .current-images {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: var(--spacing-md);
-            margin-bottom: var(--spacing-md);
-        }
-
-        .current-image-item {
-            text-align: center;
-        }
-
-        .current-image-item img {
-            width: 100%;
-            height: 100px;
-            object-fit: cover;
-            border-radius: var(--border-radius-md);
-            border: 2px solid var(--border-color);
-            margin-bottom: var(--spacing-sm);
-        }
-
-        .current-image-item small {
-            display: block;
-            color: var(--muted-text-color);
-            font-size: var(--font-size-xs);
-            word-break: break-all;
-        }
-    </style>
 {% endblock %}

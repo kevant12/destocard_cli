@@ -70,58 +70,29 @@ class SecurityController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // Hasher le mot de passe
-            $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
-            $user->setPassword($hashedPassword);
+            $user->setPassword(
+                $passwordHasher->hashPassword($user, $form->get('password')->getData())
+            );
             
-            // Définir les rôles par défaut
-            $user->setRoles(['ROLE_USER']);
-            
-            // Créer le token de vérification
+            // Créer le token de vérification et définir les valeurs par défaut
             $token = $tokenGenerator->generateToken();
             $user->setVerificationToken($token);
             $user->setVerificationTokenExpiresAt(new \DateTimeImmutable('+24 hours'));
             $user->setIsVerified(false);
-            $user->setCreatedAt(new \DateTimeImmutable());
             
-            // Vérifier si l'utilisateur existe déjà
-            $existingUser = $entityManager->getRepository(Users::class)->findOneBy(['email' => $user->getEmail()]);
+            $entityManager->persist($user);
+            $entityManager->flush();
 
-            if ($existingUser) {
-                if (!$existingUser->isVerified()) {
-                    // Si le compte existe mais n'est pas vérifié, mettre à jour le token et renvoyer l'email
-                    $existingUser->setVerificationToken($tokenGenerator->generateToken());
-                    $existingUser->setVerificationTokenExpiresAt(new \DateTimeImmutable('+24 hours'));
-                    $entityManager->flush();
-                    $this->sendVerificationEmail($existingUser, $mailer);
-                    $this->addFlash('success', 'Un compte avec cet email existe déjà, un nouvel email de vérification vous a été envoyé.');
-                } else {
-                    // Si le compte existe et est déjà vérifié
-                    $this->addFlash('error', 'Cet email est déjà utilisé. Veuillez vous connecter ou utiliser un autre email.');
-                }
-                return $this->redirectToRoute('app_register');
-            }
+            // Envoyer l'email de vérification
+            $this->sendVerificationEmail($user, $mailer);
 
-            try {
-                // Sauvegarder le nouvel utilisateur
-                $entityManager->persist($user);
-                $entityManager->flush();
+            $this->addFlash('success', 'Inscription réussie ! Veuillez consulter vos emails pour activer votre compte.');
 
-                // Envoyer l'email de vérification
-                $this->sendVerificationEmail($user, $mailer);
-
-                $this->addFlash('success', 'Inscription réussie ! Vérifiez votre email pour activer votre compte.');
-
-                return $this->redirectToRoute('app_login');
-            } catch (UniqueConstraintViolationException $e) {
-                // Cette exception ne devrait plus se produire avec la logique ci-dessus, mais on la garde en sécurité
-                $this->addFlash('error', 'Cet email est déjà utilisé. Veuillez vous connecter ou utiliser un autre email.');
-                return $this->redirectToRoute('app_register');
-            }
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('security/register.html.twig', [
             'registerForm' => $form,
-            'error' => null,
         ]);
     }
 

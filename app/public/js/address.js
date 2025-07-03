@@ -4,117 +4,213 @@
  * ======================================== 
  */
 
-// Variables globales
-let addressRoutes = window.addressRoutes || {};
+// Initialisation au chargement du DOM
+document.addEventListener('DOMContentLoaded', function() {
+    initAddressManagement();
+});
 
 /**
- * Initialisation de la page des adresses
+ * Initialise la gestion des adresses
  */
-function initAddressPage() {
-    // Bouton d'ajout d'adresse
-    const addAddressBtn = document.getElementById('add-address-btn');
-    if (addAddressBtn) {
-        addAddressBtn.addEventListener('click', function() {
-            openAddressModal();
-        });
-    }
-
+function initAddressManagement() {
+    // Boutons d'ajout d'adresse
+    initAddAddressButtons();
+    
+    // Boutons d'édition d'adresse
+    initEditAddressButtons();
+    
     // Boutons de suppression d'adresse
-    const deleteButtons = document.querySelectorAll('.btn-delete-address');
-    deleteButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const addressId = this.dataset.addressId;
-            confirmDeleteAddress(addressId);
-        });
+    initDeleteAddressButtons();
+}
+
+/**
+ * Initialise les boutons d'ajout d'adresse
+ */
+function initAddAddressButtons() {
+    // Bouton principal dans la page des adresses
+    const addBtn = document.getElementById('add-address-btn');
+    if (addBtn) {
+        addBtn.addEventListener('click', () => openAddressModal());
+    }
+    
+    // Bouton dans le checkout
+    const checkoutBtn = document.getElementById('add-address-checkout');
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', () => openAddressModal('shipping'));
+    }
+}
+
+/**
+ * Initialise les boutons d'édition d'adresse
+ */
+function initEditAddressButtons() {
+    document.body.addEventListener('click', function(e) {
+        if (e.target.matches('.btn-edit-address')) {
+            const addressId = e.target.dataset.addressId;
+            openEditAddressModal(addressId);
+        }
+    });
+}
+
+/**
+ * Initialise les boutons de suppression d'adresse
+ */
+function initDeleteAddressButtons() {
+    document.body.addEventListener('click', function(e) {
+        if (e.target.matches('.btn-delete-address')) {
+            const addressId = e.target.dataset.addressId;
+            const csrfToken = e.target.dataset.csrfToken;
+            confirmDeleteAddress(addressId, csrfToken);
+        }
     });
 }
 
 /**
  * Ouvre la modal d'ajout d'adresse
  */
-async function openAddressModal(type = 'shipping') {
+async function openAddressModal(type = null) {
     try {
-        const url = `${addressRoutes.newModal}?type=${type}`;
+        const url = type ? 
+            `${window.addressRoutes.newModal}?type=${type}` : 
+            window.addressRoutes.newModal;
+            
         const response = await fetch(url);
         const html = await response.text();
         
-        // Créer la modal
-        const modal = document.createElement('div');
-        modal.className = 'address-modal';
-        modal.innerHTML = `<div class="modal-content">${html}</div>`;
-        
-        // Ajouter au DOM
-        const modalContainer = document.getElementById('modal-container') || document.body;
-        modalContainer.appendChild(modal);
-        
-        // Initialiser les événements de la modal
-        initModalEvents(modal);
-        
-        // Callback pour gérer le succès
-        window.addressModalCallback = function(address) {
-            // Recharger la page pour afficher la nouvelle adresse
-            window.location.reload();
-        };
+        showModal(html);
+        initModalForm();
         
     } catch (error) {
         console.error('Erreur lors du chargement de la modal:', error);
-        showNotification('error', 'Erreur lors du chargement du formulaire');
+        if (window.showError) {
+            window.showError('Impossible de charger le formulaire d\'adresse');
+        }
     }
 }
 
 /**
- * Initialise les événements de la modal
+ * Ouvre la modal d'édition d'adresse
  */
-function initModalEvents(modal) {
+async function openEditAddressModal(addressId) {
+    try {
+        const url = window.addressRoutes.editModal.replace('{id}', addressId);
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+            throw new Error('Erreur lors du chargement');
+        }
+        
+        const html = await response.text();
+        showModal(html);
+        initModalForm(true); // Mode édition
+        
+    } catch (error) {
+        console.error('Erreur lors du chargement de la modal d\'édition:', error);
+        if (window.showError) {
+            window.showError('Impossible de charger le formulaire d\'édition');
+        }
+    }
+}
+
+/**
+ * Affiche la modal avec le contenu HTML
+ */
+function showModal(html) {
+    // Supprimer toute modal existante
+    const existingModal = document.querySelector('.address-modal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Créer la nouvelle modal
+    const modal = document.createElement('div');
+    modal.className = 'address-modal';
+    modal.innerHTML = `<div class="modal-content">${html}</div>`;
+    
+    document.body.appendChild(modal);
+    
+    // Focus sur le premier champ
+    const firstInput = modal.querySelector('input:not([type="hidden"])');
+    if (firstInput) {
+        firstInput.focus();
+    }
+}
+
+/**
+ * Initialise le formulaire dans la modal
+ */
+function initModalForm(isEdit = false) {
+    const modal = document.querySelector('.address-modal');
+    if (!modal) return;
+    
     const form = modal.querySelector('#address-form');
-    const closeButton = modal.querySelector('.modal-close');
-    const cancelButton = modal.querySelector('#cancel-address');
+    const closeBtn = modal.querySelector('.modal-close, #cancel-address');
     
-    // Soumission du formulaire
-    if (form) {
-        form.addEventListener('submit', handleFormSubmit);
+    // Gestion de la fermeture
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeModal);
     }
     
-    // Bouton fermer (X)
-    if (closeButton) {
-        closeButton.addEventListener('click', function() {
-            modal.remove();
-        });
-    }
-    
-    // Bouton annuler
-    if (cancelButton) {
-        cancelButton.addEventListener('click', function() {
-            modal.remove();
-        });
-    }
-    
-    // Fermer en cliquant sur l'overlay
-    modal.addEventListener('click', function(e) {
+    // Fermeture en cliquant en dehors
+    modal.addEventListener('click', (e) => {
         if (e.target === modal) {
-            modal.remove();
+            closeModal();
         }
     });
+    
+    // Fermeture avec Échap
+    document.addEventListener('keydown', handleEscapeKey);
+    
+    // Gestion du formulaire
+    if (form) {
+        form.addEventListener('submit', (e) => handleAddressSubmit(e, isEdit));
+    }
+}
+
+/**
+ * Gère la touche Échap
+ */
+function handleEscapeKey(e) {
+    if (e.key === 'Escape') {
+        closeModal();
+    }
+}
+
+/**
+ * Ferme la modal
+ */
+function closeModal() {
+    const modal = document.querySelector('.address-modal');
+    if (modal) {
+        modal.remove();
+    }
+    document.removeEventListener('keydown', handleEscapeKey);
 }
 
 /**
  * Gère la soumission du formulaire d'adresse
  */
-async function handleFormSubmit(e) {
+async function handleAddressSubmit(e, isEdit = false) {
     e.preventDefault();
     
     const form = e.target;
-    const modal = form.closest('.address-modal');
-    const formData = new FormData(form);
-    const submitButton = form.querySelector('button[type="submit"]');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
     
     // État de chargement
-    const originalText = submitButton.textContent;
-    submitButton.disabled = true;
-    submitButton.textContent = '⏳ Enregistrement...';
+    submitBtn.disabled = true;
+    submitBtn.textContent = isEdit ? '⏳ Modification...' : '⏳ Enregistrement...';
     
     try {
-        const response = await fetch(addressRoutes.create || '/address/create', {
+        const formData = new FormData(form);
+        const addressId = form.dataset.addressId;
+        
+        // Déterminer l'URL selon le mode
+        const url = isEdit && addressId ? 
+            window.addressRoutes.update.replace('{id}', addressId) : 
+            window.addressRoutes.create;
+        
+        const response = await fetch(url, {
             method: 'POST',
             body: formData,
             headers: {
@@ -125,118 +221,125 @@ async function handleFormSubmit(e) {
         const data = await response.json();
         
         if (data.success) {
-            // Afficher notification de succès avec le nouveau système
+            // Notification de succès
             if (window.showAddressSuccess) {
-                window.showAddressSuccess(data.message);
-            } else {
-                showNotification('success', data.message);
-            }
-            
-            // Succès - fermer la modal et mettre à jour
-            if (window.addressModalCallback) {
-                window.addressModalCallback(data.address);
+                window.showAddressSuccess();
             }
             
             // Fermer la modal
-            if (modal) {
-                modal.remove();
+            closeModal();
+            
+            // Recharger la page ou mettre à jour la liste
+            if (window.location.pathname.includes('/address') || window.location.pathname.includes('/checkout')) {
+                window.location.reload();
             }
             
         } else {
-            // Erreur - afficher les erreurs
+            // Afficher les erreurs
             if (data.errors && data.errors.length > 0) {
-                showNotification('error', data.errors.join('<br>'));
-            }
-            
-            // Remplacer le formulaire avec les erreurs si fourni
-            if (data.form_html) {
-                const modalBody = modal.querySelector('.modal-body');
-                modalBody.innerHTML = data.form_html;
-                // Réinitialiser les événements pour le nouveau formulaire
-                initModalEvents(modal);
+                if (window.showError) {
+                    window.showError(data.errors.join(', '));
+                }
+            } else if (data.form_html) {
+                // Remplacer le contenu de la modal avec les erreurs
+                const modalContent = document.querySelector('.address-modal .modal-content');
+                if (modalContent) {
+                    modalContent.innerHTML = data.form_html;
+                    initModalForm(isEdit);
+                }
             }
         }
         
     } catch (error) {
-        console.error('Erreur lors de l\'enregistrement:', error);
-        showNotification('error', 'Une erreur est survenue lors de l\'enregistrement.');
+        console.error('Erreur lors de la sauvegarde:', error);
+        if (window.showError) {
+            window.showError('Une erreur est survenue lors de la sauvegarde');
+        }
     } finally {
-        // Restaurer l'état du bouton
-        submitButton.disabled = false;
-        submitButton.textContent = originalText;
+        // Restaurer le bouton
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
     }
 }
 
 /**
- * Confirme la suppression d'une adresse
+ * Confirme et supprime une adresse
  */
-function confirmDeleteAddress(addressId) {
-    if (confirm('Êtes-vous sûr de vouloir supprimer cette adresse ?')) {
-        deleteAddress(addressId);
+async function confirmDeleteAddress(addressId, csrfToken) {
+    // Confirmation utilisateur
+    if (!confirm('Êtes-vous sûr de vouloir supprimer cette adresse ?\nCette action est irréversible.')) {
+        return;
     }
-}
-
-/**
- * Supprime une adresse
- */
-async function deleteAddress(addressId) {
+    
     try {
-        const url = addressRoutes.delete.replace('{id}', addressId);
+        const url = window.addressRoutes.delete.replace('{id}', addressId);
         const response = await fetch(url, {
-            method: 'DELETE',
+            method: 'POST',
             headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
                 'X-Requested-With': 'XMLHttpRequest'
-            }
+            },
+            body: `_token=${encodeURIComponent(csrfToken)}`
         });
         
-        if (response.ok) {
-            // Supprimer l'élément du DOM
-            const card = document.querySelector(`[data-address-id="${addressId}"]`);
-            if (card) {
-                card.remove();
+        const data = await response.json();
+        
+        if (data.success) {
+            // Notification de succès
+            if (window.showInfo) {
+                window.showInfo(data.message || 'Adresse supprimée avec succès');
             }
             
-            // Afficher un message
-            showNotification('success', 'Adresse supprimée avec succès');
+            // Supprimer visuellement la carte d'adresse en utilisant une classe CSS
+            const addressCard = document.querySelector(`.address-card[data-address-id="${addressId}"]`);
+            if (addressCard) {
+                addressCard.classList.add('is-deleting');
+                
+                // Écouter la fin de la transition pour supprimer l'élément du DOM
+                addressCard.addEventListener('transitionend', () => {
+                    addressCard.remove();
+                    
+                    // Vérifier s'il reste des adresses
+                    const remainingCards = document.querySelectorAll('.address-card');
+                    if (remainingCards.length === 0) {
+                        const grid = document.querySelector('.addresses-grid');
+                        if(grid) {
+                            grid.innerHTML = '<p class="empty-state">Vous n\'avez aucune adresse enregistrée.</p>';
+                        }
+                    }
+                }, { once: true }); // Important: l'écouteur est retiré après exécution
+            }
+            
         } else {
-            throw new Error('Erreur lors de la suppression');
+            if (window.showError) {
+                window.showError(data.error || 'Erreur lors de la suppression');
+            }
         }
         
     } catch (error) {
-        console.error('Erreur:', error);
-        showNotification('error', 'Erreur lors de la suppression de l\'adresse');
+        console.error('Erreur lors de la suppression:', error);
+        if (window.showError) {
+            window.showError('Une erreur est survenue lors de la suppression');
+        }
     }
 }
 
 /**
- * Affiche une notification temporaire
+ * Met à jour le select d'adresses dans le checkout
  */
-function showNotification(type, message) {
-    const notification = document.createElement('div');
-    notification.className = `flash-message flash-message--${type}`;
-    notification.innerHTML = message;
-    notification.style.position = 'fixed';
-    notification.style.top = '20px';
-    notification.style.right = '20px';
-    notification.style.zIndex = '9999';
-    notification.style.maxWidth = '400px';
-    
-    document.body.appendChild(notification);
-    
-    // Supprimer après 5 secondes
-    setTimeout(() => {
-        notification.remove();
-    }, 5000);
+function updateAddressSelect(address) {
+    const select = document.querySelector('select[name="checkout_form[deliveryAddress]"]');
+    if (select) {
+        const option = document.createElement('option');
+        option.value = address.id;
+        option.textContent = address.label;
+        option.selected = true;
+        select.appendChild(option);
+    }
 }
 
-// Fonctions globales pour compatibilité
+// Exporter les fonctions pour utilisation globale
 window.openAddressModal = openAddressModal;
+window.openEditAddressModal = openEditAddressModal;
 window.confirmDeleteAddress = confirmDeleteAddress;
-window.showNotification = showNotification;
-
-// Auto-initialisation quand le script est chargé
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initAddressPage);
-} else {
-    initAddressPage();
-} 
+window.closeModal = closeModal; 

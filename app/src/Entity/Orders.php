@@ -76,6 +76,10 @@ class Orders
         return $this->id;
     }
 
+    // =========================================================================
+    // SECTION: Getters et Setters
+    // =========================================================================
+
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
@@ -207,6 +211,10 @@ class Orders
 
         return $this;
     }
+
+    // =========================================================================
+    // SECTION: Gestion des relations (Collections)
+    // =========================================================================
 
     /**
      * @return Collection<int, OrdersProducts>

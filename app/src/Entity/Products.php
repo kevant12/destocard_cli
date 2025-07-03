@@ -70,6 +70,10 @@ class Products
         return $this->id;
     }
 
+    // =========================================================================
+    // SECTION: Getters et Setters
+    // =========================================================================
+
     public function getCategory(): ?string
     {
         return $this->category;
@@ -142,6 +146,33 @@ class Products
         return $this;
     }
 
+    public function getUsers(): ?Users
+    {
+        return $this->users;
+    }
+
+    public function setUsers(?Users $users): static
+    {
+        $this->users = $users;
+
+        return $this;
+    }
+
+    public function getNumber(): ?string
+    {
+        return $this->number;
+    }
+
+    public function setNumber(?string $number): static
+    {
+        $this->number = $number;
+        return $this;
+    }
+
+    // =========================================================================
+    // SECTION: Gestion des relations (Collections)
+    // =========================================================================
+
     /**
      * @return Collection<int, Media>
      */
@@ -168,18 +199,6 @@ class Products
                 $medium->setProducts(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getUsers(): ?Users
-    {
-        return $this->users;
-    }
-
-    public function setUsers(?Users $users): static
-    {
-        $this->users = $users;
 
         return $this;
     }
@@ -238,17 +257,6 @@ class Products
             }
         }
 
-        return $this;
-    }
-
-    public function getNumber(): ?string
-    {
-        return $this->number;
-    }
-
-    public function setNumber(?string $number): static
-    {
-        $this->number = $number;
         return $this;
     }
 }

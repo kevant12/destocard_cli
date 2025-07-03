@@ -58,13 +58,8 @@
 </div>
 {% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-{% endblock %}
-
 {# Schema.org Product Markup #}
 {% block javascripts %}
-    {{ parent() }}
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",

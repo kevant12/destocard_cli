@@ -68,6 +68,10 @@ class Addresses
         return $this->id;
     }
 
+    // =========================================================================
+    // SECTION: Getters et Setters
+    // =========================================================================
+
     public function getNumber(): ?string
     {
         return $this->number;
@@ -151,6 +155,10 @@ class Addresses
 
         return $this;
     }
+
+    // =========================================================================
+    // SECTION: Gestion des relations (Collections)
+    // =========================================================================
 
     /**
      * @return Collection<int, Orders>
