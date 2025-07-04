@@ -245,48 +245,51 @@
 {% block javascripts %}
 {{ parent() }}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Compteur de caractères
-    const titleInput = document.getElementById('title');
-    const counter = titleInput.parentNode.querySelector('.form-counter');
+/**
+ * Scripts de démonstration pour le showcase des formulaires
+ * Chargé avec defer - le DOM est automatiquement prêt
+ */
+
+// Compteur de caractères pour le champ titre
+const titleInput = document.getElementById('title');
+const counter = titleInput.parentNode.querySelector('.form-counter');
+
+titleInput.addEventListener('input', function() {
+    const length = this.value.length;
+    counter.textContent = `${length}/100 caractères`;
     
-    titleInput.addEventListener('input', function() {
-        const length = this.value.length;
-        counter.textContent = `${length}/100 caractères`;
-        
-        if (length > 80) {
-            counter.className = 'form-counter warning';
-        } else if (length > 95) {
-            counter.className = 'form-counter error';
-        } else {
-            counter.className = 'form-counter';
+    if (length > 80) {
+        counter.className = 'form-counter warning';
+    } else if (length > 95) {
+        counter.className = 'form-counter error';
+    } else {
+        counter.className = 'form-counter';
+    }
+});
+
+// Prévisualisation des images sélectionnées
+const fileInput = document.getElementById('images');
+const previewContainer = document.getElementById('image-preview-container');
+
+fileInput.addEventListener('change', function() {
+    previewContainer.innerHTML = '';
+    
+    Array.from(this.files).forEach(file => {
+        if (file.type.startsWith('image/')) {
+            const img = document.createElement('img');
+            img.className = 'img-preview';
+            img.src = URL.createObjectURL(file);
+            img.onload = () => URL.revokeObjectURL(img.src);
+            previewContainer.appendChild(img);
         }
     });
+});
 
-    // Prévisualisation des images
-    const fileInput = document.getElementById('images');
-    const previewContainer = document.getElementById('image-preview-container');
-    
-    fileInput.addEventListener('change', function() {
-        previewContainer.innerHTML = '';
-        
-        Array.from(this.files).forEach(file => {
-            if (file.type.startsWith('image/')) {
-                const img = document.createElement('img');
-                img.className = 'img-preview';
-                img.src = URL.createObjectURL(file);
-                img.onload = () => URL.revokeObjectURL(img.src);
-                previewContainer.appendChild(img);
-            }
-        });
-    });
-
-    // Validation en temps réel de l'email
-    const emailField = document.getElementById('invalid-field');
-    emailField.addEventListener('input', function() {
-        const isValid = this.value.includes('@') && this.value.includes('.');
-        this.className = isValid ? 'form-control valid' : 'form-control is-invalid';
-    });
+// Validation en temps réel de l'email dans les exemples
+const emailField = document.getElementById('invalid-field');
+emailField.addEventListener('input', function() {
+    const isValid = this.value.includes('@') && this.value.includes('.');
+    this.className = isValid ? 'form-control valid' : 'form-control is-invalid';
 });
 </script>
 {% endblock %} 

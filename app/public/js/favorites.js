@@ -2,12 +2,13 @@
  * ========================================
  * GESTION DES FAVORIS - DESTOCARD
  * ======================================== 
+ * 
+ * Gestion de l'ajout/suppression des favoris avec requêtes AJAX
+ * Script chargé avec defer - le DOM est automatiquement prêt
  */
 
-// Initialisation au chargement du DOM
-document.addEventListener('DOMContentLoaded', function() {
-    initFavoriteButtons();
-});
+// Initialisation directe - defer garantit que le DOM est prêt
+initFavoriteButtons();
 
 /**
  * Initialise les boutons de favoris

@@ -1,6 +1,15 @@
 /**
- * DESTOCARD - GESTIONNAIRE DE THÈME JOUR/NUIT
- * Système simple et efficace pour basculer entre thème sombre et clair
+ * ========================================
+ * GESTIONNAIRE DE THÈME - DESTOCARD
+ * ========================================
+ * 
+ * Système de basculement entre thème clair et sombre :
+ * - Détection des préférences système
+ * - Mémorisation du choix utilisateur
+ * - Bouton de basculement dynamique
+ * - Transitions fluides
+ * 
+ * Script chargé avec defer - le DOM est automatiquement prêt
  */
 
 class ThemeSwitcher {
@@ -168,11 +177,9 @@ class ThemeSwitcher {
     }
 }
 
-// Initialisation automatique quand le DOM est prêt
-document.addEventListener('DOMContentLoaded', () => {
-    // Crée une instance globale
-    window.themeSwitcher = new ThemeSwitcher();
-});
+// Initialisation automatique directe - defer garantit que le DOM est prêt
+// Crée une instance globale
+window.themeSwitcher = new ThemeSwitcher();
 
 // Export pour utilisation en module (optionnel)
 if (typeof module !== 'undefined' && module.exports) {

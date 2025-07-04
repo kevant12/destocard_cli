@@ -2,6 +2,14 @@
  * ========================================
  * GESTION DU CHECKOUT - DESTOCARD
  * ======================================== 
+ * 
+ * Fonctionnalités de finalisation de commande :
+ * - Calcul automatique des frais de livraison
+ * - Gestion des adresses de livraison
+ * - Intégration avec les modales d'adresse
+ * - Mise à jour en temps réel du total
+ * 
+ * Script chargé avec defer - le DOM est automatiquement prêt
  */
 
 // Variables globales
@@ -227,9 +235,5 @@ function showCheckoutNotification(type, message) {
 window.openAddressModalForCheckout = openAddressModalForCheckout;
 window.showCheckoutNotification = showCheckoutNotification;
 
-// Auto-initialisation quand le script est chargé
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initCheckoutPage);
-} else {
-    initCheckoutPage();
-} 
+// Initialisation directe - defer garantit que le DOM est prêt
+initCheckoutPage(); 

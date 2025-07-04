@@ -11,6 +11,17 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+/**
+ * Contrôleur de gestion du panier et du processus de commande
+ * 
+ * Fonctionnalités principales :
+ * - Gestion du panier (ajout, suppression, visualisation)
+ * - Processus de checkout (sélection adresse, livraison)
+ * - Intégration avec Stripe pour le paiement
+ * - Validation des stocks avant commande
+ * 
+ * Utilise CartService pour la logique métier du panier
+ */
 class CartController extends AbstractController
 {
     private $cartService;
@@ -22,6 +33,14 @@ class CartController extends AbstractController
         $this->stripeService = $stripeService;
     }
 
+    /**
+     * Page de checkout - Sélection adresse et mode de livraison
+     * 
+     * Étape intermédiaire avant le paiement où l'utilisateur :
+     * - Choisit son adresse de livraison
+     * - Sélectionne le mode de livraison (standard/express)
+     * - Voit le récapitulatif avec frais de port
+     */
     #[Route('/checkout', name: 'app_checkout')]
     #[IsGranted('ROLE_USER')]
     public function checkout(Request $request): Response
@@ -34,7 +53,7 @@ class CartController extends AbstractController
 
         $user = $this->getUser();
         
-        // Debug temporaire
+        // Debug temporaire pour diagnostiquer les problèmes d'adresses
         error_log('=== CHECKOUT DEBUG ===');
         error_log('User connecté: ' . ($user ? $user->getEmail() . ' (ID: ' . $user->getId() . ')' : 'NON CONNECTÉ'));
         error_log('Nombre d\'adresses shipping: ' . $user->getAddresses()->filter(function($addr) { return $addr->getType() === 'shipping'; })->count());
@@ -49,9 +68,10 @@ class CartController extends AbstractController
             $deliveryMethod = $form->get('deliveryMethod')->getData();
             $shippingCost = (float) $form->get('shippingCost')->getData();
 
-            $totalAmount = ($this->cartService->calculateTotal() + $shippingCost) * 100; // Montant en centimes
+            $totalAmount = ($this->cartService->calculateTotal() + $shippingCost) * 100; // Montant en centimes pour Stripe
 
             try {
+                // Créer l'intention de paiement chez Stripe
                 $paymentIntent = $this->stripeService->createPaymentIntent($totalAmount);
 
                 // Stocker les informations de livraison en session pour la finalisation après paiement
@@ -77,6 +97,12 @@ class CartController extends AbstractController
         ]);
     }
 
+    /**
+     * Ajouter un produit au panier (AJAX)
+     * 
+     * Gère l'ajout de produits avec validation de stock.
+     * Retourne JSON pour les requêtes AJAX, redirect sinon.
+     */
     #[Route('/add-to-cart/{id}', name: 'add_to_cart', methods: ['POST'])]
     public function addToCart(int $id, Request $request): Response
     {
@@ -107,6 +133,12 @@ class CartController extends AbstractController
         }
     }
 
+    /**
+     * Page d'affichage du panier
+     * 
+     * Valide les stocks avant affichage et montre les erreurs
+     * si certains produits ne sont plus disponibles.
+     */
     #[Route('/cart', name: 'cart', methods: ['GET'])]
     public function cart(): Response
     {
@@ -126,10 +158,16 @@ class CartController extends AbstractController
         ]);
     }
 
+    /**
+     * Supprimer un article du panier (AJAX)
+     * 
+     * Suppression sécurisée avec protection CSRF.
+     * Retourne les nouvelles données du panier en JSON.
+     */
     #[Route('/cart/remove/{id}', name: 'cart_remove', methods: ['POST'])]
     public function removeItem(int $id, Request $request): Response
     {
-        // Valider le jeton CSRF
+        // Valider le jeton CSRF pour éviter les suppressions malveillantes
         if (!$this->isCsrfTokenValid('cart_remove' . $id, $request->request->get('_token'))) {
             return $this->json(['success' => false, 'error' => 'Jeton CSRF invalide.'], 403);
         }
@@ -147,6 +185,12 @@ class CartController extends AbstractController
         return $this->redirectToRoute('cart');
     }
 
+    /**
+     * Finaliser l'achat - Redirection vers checkout
+     * 
+     * Valide une dernière fois les stocks avant de permettre
+     * la finalisation de la commande.
+     */
     #[Route('/cart/buy', name: 'cart_buy', methods: ['POST'])]
     public function buy(Request $request): Response
     {
@@ -173,13 +217,19 @@ class CartController extends AbstractController
         return $this->redirectToRoute('app_checkout');
     }
 
+    /**
+     * Page de paiement Stripe
+     * 
+     * Affiche l'interface de paiement avec le PaymentIntent
+     * créé lors du checkout.
+     */
     #[Route('/payment', name: 'app_payment')]
     #[IsGranted('ROLE_USER')]
     public function payment(Request $request): Response
     {
         $clientSecret = $request->query->get('clientSecret');
 
-        if (!$clientSecret) {
+        if (!clientSecret) {
             $this->addFlash('error', 'Client Secret manquant pour le paiement.');
             return $this->redirectToRoute('app_checkout');
         }
@@ -191,6 +241,12 @@ class CartController extends AbstractController
         ]);
     }
 
+    /**
+     * Confirmer la commande après paiement réussi
+     * 
+     * Finalise la commande en base de données après validation
+     * du paiement par Stripe. Vide le panier et nettoie la session.
+     */
     #[Route('/confirm-order', name: 'app_confirm_order', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function confirmOrder(Request $request, 
@@ -202,6 +258,7 @@ class CartController extends AbstractController
         $deliveryMethod = $session->get('checkout_delivery_method');
         $shippingCost = $session->get('checkout_shipping_cost');
 
+        // Vérifier que toutes les informations de livraison sont présentes
         if (!$deliveryAddressId || !$deliveryMethod || $shippingCost === null) {
             return $this->json([
                 'success' => false,
@@ -212,6 +269,7 @@ class CartController extends AbstractController
 
         $deliveryAddress = $addressesRepository->find($deliveryAddressId);
 
+        // Vérifier que l'adresse existe et appartient à l'utilisateur
         if (!$deliveryAddress || $deliveryAddress->getUsers() !== $this->getUser()) {
             return $this->json([
                 'success' => false,
@@ -221,6 +279,7 @@ class CartController extends AbstractController
         }
 
         try {
+            // Finaliser la commande via le service
             $order = $this->cartService->purchaseCart(
                 $this->getUser(), 
                 $deliveryAddress, 

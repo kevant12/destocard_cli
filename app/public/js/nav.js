@@ -1,4 +1,20 @@
-// Fonction pour mettre à jour le badge du panier
+/**
+ * ========================================
+ * NAVIGATION ET PANIER - DESTOCARD
+ * ========================================
+ * 
+ * Fonctionnalités de la barre de navigation :
+ * - Gestion du badge du panier
+ * - Ajout de produits via AJAX
+ * - Synchronisation avec localStorage
+ * - Mise à jour en temps réel
+ * 
+ * Script chargé avec defer - le DOM est automatiquement prêt
+ */
+
+/**
+ * Met à jour le badge du panier dans la navigation
+ */
 function updateCartBadge() {
     const cartItems = JSON.parse(localStorage.getItem('cart') || '[]');
     const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -12,14 +28,17 @@ function updateCartBadge() {
 // Mettre à jour le badge au chargement de la page
 updateCartBadge();
 
-// Écouter les changements dans le localStorage
+// Écouter les changements dans le localStorage (synchronisation entre onglets)
 window.addEventListener('storage', (e) => {
     if (e.key === 'cart') {
         updateCartBadge();
     }
 });
 
-// Gestion de l'ajout au panier
+/**
+ * Gestion de l'ajout au panier via AJAX
+ * Utilise la délégation d'événements pour capturer les soumissions de formulaires
+ */
 document.addEventListener('click', function(e) {
     const button = e.target.closest('button[type="submit"]');
     if (button) {
@@ -27,6 +46,7 @@ document.addEventListener('click', function(e) {
         if (form && form.action.includes('add-to-cart')) {
             e.preventDefault();
             
+            // Requête AJAX pour ajouter au panier
             fetch(form.action, {
                 method: 'POST',
                 headers: {

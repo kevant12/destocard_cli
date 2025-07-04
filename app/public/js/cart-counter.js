@@ -2,12 +2,17 @@
  * ========================================
  * GESTIONNAIRE DU COMPTEUR DE PANIER
  * ======================================== 
+ * 
+ * Gestion de l'affichage et des animations du compteur de panier :
+ * - Masquage automatique si vide
+ * - Animations de mise à jour
+ * - Synchronisation avec les actions panier
+ * 
+ * Script chargé avec defer - le DOM est automatiquement prêt
  */
 
-// Initialisation au chargement du DOM
-document.addEventListener('DOMContentLoaded', function() {
-    initCartCounter();
-});
+// Initialisation directe - defer garantit que le DOM est prêt
+initCartCounter();
 
 /**
  * Initialise le compteur de panier

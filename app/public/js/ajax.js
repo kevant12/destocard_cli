@@ -1,4 +1,16 @@
-console.log("Fichier ajax.js chargé et exécuté.");
+/**
+ * ========================================
+ * GESTIONNAIRE AJAX GLOBAL - DESTOCARD
+ * ========================================
+ * 
+ * Logique AJAX réutilisable pour tout le site :
+ * - Gestion des favoris avec délégation d'événements
+ * - Protection CSRF automatique
+ * - Gestion des erreurs globales
+ * 
+ * Script chargé avec defer - le DOM est automatiquement prêt
+ * (c) Kevin - projet_perso
+ */
 
 // Fichier central pour la logique AJAX globale du site
 // (c) Kevin - projet_perso
@@ -68,11 +80,12 @@ function addFavorite() {
             }
 
         } catch (error) {
-            console.error('Erreur lors de la mise à jour des favoris:', error);
-            alert('Impossible de mettre à jour les favoris. Veuillez vérifier votre connexion ou réessayer plus tard.');
+            console.error('Erreur AJAX:', error);
+            alert('Une erreur de communication est survenue. Veuillez réessayer.');
         }
     });
 }
 
 // Lancer la fonction pour que le listener soit actif dès le chargement de la page.
+// Comme le script est en defer, le DOM est automatiquement prêt
 addFavorite(); 

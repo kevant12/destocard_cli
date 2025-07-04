@@ -1,3 +1,17 @@
+/**
+ * ========================================
+ * GESTIONNAIRE WEBCAM - DESTOCARD
+ * ========================================
+ * 
+ * Fonctionnalités de capture d'images via webcam :
+ * - Accès à la webcam utilisateur
+ * - Capture d'images pour les formulaires de produits
+ * - Conversion en data URI
+ * - Intégration avec les uploads
+ * 
+ * Script chargé avec defer - le DOM est automatiquement prêt
+ */
+
 const initWebcam = () => {
     const webcamButton = document.getElementById('webcam-button');
     const fileInput = document.querySelector('input[type="file"][id$="_imageFiles"]');
@@ -79,8 +93,5 @@ const initWebcam = () => {
     fileInput.addEventListener('change', updatePreview);
 };
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initWebcam);
-} else {
-    initWebcam();
-} 
+// Initialisation directe - defer garantit que le DOM est prêt
+initWebcam(); 

@@ -2,12 +2,18 @@
  * ========================================
  * GESTION DU PANIER - DESTOCARD
  * ======================================== 
+ * 
+ * Fonctionnalités du panier d'achat :
+ * - Ajout de produits au panier
+ * - Suppression d'articles
+ * - Mise à jour du compteur
+ * - Gestion des notifications
+ * 
+ * Script chargé avec defer - le DOM est automatiquement prêt
  */
 
-// Initialisation au chargement du DOM
-document.addEventListener('DOMContentLoaded', function() {
-    initCartFunctionality();
-});
+// Initialisation directe - defer garantit que le DOM est prêt
+initCartFunctionality();
 
 /**
  * Initialise les fonctionnalités du panier

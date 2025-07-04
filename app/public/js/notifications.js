@@ -2,15 +2,21 @@
  * ========================================
  * SYSTÈME DE NOTIFICATIONS - DESTOCARD
  * ======================================== 
+ * 
+ * Système de notifications toast modernes :
+ * - Affichage de messages (succès, erreur, warning, info)
+ * - Auto-fermeture configurable
+ * - Animations d'entrée/sortie
+ * - Support du stacking multiple
+ * 
+ * Script chargé avec defer - le DOM est automatiquement prêt
  */
 
 // Conteneur des notifications
 let notificationContainer = null;
 
-// Initialisation au chargement du DOM
-document.addEventListener('DOMContentLoaded', function() {
-    initNotificationSystem();
-});
+// Initialisation directe - defer garantit que le DOM est prêt
+initNotificationSystem();
 
 /**
  * Initialise le système de notifications

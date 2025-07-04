@@ -2,12 +2,17 @@
  * ========================================
  * GESTION DES ADRESSES - DESTOCARD
  * ======================================== 
+ * 
+ * Gestion des adresses utilisateur avec modales AJAX :
+ * - Ajout/modification/suppression d'adresses
+ * - Interface modale dynamique
+ * - Intégration avec le checkout
+ * 
+ * Script chargé avec defer - le DOM est automatiquement prêt
  */
 
-// Initialisation au chargement du DOM
-document.addEventListener('DOMContentLoaded', function() {
-    initAddressManagement();
-});
+// Initialisation directe - defer garantit que le DOM est prêt
+initAddressManagement();
 
 /**
  * Initialise la gestion des adresses

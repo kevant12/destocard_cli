@@ -23,10 +23,24 @@ use Symfony\Component\Security\Http\Authenticator\FormLoginAuthenticator;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 /**
- * Contrôleur gérant toutes les logiques de sécurité qui ne sont pas
- * automatiquement interceptées par le pare-feu de Symfony.
- * Cela inclut l'inscription, la vérification par email, et la
- * réinitialisation de mot de passe.
+ * Contrôleur de gestion de l'authentification et de la sécurité
+ * 
+ * Fonctionnalités principales :
+ * - Gestion complète du processus d'inscription avec vérification email
+ * - Interface de connexion avec gestion des erreurs d'authentification
+ * - Système de réinitialisation de mot de passe sécurisé par token
+ * - Vérification des comptes utilisateur via email de confirmation
+ * - Intégration complète avec le système de sécurité Symfony
+ * 
+ * Ce contrôleur gère toutes les logiques de sécurité qui ne sont pas
+ * automatiquement interceptées par le pare-feu de Symfony (inscription,
+ * vérification email, réinitialisation mot de passe).
+ * 
+ * Sécurité renforcée :
+ * - Tokens CSRF sur tous les formulaires sensibles
+ * - Hachage sécurisé des mots de passe avec Symfony PasswordHasher
+ * - Tokens de vérification et réinitialisation avec expiration
+ * - Protection contre l'énumération d'emails (messages identiques)
  */
 class SecurityController extends AbstractController
 {

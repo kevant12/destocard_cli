@@ -19,6 +19,18 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Extension;
 use App\Entity\Serie;
 
+/**
+ * Contrôleur de gestion des produits
+ * 
+ * Fonctionnalités principales :
+ * - CRUD complet pour les produits (Create, Read, Update, Delete)
+ * - Affichage public des produits avec pagination
+ * - Gestion des articles de l'utilisateur connecté
+ * - Upload et gestion des images via MediaUploadService
+ * - Contrôles d'accès et validation des droits
+ * 
+ * Intègre ProductService pour la logique métier complexe
+ */
 #[Route('/product')]
 class ProductController extends AbstractController
 {
@@ -30,17 +42,25 @@ class ProductController extends AbstractController
     ) {}
 
     /**
-     * Affiche tous les produits disponibles
+     * Affiche tous les produits disponibles (page publique)
+     * 
+     * Page de catalogue principal avec pagination pour les performances.
+     * Affiche uniquement les produits avec une quantité > 0 (disponibles).
+     * 
+     * @param Request $request Pour la gestion de la pagination
+     * @return Response La page de catalogue avec les produits paginés
      */
     #[Route('/', name: 'app_product_index')]
     public function index(Request $request): Response
     {
+        // Récupérer la requête de base pour les produits disponibles uniquement
         $query = $this->productsRepository->findAllAvailableProductsQuery();
 
+        // Paginer les résultats pour améliorer les performances et l'UX
         $pagination = $this->paginator->paginate(
             $query,
-            $request->query->getInt('page', 1),
-            12
+            $request->query->getInt('page', 1), // Page courante (défaut: 1)
+            12 // Nombre de produits par page
         );
 
         return $this->render('product/index.html.twig', [
@@ -50,6 +70,14 @@ class ProductController extends AbstractController
 
     /**
      * Affiche les produits de l'utilisateur connecté
+     * 
+     * Interface de gestion personnelle permettant à l'utilisateur de :
+     * - Voir tous ses articles en vente
+     * - Accéder aux actions de modification/suppression
+     * - Suivre l'état de ses ventes
+     * 
+     * @param Request $request Pour la pagination
+     * @return Response Page de gestion des articles utilisateur
      */
     #[Route('/my-articles', name: 'app_user_products')]
     #[IsGranted('ROLE_USER')]
@@ -61,12 +89,13 @@ class ProductController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
+        // Récupérer uniquement les produits de l'utilisateur connecté
         $query = $this->productsRepository->findUserProductsQuery($user->getId());
 
         $pagination = $this->paginator->paginate(
             $query,
             $request->query->getInt('page', 1),
-            10
+            10 // Moins d'éléments par page pour la gestion personnelle
         );
 
         return $this->render('product/user_products.html.twig', [
@@ -75,7 +104,13 @@ class ProductController extends AbstractController
     }
 
     /**
-     * Permet de créer une nouvelle carte et de la mettre en vente.
+     * Formulaire de création d'un nouveau produit
+     * 
+     * Permet aux utilisateurs connectés de mettre en vente leurs articles.
+     * Gère l'upload d'images multiples et la validation complète des données.
+     * 
+     * @param Request $request Pour le traitement du formulaire
+     * @return Response Le formulaire de création ou redirection après succès
      */
     #[Route('/new', name: 'app_product_new')]
     #[IsGranted('ROLE_USER')]
@@ -93,9 +128,9 @@ class ProductController extends AbstractController
             }
             
             $product = $form->getData();
-            $product->setQuantity(1); // Quantité par défaut
+            $product->setQuantity(1); // Quantité par défaut pour un article unique
 
-            // Utiliser le service pour créer le produit et uploader les images
+            // Utiliser le service pour créer le produit et gérer l'upload des images
             $imageFiles = $form->get('imageFiles')->getData();
             $this->productService->createProduct($product, $user, $imageFiles);
 
@@ -108,6 +143,18 @@ class ProductController extends AbstractController
         ]);
     }
 
+    /**
+     * Affiche le détail d'un produit (page publique)
+     * 
+     * Page de présentation complète d'un produit avec :
+     * - Toutes les informations détaillées
+     * - Images et description
+     * - Actions possibles (favoris, panier)
+     * - Informations sur le vendeur
+     * 
+     * @param Products $product Le produit à afficher (injection automatique via l'ID)
+     * @return Response La page de détail du produit
+     */
     #[Route('/{id}', name: 'app_product_show', methods: ['GET'])]
     public function show(Products $product): Response
     {
@@ -117,7 +164,14 @@ class ProductController extends AbstractController
     }
 
     /**
-     * Modifie un produit existant
+     * Formulaire de modification d'un produit existant
+     * 
+     * Permet au propriétaire (ou admin) de modifier son article.
+     * Vérifie les droits d'accès avant d'autoriser la modification.
+     * 
+     * @param Request $request Pour le traitement du formulaire
+     * @param Products $product Le produit à modifier
+     * @return Response Le formulaire de modification ou redirection
      */
     #[Route('/{id}/edit', name: 'app_product_edit')]
     #[IsGranted('ROLE_USER')]
@@ -129,6 +183,7 @@ class ProductController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
+        // Vérifier que l'utilisateur a le droit de modifier ce produit
         if (!$this->productService->canManageProduct($product, $user, $this->isGranted('ROLE_ADMIN'))) {
             throw $this->createAccessDeniedException('Vous ne pouvez pas modifier cet article.');
         }
@@ -137,6 +192,7 @@ class ProductController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Utiliser le service pour les mises à jour complexes
             $this->productService->updateProduct($product);
             $this->addFlash('success', 'Article modifié avec succès !');
             return $this->redirectToRoute('app_user_products');
@@ -149,7 +205,14 @@ class ProductController extends AbstractController
     }
 
     /**
-     * Supprime un produit
+     * Suppression d'un produit (action sécurisée)
+     * 
+     * Supprime un produit après vérification des droits et contraintes.
+     * Vérifie qu'il n'est pas lié à des commandes avant suppression.
+     * 
+     * @param Request $request Pour le token CSRF
+     * @param Products $product Le produit à supprimer
+     * @return Response Redirection vers la liste des produits utilisateur
      */
     #[Route('/{id}/delete', name: 'app_product_delete', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
@@ -161,11 +224,14 @@ class ProductController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
+        // Vérifier les droits de suppression
         if (!$this->productService->canManageProduct($product, $user, $this->isGranted('ROLE_ADMIN'))) {
             throw $this->createAccessDeniedException('Vous ne pouvez pas supprimer cet article.');
         }
 
+        // Valider le token CSRF pour éviter les suppressions malveillantes
         if ($this->isCsrfTokenValid('delete'.$product->getId(), $request->request->get('_token'))) {
+            // Utiliser le service qui gère les contraintes de suppression
             if ($this->productService->deleteProduct($product)) {
                 $this->addFlash('success', 'Article supprimé avec succès !');
             } else {

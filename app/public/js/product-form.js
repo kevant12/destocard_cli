@@ -116,3 +116,7 @@ function initWebcamModal() {
         video.srcObject = null;
     }
 }
+
+// Initialisation automatique - defer garantit que le DOM est prêt
+initImagePreview();
+initWebcamModal();

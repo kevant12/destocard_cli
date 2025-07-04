@@ -97,25 +97,31 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script>
-        // Prévisualisation des nouvelles images
-        const fileInput = document.querySelector('input[type="file"][multiple]');
-        const previewContainer = document.getElementById('image-preview-container');
+<script>
+/**
+ * Script de prévisualisation des nouvelles images
+ * Permet de voir un aperçu des images sélectionnées avant soumission
+ * Chargé avec defer - le DOM est automatiquement prêt
+ */
+
+// Prévisualisation des nouvelles images sélectionnées
+const fileInput = document.querySelector('input[type="file"][multiple]');
+const previewContainer = document.getElementById('image-preview-container');
+
+if (fileInput && previewContainer) {
+    fileInput.addEventListener('change', function() {
+        previewContainer.innerHTML = '';
         
-        if (fileInput && previewContainer) {
-            fileInput.addEventListener('change', function() {
-                previewContainer.innerHTML = '';
-                
-                Array.from(this.files).forEach(file => {
-                    if (file.type.startsWith('image/')) {
-                        const img = document.createElement('img');
-                        img.className = 'img-preview';
-                        img.src = URL.createObjectURL(file);
-                        img.onload = () => URL.revokeObjectURL(img.src);
-                        previewContainer.appendChild(img);
-                    }
-                });
-            });
-        }
-    </script>
+        Array.from(this.files).forEach(file => {
+            if (file.type.startsWith('image/')) {
+                const img = document.createElement('img');
+                img.className = 'img-preview';
+                img.src = URL.createObjectURL(file);
+                img.onload = () => URL.revokeObjectURL(img.src);
+                previewContainer.appendChild(img);
+            }
+        });
+    });
+}
+</script>
 {% endblock %}

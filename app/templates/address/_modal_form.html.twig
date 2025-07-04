@@ -27,11 +27,12 @@
 
 {# Le corps de la modale contenant le formulaire. #}
 <div class="modal-body">
-    {{ form_start(form, {
+    {# L'ID est utilisé par JS pour l'URL d'update. #}
+    {{ form_start(form,{
         'attr': {
             'id': 'address-form',
             'class': 'address-form',
-            'data-address-id': address.id ?? '' {# L'ID est utilisé par JS pour l'URL d'update. #}
+            'data-address-id': address.id ?? ''
         }
     }) }}
     

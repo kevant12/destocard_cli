@@ -34,11 +34,16 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const messagesContainer = document.querySelector('.conversation-messages-container');
-            if (messagesContainer) {
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            }
-        });
+        /**
+         * Script d'auto-scroll des messages
+         * Fait défiler automatiquement vers le dernier message de la conversation
+         * Chargé avec defer - le DOM est automatiquement prêt
+         */
+        
+        // Faire défiler vers le bas de la conversation
+        const messagesContainer = document.querySelector('.conversation-messages-container');
+        if (messagesContainer) {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
     </script>
 {% endblock %} 

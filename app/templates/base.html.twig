@@ -72,14 +72,14 @@
             2. Le script n'est exécuté qu'une fois que le DOM est entièrement construit.
             Ceci rend l'utilisation de `DOMContentLoaded` dans nos scripts redondante.
         #}
-        <script src="/js/nav.js" defer></script>
-        <script src="/js/csrf-protection.js" defer></script>
-        <script src="/js/notifications.js" defer></script>
-        <script src="/js/ajax.js" defer></script>
-        <script src="/js/cart-counter.js" defer></script>
-        <script src="/js/cart.js" defer></script>
-        <script src="/js/favorites.js" defer></script>
-        <script src="/js/theme-switcher.js" defer></script>
+        <script src="{{ asset('js/nav.js') }}" defer></script>
+        <script src="{{ asset('js/csrf-protection.js') }}" defer></script>
+        <script src="{{ asset('js/notifications.js') }}" defer></script>
+        <script src="{{ asset('js/ajax.js') }}" defer></script>
+        <script src="{{ asset('js/cart-counter.js') }}" defer></script>
+        <script src="{{ asset('js/cart.js') }}" defer></script>
+        <script src="{{ asset('js/favorites.js') }}" defer></script>
+        <script src="{{ asset('js/theme-switcher.js') }}" defer></script>
         <script src="{{ asset('js/address.js') }}" defer></script>
         <script src="{{ asset('js/checkout.js') }}" defer></script>
         <script src="{{ asset('js/product-form.js') }}" defer></script>

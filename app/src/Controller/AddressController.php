@@ -12,12 +12,26 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+/**
+ * Contrôleur de gestion des adresses utilisateur
+ * 
+ * Fonctionnalités principales :
+ * - Gestion CRUD complète des adresses (Create, Read, Update, Delete)
+ * - Interface modale AJAX pour une UX fluide
+ * - Intégration avec le processus de checkout
+ * - Validation et sécurisation des accès utilisateur
+ * 
+ * Toutes les routes nécessitent une authentification (ROLE_USER)
+ */
 #[Route('/address')]
 #[IsGranted('ROLE_USER')]
 class AddressController extends AbstractController
 {
     /**
      * Affiche la modal de création d'adresse (AJAX)
+     * 
+     * Cette méthode prépare le formulaire vide et le renvoie dans une réponse HTML
+     * qui sera injectée dans la modale côté frontend.
      */
     #[Route('/new-modal', name: 'app_address_new_modal', methods: ['GET'])]
     public function newModal(Request $request): Response
@@ -39,11 +53,14 @@ class AddressController extends AbstractController
 
     /**
      * Traite la création d'adresse via AJAX
+     * 
+     * Reçoit les données du formulaire, les valide et sauvegarde en base.
+     * Retourne une réponse JSON pour mise à jour dynamique de l'interface.
      */
     #[Route('/create', name: 'app_address_create', methods: ['POST'])]
     public function create(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
-        // Debug: Log des données reçues
+        // Debug: Log des données reçues pour diagnostics
         error_log('=== CRÉATION ADRESSE ===');
         error_log('Method: ' . $request->getMethod());
         error_log('Content-Type: ' . $request->headers->get('Content-Type'));
@@ -78,7 +95,7 @@ class AddressController extends AbstractController
             
             error_log('Adresse sauvegardée avec ID: ' . $address->getId());
 
-            // Retourner les données de la nouvelle adresse
+            // Retourner les données de la nouvelle adresse pour mise à jour frontend
             return $this->json([
                 'success' => true,
                 'message' => 'Adresse ajoutée avec succès !',
@@ -96,7 +113,7 @@ class AddressController extends AbstractController
             ]);
         }
 
-        // En cas d'erreur, retourner les erreurs de validation
+        // En cas d'erreur de validation, retourner les erreurs avec le formulaire re-rendu
         $errors = [];
         foreach ($form->getErrors(true) as $error) {
             $errors[] = $error->getMessage();
@@ -115,6 +132,9 @@ class AddressController extends AbstractController
 
     /**
      * Liste les adresses de l'utilisateur (pour AJAX)
+     * 
+     * Utilisé notamment dans le checkout pour peupler les sélecteurs d'adresses.
+     * Peut filtrer par type d'adresse (shipping, billing, home).
      */
     #[Route('/list', name: 'app_address_list', methods: ['GET'])]
     public function list(Request $request): JsonResponse
@@ -154,6 +174,9 @@ class AddressController extends AbstractController
 
     /**
      * Page de gestion des adresses (optionnelle, pour plus tard)
+     * 
+     * Interface principale pour visualiser et gérer toutes les adresses.
+     * Complément à l'interface modale pour une vue d'ensemble.
      */
     #[Route('/', name: 'app_address_index')]
     public function index(): Response
@@ -168,6 +191,9 @@ class AddressController extends AbstractController
 
     /**
      * Affiche la modal d'édition d'adresse (AJAX)
+     * 
+     * Charge une adresse existante dans le formulaire pour modification.
+     * Vérifie que l'adresse appartient bien à l'utilisateur connecté.
      */
     #[Route('/{id}/edit-modal', name: 'app_address_edit_modal', methods: ['GET'])]
     public function editModal(Addresses $address): Response
@@ -188,6 +214,9 @@ class AddressController extends AbstractController
 
     /**
      * Traite la modification d'adresse via AJAX
+     * 
+     * Met à jour une adresse existante avec les nouvelles données du formulaire.
+     * Vérifie la propriété et valide avant sauvegarde.
      */
     #[Route('/{id}/update', name: 'app_address_update', methods: ['POST'])]
     public function update(Addresses $address, Request $request, EntityManagerInterface $entityManager): JsonResponse
@@ -242,6 +271,11 @@ class AddressController extends AbstractController
 
     /**
      * Supprime une adresse (AJAX)
+     * 
+     * Suppression sécurisée avec vérifications :
+     * - Propriété de l'adresse
+     * - Protection CSRF
+     * - Vérification qu'elle n'est pas utilisée dans des commandes
      */
     #[Route('/{id}/delete', name: 'app_address_delete', methods: ['POST'])]
     public function delete(Addresses $address, Request $request, EntityManagerInterface $entityManager): JsonResponse
@@ -254,7 +288,7 @@ class AddressController extends AbstractController
             ], 403);
         }
 
-        // Vérifier le token CSRF
+        // Vérifier le token CSRF pour éviter les attaques
         if (!$this->isCsrfTokenValid('delete_address' . $address->getId(), $request->request->get('_token'))) {
             return $this->json([
                 'success' => false,
