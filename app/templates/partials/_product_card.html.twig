@@ -44,6 +44,8 @@
                         data-csrf-token="{{ csrf_token('toggle_favorite'~product.id) }}"
                         aria-label="Ajouter {{ product.title }} aux favoris">
                     ❤️
+                    {# 📊 COMPTEUR DE LIKES - Affichage du nombre de personnes qui aiment ce produit #}
+                    <span class="likes-count">{{ product.likes|length }}</span>
                 </button>
             {% endif %}
             

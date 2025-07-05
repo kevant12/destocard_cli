@@ -144,6 +144,62 @@ class ProductController extends AbstractController
     }
 
     /**
+     * 🔍 PAGE DE RECHERCHE - SUPER SIMPLE !
+     * =====================================
+     * 
+     * Cette méthode fait comme un moteur de recherche :
+     * 1. On récupère ce que l'utilisateur a tapé (le mot "Pikachu" par exemple)
+     * 2. On demande à notre "livre magique" (le repository) de trouver les cartes
+     * 3. On affiche les résultats sur une jolie page
+     * 
+     * C'est comme chercher dans un dictionnaire, mais pour les cartes !
+     * 
+     * ⚠️ IMPORTANT : Cette route DOIT être AVANT /{id} sinon Symfony confond "search" avec un ID !
+     * 
+     * @param Request $request Pour récupérer ce que l'utilisateur a tapé
+     * @return Response La page avec tous les résultats trouvés
+     */
+    #[Route('/search', name: 'app_product_search', methods: ['GET'])]
+    public function search(Request $request): Response
+    {
+        // 📝 On récupère ce que l'utilisateur a tapé dans la barre de recherche
+        $query = $request->query->get('q');           // Le mot à chercher (ex: "Pikachu")
+        $category = $request->query->get('category'); // La catégorie choisie (ex: "cartes")
+        $rarity = $request->query->get('rarity');     // La rareté choisie (ex: "rare")
+        $sortBy = $request->query->get('sort_by');    // Comment trier (ex: "prix")
+        $sortOrder = $request->query->get('sort_order', 'asc'); // Ordre (croissant/décroissant)
+        $page = $request->query->getInt('page', 1);   // Quelle page on veut voir
+
+        // 🔍 On utilise notre "machine à chercher" (le repository) pour trouver les cartes
+        // C'est là qu'on utilise la super méthode optimisée qu'on a créée !
+        $productsQuery = $this->productsRepository->searchProductsQuery(
+            $query,     // Ce qu'on cherche
+            $category,  // Dans quelle catégorie
+            $rarity,    // Quelle rareté
+            $sortBy,    // Comment trier
+            $sortOrder  // Dans quel ordre
+        );
+
+        // 📚 On découpe les résultats en pages (comme un livre avec plusieurs pages)
+        // Ça évite d'afficher 1000 cartes d'un coup !
+        $pagination = $this->paginator->paginate(
+            $productsQuery, // Nos résultats de recherche
+            $page,          // Quelle page on veut
+            12              // Combien de cartes par page
+        );
+
+        // 🎨 On envoie tout ça à la page pour l'afficher joliment
+        return $this->render('product/search_results.html.twig', [
+            'pagination' => $pagination,          // Les cartes trouvées
+            'query' => $query,                   // Ce qu'on a cherché (pour le réafficher)
+            'selectedCategory' => $category,      // La catégorie choisie
+            'selectedRarity' => $rarity,         // La rareté choisie
+            'sortBy' => $sortBy,                 // Comment on trie
+            'sortOrder' => $sortOrder            // Dans quel ordre
+        ]);
+    }
+
+    /**
      * Affiche le détail d'un produit (page publique)
      * 
      * Page de présentation complète d'un produit avec :
@@ -152,10 +208,12 @@ class ProductController extends AbstractController
      * - Actions possibles (favoris, panier)
      * - Informations sur le vendeur
      * 
+     * ⚠️ IMPORTANT : Cette route /{id} DOIT être APRÈS /search sinon elle capture tout !
+     * 
      * @param Products $product Le produit à afficher (injection automatique via l'ID)
      * @return Response La page de détail du produit
      */
-    #[Route('/{id}', name: 'app_product_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'app_product_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(Products $product): Response
     {
         return $this->render('product/show.html.twig', [
@@ -241,4 +299,5 @@ class ProductController extends AbstractController
 
         return $this->redirectToRoute('app_user_products');
     }
+
 } 

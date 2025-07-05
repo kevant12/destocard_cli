@@ -37,6 +37,8 @@
                         title="{% if product in app.user.likes %}Retirer des favoris{% else %}Ajouter aux favoris{% endif %}"
                         aria-label="Ajouter ou retirer des favoris">
                         ❤️
+                        {# 📊 COMPTEUR DE LIKES - Affichage du nombre de personnes qui aiment ce produit #}
+                        <span class="likes-count">{{ product.likes|length }}</span>
                     </button>
                     <form method="post" action="{{ path('add_to_cart', {'id': product.id}) }}" class="add-to-cart-form inline-form">
                         <button type="submit" class="btn btn--primary add-to-cart-btn" aria-label="Ajouter au panier">Ajouter au panier</button>

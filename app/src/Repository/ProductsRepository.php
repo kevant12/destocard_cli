@@ -23,9 +23,11 @@ class ProductsRepository extends ServiceEntityRepository
             ->leftJoin('p.media', 'm');
 
         if ($query) {
-            // Simplification de la recherche Full-Text
-            $qb->andWhere('MATCH_AGAINST(p.title, p.description, p.category, p.number) AGAINST (:query BOOLEAN)')
-                ->setParameter('query', $query);
+            // 🔍 RECHERCHE SIMPLE ET EFFICACE (comme Google !)
+            // On cherche le mot dans le titre OU la description
+            // C'est comme chercher dans un livre : on regarde partout !
+            $qb->andWhere('p.title LIKE :query OR p.description LIKE :query OR p.category LIKE :query')
+                ->setParameter('query', '%' . $query . '%');
         }
 
         if ($category) {

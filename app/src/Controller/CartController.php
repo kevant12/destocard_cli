@@ -93,7 +93,6 @@ class CartController extends AbstractController
             'form' => $form,
             'cart' => $cart,
             'total' => $this->cartService->calculateTotal(),
-            'cartCount' => $this->cartService->getCartCount()
         ]);
     }
 
@@ -153,7 +152,6 @@ class CartController extends AbstractController
 
         return $this->render('cart/index.html.twig', [
             'cart' => $validation['cart'],
-            'cartCount' => $this->cartService->getCartCount(),
             'total' => $this->cartService->calculateTotal()
         ]);
     }

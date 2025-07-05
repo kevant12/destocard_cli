@@ -4,6 +4,7 @@ namespace App\Form\Product;
 
 use App\Entity\Products;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -53,10 +54,54 @@ class ProductFormType extends AbstractType
             ])
             
             // Champ catégorie - aide à la classification
-             ->add('category', TextType::class, [
+            ->add('category', TextType::class, [
                 'label' => 'Catégorie',
                 'required' => false,
                 'attr' => ['placeholder' => 'Ex: Carte Pokémon']
+            ])
+
+            // Extension Pokémon - liste des extensions principales
+            ->add('extension', ChoiceType::class, [
+                'label' => 'Extension',
+                'required' => false,
+                'choices' => [
+                    'Choisir une extension' => '',
+                    'Épée et Bouclier' => 'epee_bouclier',
+                    'Écarlate et Violet' => 'ecarlate_violet',
+                    'XY' => 'xy',
+                    'Noir et Blanc' => 'noir_blanc',
+                ],
+                'placeholder' => 'Sélectionnez une extension',
+                'attr' => ['class' => 'form-control']
+            ])
+
+            // Série libre - champ texte pour les séries spécifiques
+            ->add('serie', TextType::class, [
+                'label' => 'Série (libre)',
+                'required' => false,
+                'attr' => [
+                    'placeholder' => 'Ex: Base Set, Jungle, Fossil...',
+                    'class' => 'form-control'
+                ]
+            ])
+
+            // Rareté - symboles spécifiques aux cartes Pokémon
+            ->add('rarity', ChoiceType::class, [
+                'label' => 'Rareté',
+                'required' => false,
+                'choices' => [
+                    'Sélectionner la rareté' => '',
+                    'Commune (●)' => 'commune',
+                    'Peu commune (◆)' => 'peu_commune',
+                    'Rare (⭐)' => 'rare',
+                    'Rare Holographique (⭐ doré)' => 'rare_holo',
+                    'Ultra Rare (⭐⭐)' => 'ultra_rare',
+                    'Secret Rare (⭐⭐⭐)' => 'secret_rare',
+                    'Amazing Rare (AT)' => 'amazing_rare',
+                    'Tag Team GX (TG)' => 'tag_team',
+                ],
+                'placeholder' => 'Choisir la rareté',
+                'attr' => ['class' => 'form-control']
             ])
             
             // Champ description - optionnel mais recommandé pour les ventes

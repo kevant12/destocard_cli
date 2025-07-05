@@ -18,6 +18,7 @@ use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\IsTrue;
+use Symfony\Component\Validator\Constraints\PasswordStrength;
 
 /**
  * Définit le formulaire d'inscription pour les nouveaux utilisateurs.
@@ -109,9 +110,9 @@ class RegisterFormType extends AbstractType
                 ],
                 'constraints' => [
                     new NotBlank(['message' => 'Veuillez saisir un mot de passe']),
-                    new Length([
-                        'min' => 8,
-                        'minMessage' => 'Le mot de passe doit contenir au moins {{ limit }} caractères'
+                    new PasswordStrength([
+                        'minScore' => PasswordStrength::STRENGTH_MEDIUM,
+                        'message' => 'Ce mot de passe est trop faible. Il doit contenir des majuscules, minuscules, chiffres et symboles.'
                     ])
                 ]
             ])

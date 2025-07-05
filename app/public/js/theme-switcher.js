@@ -184,5 +184,4 @@ window.themeSwitcher = new ThemeSwitcher();
 // Export pour utilisation en module (optionnel)
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = ThemeSwitcher;
-}
-
+} 

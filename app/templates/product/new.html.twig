@@ -18,67 +18,78 @@
 {% block meta_description %}Vendez vos cartes Pokémon et autres objets de collection sur Destocard. Créez votre annonce facilement et rapidement.{% endblock %}
 
 {% block body %}
-<div class="form-container">
-    <h1 class="site-title">Mettre un nouvel article en vente</h1>
+<div class="container">
+    <div class="product-form">
+        <h1>Mettre un nouvel article en vente</h1>
 
-    {# `form_start` inclut l'attribut `enctype="multipart/form-data"` nécessaire pour l'upload de fichiers. #}
-    {{ form_start(form) }}
-        <div class="form-columns">
-            <div class="form-column-left">
-                <fieldset>
-                    <legend>Détails de l'article</legend>
+        {# `form_start` inclut l'attribut `enctype="multipart/form-data"` nécessaire pour l'upload de fichiers. #}
+        {{ form_start(form) }}
+            <div class="form-container">
+                
+                {# SECTION 1: Informations de base #}
+                <div class="form-group">
+                    <div class="form-row">
+                        {{ form_row(form.title) }}
+                    </div>
                     
-                    {# 
-                        On utilise ici `form_row` pour les champs simples. C'est un raccourci
-                        qui génère label, widget, et erreurs.
-                    #}
-                    {{ form_row(form.title) }}
-
-                    <div class="form-grid">
+                    <div class="form-row form-row--two-columns">
                         {{ form_row(form.number) }}
                         {{ form_row(form.category) }}
                     </div>
                     
-                    {{ form_row(form.price) }}
-                </fieldset>
-            </div>
-
-            <div class="form-column-right">
-                <fieldset>
-                    <legend>Description & Médias</legend>
-                    
-                    {{ form_row(form.description) }}
-
-                    <div class="form-group">
-                        {{ form_label(form.imageFiles, 'Photos de votre article') }}
-                        <div class="form-image-upload">
-                            <div class="form-file-input">
-                                {# Le champ `imageFiles` est `mapped` => false, il sera géré manuellement. #}
-                                {{ form_widget(form.imageFiles) }}
-                                {# Le label est lié au widget par l'attribut `for`. #}
-                                <label for="{{ form.imageFiles.vars.id }}" class="form-file-label">
-                                    📷 Choisir des photos
-                                </label>
-                            </div>
-                            <button type="button" id="webcam-button" class="btn btn--secondary" aria-label="Utiliser la webcam">
-                                📱 Webcam
-                            </button>
-                        </div>
-                        {{ form_errors(form.imageFiles) }}
-                        <div class="form-help">Formats acceptés : PNG, JPG - Taille max : 5MB par fichier</div>
-                        
-                        {# Ce conteneur sera rempli par JavaScript avec les aperçus des images sélectionnées. #}
-                        <div id="image-preview-container"></div>
+                    <div class="form-row">
+                        {{ form_row(form.price) }}
                     </div>
-                </fieldset>
-            </div>
-        </div>
+                </div>
 
-        <div class="form-actions">
-            <a href="{{ path('app_user_products') }}" class="btn btn--secondary">Annuler</a>
-            <button type="submit" class="btn btn--primary">🚀 Mettre en vente</button>
-        </div>
-    {{ form_end(form) }}
+                {# SECTION 2: Détails spécifiques Pokémon #}
+                <div class="form-group form-group--pokemon">
+                    <h3>🎯 Détails de la carte Pokémon</h3>
+                    
+                    <div class="form-row">
+                        {{ form_row(form.extension) }}
+                    </div>
+                    
+                    <div class="form-row form-row--two-columns">
+                        {{ form_row(form.serie) }}
+                        {{ form_row(form.rarity) }}
+                    </div>
+                </div>
+
+                {# SECTION 3: Description #}
+                <div class="form-group">
+                    {{ form_row(form.description) }}
+                </div>
+
+                {# SECTION 4: Images #}
+                <div class="form-group">
+                    {{ form_label(form.imageFiles, 'Photos de votre article') }}
+                    <div class="form-image-upload">
+                        <div class="form-control--file">
+                            {{ form_widget(form.imageFiles) }}
+                            <label for="{{ form.imageFiles.vars.id }}" class="form-file-label">
+                                📷 Choisir des photos
+                                <div class="file-upload-text">Glissez vos fichiers ici ou cliquez pour sélectionner</div>
+                            </label>
+                        </div>
+                        <button type="button" id="webcam-button" class="btn btn--secondary" aria-label="Utiliser la webcam">
+                            📱 Webcam
+                        </button>
+                    </div>
+                    {{ form_errors(form.imageFiles) }}
+                    <div class="form-help">Formats acceptés : PNG, JPG - Taille max : 5MB par fichier</div>
+                    
+                    {# Ce conteneur sera rempli par JavaScript avec les aperçus des images sélectionnées. #}
+                    <div id="image-preview-container"></div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a href="{{ path('app_user_products') }}" class="btn--form-secondary">Annuler</a>
+                <button type="submit" class="btn--form-primary">🚀 Mettre en vente</button>
+            </div>
+        {{ form_end(form) }}
+    </div>
 </div>
 
 {# 

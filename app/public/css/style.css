@@ -777,8 +777,7 @@ a:focus {
     }
 }
 
-/* Responsive pour les boutons panier */
-@media (max-width: 48rem) {
+@media (max-width: 767px) {
     .add-to-cart-btn,
     .add-to-cart-form button {
         font-size: var(--font-size-xs);
@@ -993,8 +992,7 @@ body {
    MEDIA QUERIES - RESPONSIVE DESIGN
    ======================================== */
 
-/* Mobile - Amélioration du compteur de panier */
-@media (max-width: 47.9rem) {
+@media (max-width: 767px) {
   .cart-count {
     width: 18px;
     height: 18px;
@@ -1005,16 +1003,13 @@ body {
   }
 }
 
-/* Tablettes - 768px et plus */
-@media (min-width: 48rem) {
-  /* Header: layout horizontal sur tablette+ */
+@media (min-width: 768px) {
   .site-header .container {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
   }
   
-  /* Grilles: 2 colonnes sur tablette */
   .layout-grid,
   .products-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -1044,39 +1039,26 @@ body {
   }
 }
 
-/* Desktop - 1024px et plus */
-@media (min-width: 64rem) {
-  /* Grilles: 3 colonnes sur desktop */
+@media (min-width: 1024px) {
   .layout-grid,
   .products-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   }
   
-  /* Footer: 3 colonnes sur desktop */
   .site-footer__content {
     grid-template-columns: repeat(3, 1fr);
   }
   
-  /* Conteneur plus large */
   .container {
     padding: 0 var(--spacing-lg);
   }
   
-  /* Hero plein écran sur desktop */
   .hero-section {
     min-height: 80vh;
   }
 }
 
-/* Large Desktop - 1200px et plus */
-@media (min-width: 75rem) {
-  /* Grilles: 4 colonnes sur très grand écran */
-  .layout-grid,
-  .products-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-  
-  /* Espacement plus généreux */
+@media (min-width: 1200px) {
   :root {
     --container-padding: var(--spacing-xl);
   }
@@ -1834,8 +1816,7 @@ legend {
    RESPONSIVE - FORMULAIRES
    ======================================== */
 
-/* Tablettes - 768px et plus */
-@media (min-width: 48rem) {
+@media (min-width: 768px) {
   .form-columns {
     grid-template-columns: 1fr 1fr;
   }
@@ -1857,8 +1838,7 @@ legend {
   }
 }
 
-/* Desktop - 1024px et plus */
-@media (min-width: 64rem) {
+@media (min-width: 1024px) {
   .form-container {
     padding: var(--spacing-2xl) var(--spacing-xl);
   }
@@ -2250,8 +2230,7 @@ legend {
     }
 }
 
-/* Responsive pour mobile */
-@media (max-width: 48rem) {
+@media (max-width: 767px) {
     .notification-container {
         top: 10px;
         right: 10px;
@@ -2486,6 +2465,181 @@ legend {
     background-color: var(--error-color);
     border-color: var(--error-color);
     color: white;
+}
+
+/* ========================================
+   🔍 BARRE DE RECHERCHE - SUPER SIMPLE !
+   ======================================== */
+
+/* 
+  Cette petite barre de recherche est comme une boîte magique :
+  - On tape ce qu'on cherche dedans (comme "Pikachu")
+  - On clique sur la loupe
+  - Et hop ! On trouve nos cartes préférées !
+*/
+.site-header__search {
+  /* On met la barre de recherche bien au centre */
+  width: 100%;
+  max-width: 400px; /* Pas trop large, c'est plus joli */
+}
+
+.search-form {
+  /* On colle la barre et le bouton ensemble comme des Legos */
+  display: flex;
+  gap: 0; /* Pas d'espace entre les deux */
+  border-radius: var(--border-radius-md);
+  overflow: hidden; /* Pour que ce soit bien rond aux coins */
+  box-shadow: var(--shadow-sm);
+}
+
+.search-input {
+  /* La zone où on tape (comme "Dracaufeu" ou "carte rare") */
+  flex: 1; /* Prend toute la place disponible */
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 2px solid var(--border-color);
+  border-right: none; /* On enlève le bord à droite pour coller au bouton */
+  background-color: var(--surface-color);
+  color: var(--primary-text-color);
+  font-size: var(--font-size-base);
+  border-radius: 0; /* On enlève les coins ronds (le conteneur s'en charge) */
+}
+
+.search-input:focus {
+  /* Quand on clique dedans, ça devient orange comme notre thème ! */
+  border-color: var(--accent-color);
+  background-color: var(--surface-elevated);
+  outline: none; /* On utilise notre propre style de focus */
+}
+
+.search-input::placeholder {
+  /* Le texte gris qui dit "Chercher une carte..." */
+  color: var(--muted-text-color);
+}
+
+.search-button {
+  /* Le bouton avec la petite loupe 🔍 */
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--accent-color);
+  color: white;
+  border: 2px solid var(--accent-color);
+  cursor: pointer; /* Le curseur devient une petite main */
+  font-size: var(--font-size-lg);
+  transition: all var(--transition-fast);
+  border-radius: 0; /* Coins droits pour coller à l'input */
+}
+
+.search-button:hover,
+.search-button:focus {
+  /* Quand on survole ou clique, ça devient plus foncé */
+  background-color: var(--accent-hover);
+  border-color: var(--accent-hover);
+  transform: scale(1.05); /* Ça grandit un peu, comme un effet magique ! */
+}
+
+/* 📱 SUR LES PETITS ÉCRANS (téléphones) */
+@media (max-width: 767px) {
+  .site-header__search {
+    /* Sur téléphone, la barre prend toute la largeur */
+    width: 100%;
+    order: 3; /* Elle apparaît en dernier dans le header */
+  }
+  
+  .search-input {
+    /* Plus petit padding sur mobile pour économiser l'espace */
+    padding: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+  }
+  
+  .search-button {
+    /* Bouton plus compact sur mobile */
+    padding: var(--spacing-sm);
+  }
+}
+
+/* 💻 SUR LES GRANDS ÉCRANS (ordinateurs) */
+@media (min-width: 768px) {
+  .site-header .container {
+    /* Sur desktop, tout se met en ligne horizontale */
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .site-header__search {
+    /* La barre reste au centre, entre le logo et les boutons */
+    order: 2;
+    margin: 0 var(--spacing-lg); /* Un peu d'espace de chaque côté */
+  }
+}
+
+/* ========================================
+   📊 COMPTEUR DE LIKES - STYLE SIMPLE
+   ======================================== */
+
+/* 
+  Le compteur de likes est affiché à côté du cœur
+  C'est comme un petit badge qui montre combien de personnes aiment le produit
+*/
+.btn-like {
+  /* Le bouton de like est flexible pour contenir le cœur et le compteur */
+  display: flex;
+  align-items: center;
+  gap: 0.25rem; /* Un petit espace entre le cœur et le nombre */
+}
+
+.likes-count {
+  /* Le compteur est petit et discret */
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  
+  /* Un peu de style pour que ce soit joli */
+  background: var(--surface-elevated);
+  padding: 0.125rem 0.375rem;
+  border-radius: var(--border-radius-sm);
+  min-width: 1.25rem;
+  text-align: center;
+  
+  /* Transition douce quand le nombre change */
+  transition: all 0.2s ease;
+}
+
+/* Quand le produit est liké, le compteur devient plus visible */
+.btn-like.active .likes-count {
+  background: var(--accent-color);
+  color: white;
+}
+
+/* Animation subtile au survol */
+.btn-like:hover .likes-count {
+  transform: scale(1.1);
+}
+
+/* ========================================
+   🎬 ANIMATIONS DES FAVORIS
+   ======================================== */
+
+/* Animation du cœur qui bat quand on ajoute aux favoris */
+.favorite-animation {
+  animation: favoriteHeartBeat 0.6s ease-out;
+}
+
+@keyframes favoriteHeartBeat {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.3) rotate(-5deg); }
+  50% { transform: scale(1.1) rotate(5deg); }
+  75% { transform: scale(1.2) rotate(-2deg); }
+  100% { transform: scale(1); }
+}
+
+/* Animation qui brille quand le produit est liké */
+.btn-like.active {
+  animation: favoriteGlow 2s infinite;
+}
+
+@keyframes favoriteGlow {
+  0%, 100% { filter: drop-shadow(0 0 5px rgba(220, 53, 69, 0.5)); }
+  50% { filter: drop-shadow(0 0 10px rgba(220, 53, 69, 0.8)); }
 }
 
 /* ========================================

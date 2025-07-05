@@ -153,11 +153,35 @@
                     {% endif %}
                 </nav>
 
+                {# 
+                    🔍 BARRE DE RECHERCHE SIMPLE
+                    ============================
+                    Cette petite barre permet de chercher des cartes facilement.
+                    Quand on tape quelque chose et qu'on clique sur "Chercher", 
+                    ça envoie vers la page de résultats.
+                #}
+                <div class="site-header__search">
+                    <form method="get" action="{{ path('app_product_search') }}" class="search-form">
+                        {# Input où on tape ce qu'on cherche (comme "Pikachu" ou "carte rare") #}
+                        <input 
+                            type="search" 
+                            name="q" 
+                            placeholder="Chercher une carte..." 
+                            class="search-input"
+                            aria-label="Rechercher des produits"
+                        >
+                        {# Bouton pour lancer la recherche #}
+                        <button type="submit" class="search-button" aria-label="Lancer la recherche">
+                            🔍
+                        </button>
+                    </form>
+                </div>
+
                 <nav class="site-header__nav-user" role="navigation" aria-label="Navigation utilisateur">
                     {% if app.user %}
                         <a href="{{ path('app_user_products') }}">Mes Articles</a>
                         <a href="{{ path('app_favorites') }}">Favoris</a>
-                        <a href="{{ path('app_message_index') }}">Messages</a>
+                       
                         <a href="{{ path('app_address_index') }}">Mes Adresses</a>
                         <a href="{{ path('cart') }}" class="nav-cart" title="Panier" aria-label="Panier">
                             🛒 <span class="cart-count" aria-label="Nombre d'articles dans le panier">{{ cartCount ?? 0 }}</span>
@@ -225,7 +249,7 @@
             {% if app.user %}
                  <a href="{{ path('app_product_new') }}" class="mobile-nav__link" title="Vendre" aria-label="Vendre un article">➕</a>
                 <a href="{{ path('app_favorites') }}" class="mobile-nav__link" title="Favoris" aria-label="Mes favoris">❤️</a>
-                <a href="{{ path('app_message_index') }}" class="mobile-nav__link" title="Messages" aria-label="Messages">✉️</a>
+               
                 <a href="#" class="mobile-nav__link" title="Profil" aria-label="Mon profil">👤</a>
             {% else %}
                 <a href="{{ path('app_login') }}" class="mobile-nav__link" title="Connexion" aria-label="Se connecter">👤</a>

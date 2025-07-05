@@ -57,6 +57,15 @@ class Products
     #[ORM\Column(type: 'string', length: 100, nullable: true)]
     private ?string $number = null;
 
+    #[ORM\Column(type: 'string', length: 100, nullable: true)]
+    private ?string $extension = null;
+
+    #[ORM\Column(type: 'string', length: 100, nullable: true)]
+    private ?string $serie = null;
+
+    #[ORM\Column(type: 'string', length: 50, nullable: true)]
+    private ?string $rarity = null;
+
     public function __construct()
     {
         $this->media = new ArrayCollection();
@@ -169,6 +178,39 @@ class Products
         return $this;
     }
 
+    public function getExtension(): ?string
+    {
+        return $this->extension;
+    }
+
+    public function setExtension(?string $extension): static
+    {
+        $this->extension = $extension;
+        return $this;
+    }
+
+    public function getSerie(): ?string
+    {
+        return $this->serie;
+    }
+
+    public function setSerie(?string $serie): static
+    {
+        $this->serie = $serie;
+        return $this;
+    }
+
+    public function getRarity(): ?string
+    {
+        return $this->rarity;
+    }
+
+    public function setRarity(?string $rarity): static
+    {
+        $this->rarity = $rarity;
+        return $this;
+    }
+
     // =========================================================================
     // SECTION: Gestion des relations (Collections)
     // =========================================================================
@@ -215,7 +257,11 @@ class Products
     {
         if (!$this->likes->contains($like)) {
             $this->likes->add($like);
-            $like->addLike($this);
+            // 🔄 SYNCHRONISATION BIDIRECTIONNELLE (sans récursion)
+            // On ajoute seulement du côté "owning" de la relation
+            if (!$like->getLikes()->contains($this)) {
+                $like->getLikes()->add($this);
+            }
         }
 
         return $this;
@@ -224,7 +270,9 @@ class Products
     public function removeLike(Users $like): static
     {
         if ($this->likes->removeElement($like)) {
-            $like->removeLike($this);
+            // 🔄 SYNCHRONISATION BIDIRECTIONNELLE (sans récursion)
+            // On retire seulement du côté "owning" de la relation
+            $like->getLikes()->removeElement($this);
         }
 
         return $this;

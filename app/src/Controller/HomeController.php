@@ -6,7 +6,6 @@ use App\Repository\ProductsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * Contrôleur de la page d'accueil du site
@@ -34,21 +33,14 @@ class HomeController extends AbstractController
      * @return Response La page d'accueil rendue
      */
     #[Route('/', name: 'app_home')]
-    public function index(ProductsRepository $productsRepository, SessionInterface $session): Response
+    public function index(ProductsRepository $productsRepository): Response
     {
-        // Récupérer le contenu du panier depuis la session pour le compteur
-        $cart = $session->get('cart', []);
-        
-        // Calculer le nombre total d'articles dans le panier
-        $cartCount = array_sum(array_column($cart, 'quantity'));
-
         // Récupérer les 8 derniers produits ajoutés pour l'affichage d'accueil
         // Triés par date de création décroissante pour montrer les nouveautés
         $latestProducts = $productsRepository->findBy([], ['createdAt' => 'DESC'], 8);
 
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
-            'cartCount' => $cartCount,
             'latestProducts' => $latestProducts,
         ]);
     }

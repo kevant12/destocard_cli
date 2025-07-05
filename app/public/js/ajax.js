@@ -86,6 +86,5 @@ function addFavorite() {
     });
 }
 
-// Lancer la fonction pour que le listener soit actif dès le chargement de la page.
-// Comme le script est en defer, le DOM est automatiquement prêt
-addFavorite(); 
+// DÉSACTIVÉ : Conflit avec favorites.js 
+// addFavorite(); 

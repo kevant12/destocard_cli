@@ -438,7 +438,11 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->likes->contains($like)) {
             $this->likes->add($like);
-            $like->addLike($this);
+            // 🔄 SYNCHRONISATION BIDIRECTIONNELLE (sans récursion)
+            // On ajoute seulement du côté "inverse" de la relation
+            if (!$like->getLikes()->contains($this)) {
+                $like->getLikes()->add($this);
+            }
         }
 
         return $this;
@@ -447,7 +451,9 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeLike(Products $like): static
     {
         if ($this->likes->removeElement($like)) {
-            $like->removeLike($this);
+            // 🔄 SYNCHRONISATION BIDIRECTIONNELLE (sans récursion)
+            // On retire seulement du côté "inverse" de la relation
+            $like->getLikes()->removeElement($this);
         }
 
         return $this;

@@ -57,8 +57,37 @@ async function handleFavoriteToggle(e) {
             // Récupérer le nom du produit
             const productName = getProductNameFromButton(button);
             
-            // Mettre à jour l'état du bouton
-            updateFavoriteButton(button, data.isLiked);
+            // Mettre à jour l'état du bouton ET le compteur
+            updateFavoriteButton(button, data.isLiked, data.likesCount);
+            
+            // 🚨 GESTION SPÉCIALE PAGE FAVORIS : Supprimer le produit si retiré des favoris
+            if (!data.isLiked) {
+                const favoritePageContainer = document.querySelector('.favorites-container');
+                if (favoritePageContainer) {
+                    // On est sur la page des favoris, supprimer la carte produit
+                    const productCard = button.closest('.card, .product-card');
+                    if (productCard) {
+                        // Animation de sortie avant suppression
+                        productCard.style.transition = 'all 0.3s ease-out';
+                        productCard.style.transform = 'scale(0.8)';
+                        productCard.style.opacity = '0';
+                        
+                        setTimeout(() => {
+                            productCard.remove();
+                            
+                            // Vérifier s'il reste des favoris
+                            const remainingCards = favoritePageContainer.querySelectorAll('.card, .product-card');
+                            if (remainingCards.length === 0) {
+                                // Plus de favoris, afficher le message vide
+                                const gridContainer = favoritePageContainer.querySelector('.products-grid');
+                                if (gridContainer) {
+                                    gridContainer.innerHTML = '<p>Vous n\'avez plus de favoris.</p>';
+                                }
+                            }
+                        }, 300);
+                    }
+                }
+            }
             
             // Afficher notification appropriée
             if (data.isLiked) {
@@ -71,11 +100,13 @@ async function handleFavoriteToggle(e) {
                 }
             }
             
-            // Animation du bouton
-            button.classList.add('favorite-animation');
-            setTimeout(() => {
-                button.classList.remove('favorite-animation');
-            }, 600);
+            // Animation du bouton (seulement si pas sur page favoris ou si ajouté)
+            if (data.isLiked || !document.querySelector('.favorites-container')) {
+                button.classList.add('favorite-animation');
+                setTimeout(() => {
+                    button.classList.remove('favorite-animation');
+                }, 600);
+            }
             
         } else {
             // Erreur
@@ -99,17 +130,31 @@ async function handleFavoriteToggle(e) {
 }
 
 /**
- * Met à jour l'état visuel du bouton favori
+ * Met à jour l'état visuel du bouton favori ET le compteur
  */
-function updateFavoriteButton(button, isLiked) {
+function updateFavoriteButton(button, isLiked, likesCount) {
+    // 📊 MISE À JOUR DU COMPTEUR DE LIKES
+    let countSpan = button.querySelector('.likes-count');
+    if (countSpan) {
+        // Le compteur existe déjà, on le met à jour
+        countSpan.textContent = likesCount || 0;
+    } else {
+        // Le compteur n'existe pas, on le crée (cas d'urgence)
+        countSpan = document.createElement('span');
+        countSpan.className = 'likes-count';
+        countSpan.textContent = likesCount || 0;
+        button.appendChild(countSpan);
+    }
+    
+    // 🎨 MISE À JOUR DE L'ÉTAT VISUEL DU BOUTON
     if (isLiked) {
         button.classList.add('active', 'is-liked');
-        button.innerHTML = '❤️';
+        button.innerHTML = '❤️ <span class="likes-count">' + (likesCount || 0) + '</span>';
         button.title = 'Retirer des favoris';
         button.style.color = 'var(--error-color)';
     } else {
         button.classList.remove('active', 'is-liked');
-        button.innerHTML = '🤍';
+        button.innerHTML = '🤍 <span class="likes-count">' + (likesCount || 0) + '</span>';
         button.title = 'Ajouter aux favoris';
         button.style.color = '';
     }
@@ -145,42 +190,7 @@ function getProductNameFromButton(button) {
     return 'Article';
 }
 
-// CSS pour l'animation des favoris
-const favoriteStyles = `
-    .favorite-animation {
-        animation: favoriteHeartBeat 0.6s ease-out;
-    }
-    
-    @keyframes favoriteHeartBeat {
-        0% { transform: scale(1); }
-        25% { transform: scale(1.3) rotate(-5deg); }
-        50% { transform: scale(1.1) rotate(5deg); }
-        75% { transform: scale(1.2) rotate(-2deg); }
-        100% { transform: scale(1); }
-    }
-    
-    .btn-like {
-        transition: all 0.3s ease;
-    }
-    
-    .btn-like:hover {
-        transform: scale(1.1);
-    }
-    
-    .btn-like.active {
-        animation: favoriteGlow 2s infinite;
-    }
-    
-    @keyframes favoriteGlow {
-        0%, 100% { filter: drop-shadow(0 0 5px rgba(220, 53, 69, 0.5)); }
-        50% { filter: drop-shadow(0 0 10px rgba(220, 53, 69, 0.8)); }
-    }
-`;
-
-// Ajouter les styles à la page
-const styleSheet = document.createElement('style');
-styleSheet.textContent = favoriteStyles;
-document.head.appendChild(styleSheet);
+// Les styles CSS sont maintenant dans style.css pour une meilleure organisation
 
 // Exporter les fonctions pour utilisation globale
 window.initFavoriteButtons = initFavoriteButtons;
