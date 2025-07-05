@@ -27,25 +27,8 @@
         
         <div class="layout-grid">
             {% for product in latestProducts %}
-                <div class="card">
-                    <a href="{{ path('app_product_show', {'id': product.id}) }}" class="card__image-container">
-                        {% if product.media|first %}
-                            <img src="{{ asset('uploads/products/' ~ product.media|first.fileName) }}" alt="{{ product.title }}">
-                        {% else %}
-                             <img src="{{ asset('images/placeholder.png') }}" alt="Image non disponible">
-                        {% endif %}
-                    </a>
-                    <div class="card__body">
-                        <h3 class="card__title">
-                            <a href="{{ path('app_product_show', {'id': product.id}) }}">{{ product.title }}</a>
-                        </h3>
-                        <p class="card__subtitle">Vendu par {{ product.users.firstname }}</p>
-                    </div>
-                    <div class="card__footer">
-                        <span class="product-price">{{ product.price|number_format(2, ',', ' ') }} €</span>
-                        <a href="#" class="btn btn--secondary">Ajouter au panier</a>
-                    </div>
-                </div>
+                {# Utilisation du template partiel pour assurer la cohérence avec les favoris #}
+                {% include 'partials/_product_card.html.twig' with {'product': product} %}
             {% else %}
                 <p class="text-center">Aucun produit n'a été ajouté récemment.</p>
             {% endfor %}

@@ -16,11 +16,13 @@ class ProductsRepository extends ServiceEntityRepository
         parent::__construct($registry, Products::class);
     }
 
-    public function searchProductsQuery(?string $query, ?string $category = null, ?string $rarity = null, ?string $sortBy = null, ?string $sortOrder = 'asc'): \Doctrine\ORM\QueryBuilder
+    public function searchProductsQuery(?string $query, ?string $category = null, ?string $rarity = null, ?string $seller = null, ?string $sortBy = null, ?string $sortOrder = 'asc'): \Doctrine\ORM\QueryBuilder
     {
         $qb = $this->createQueryBuilder('p')
             ->addSelect('m')
-            ->leftJoin('p.media', 'm');
+            ->leftJoin('p.media', 'm')
+            ->addSelect('u')
+            ->leftJoin('p.users', 'u');
 
         if ($query) {
             // 🔍 RECHERCHE SIMPLE ET EFFICACE (comme Google !)
@@ -38,6 +40,12 @@ class ProductsRepository extends ServiceEntityRepository
         if ($rarity) {
             $qb->andWhere('p.rarity = :rarity')
                 ->setParameter('rarity', $rarity);
+        }
+
+        if ($seller) {
+            // 👤 FILTRE PAR VENDEUR - Recherche par ID du vendeur
+            $qb->andWhere('p.users = :seller')
+                ->setParameter('seller', $seller);
         }
 
         // Tri
@@ -78,5 +86,22 @@ class ProductsRepository extends ServiceEntityRepository
             ->andWhere('p.users = :userId')
             ->setParameter('userId', $userId)
             ->orderBy('p.createdAt', 'DESC');
+    }
+
+    /**
+     * Récupère tous les vendeurs qui ont au moins un produit en vente
+     * Utilisé pour peupler le filtre de recherche par vendeur
+     * 
+     * @return array Liste des vendeurs (Users) avec leurs informations
+     */
+    public function findAllSellers(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->select('DISTINCT u.id, u.firstname, u.lastname')
+            ->join('p.users', 'u')
+            ->where('p.quantity > 0') // Seulement les produits disponibles
+            ->orderBy('u.firstname', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 }

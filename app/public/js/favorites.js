@@ -102,10 +102,10 @@ async function handleFavoriteToggle(e) {
             
             // Animation du bouton (seulement si pas sur page favoris ou si ajouté)
             if (data.isLiked || !document.querySelector('.favorites-container')) {
-                button.classList.add('favorite-animation');
-                setTimeout(() => {
-                    button.classList.remove('favorite-animation');
-                }, 600);
+            button.classList.add('favorite-animation');
+            setTimeout(() => {
+                button.classList.remove('favorite-animation');
+            }, 600);
             }
             
         } else {

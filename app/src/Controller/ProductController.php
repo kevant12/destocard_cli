@@ -166,6 +166,7 @@ class ProductController extends AbstractController
         $query = $request->query->get('q');           // Le mot à chercher (ex: "Pikachu")
         $category = $request->query->get('category'); // La catégorie choisie (ex: "cartes")
         $rarity = $request->query->get('rarity');     // La rareté choisie (ex: "rare")
+        $seller = $request->query->get('seller');     // Le vendeur choisi (ex: "2")
         $sortBy = $request->query->get('sort_by');    // Comment trier (ex: "prix")
         $sortOrder = $request->query->get('sort_order', 'asc'); // Ordre (croissant/décroissant)
         $page = $request->query->getInt('page', 1);   // Quelle page on veut voir
@@ -176,9 +177,13 @@ class ProductController extends AbstractController
             $query,     // Ce qu'on cherche
             $category,  // Dans quelle catégorie
             $rarity,    // Quelle rareté
+            $seller,    // Quel vendeur
             $sortBy,    // Comment trier
             $sortOrder  // Dans quel ordre
         );
+
+        // 👥 On récupère la liste de tous les vendeurs pour le filtre
+        $sellers = $this->productsRepository->findAllSellers();
 
         // 📚 On découpe les résultats en pages (comme un livre avec plusieurs pages)
         // Ça évite d'afficher 1000 cartes d'un coup !
@@ -194,6 +199,8 @@ class ProductController extends AbstractController
             'query' => $query,                   // Ce qu'on a cherché (pour le réafficher)
             'selectedCategory' => $category,      // La catégorie choisie
             'selectedRarity' => $rarity,         // La rareté choisie
+            'selectedSeller' => $seller,         // Le vendeur choisi
+            'sellers' => $sellers,               // Liste de tous les vendeurs
             'sortBy' => $sortBy,                 // Comment on trie
             'sortOrder' => $sortOrder            // Dans quel ordre
         ]);

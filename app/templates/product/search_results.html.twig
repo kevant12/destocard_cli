@@ -40,6 +40,18 @@
             </div>
 
             <div class="filter-group">
+                <label for="seller-filter">👤 Vendeur:</label>
+                <select name="seller" id="seller-filter" onchange="this.form.submit()">
+                    <option value="">Tous les vendeurs</option>
+                    {% for seller in sellers %}
+                        <option value="{{ seller.id }}" {% if selectedSeller == seller.id %}selected{% endif %}>
+                            {{ seller.firstname }} {{ seller.lastname }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group">
                 <label for="sort-by">Trier par:</label>
                 <select name="sort_by" id="sort-by" onchange="this.form.submit()">
                     <option value="date" {% if sortBy == 'date' %}selected{% endif %}>Date d'ajout</option>
