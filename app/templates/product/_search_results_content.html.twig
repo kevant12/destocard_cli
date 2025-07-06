@@ -1,0 +1,13 @@
+{% if pagination is empty %}
+    <p>Aucun produit ne correspond à votre recherche.</p>
+{% else %}
+    <div class="products-grid">
+        {% for product in pagination %}
+            {% include 'partials/_product_card.html.twig' with {'product': product, 'query': query} %}
+        {% endfor %}
+    </div>
+
+    <div class="navigation text-center">
+        {{ knp_pagination_render(pagination) }}
+    </div>
+{% endif %} 

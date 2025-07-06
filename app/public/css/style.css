@@ -527,7 +527,7 @@ a:focus {
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   z-index: -2;
 }
 
@@ -1762,6 +1762,10 @@ legend {
 .filter-group select {
     width: 100%;
     min-height: 44px;
+    background-color: white; /* Fond blanc pour tous les selects */
+    border: 1px solid var(--border-color); /* Bordure standard */
+    color: var(--background-color); /* Couleur de texte sombre pour contraster avec le fond blanc */
+    border-radius: var(--border-radius-md); /* Cohérence des coins arrondis */
 }
 
 /* Styles spécifiques pour le filtre vendeur */
@@ -1772,7 +1776,7 @@ legend {
 
 #seller-filter {
     border: 2px solid var(--accent-color);
-    background: linear-gradient(135deg, var(--surface-color) 0%, var(--surface-elevated) 100%);
+    /* Le fond est maintenant géré par la règle générale .filter-group select */
 }
 
 #seller-filter:focus {

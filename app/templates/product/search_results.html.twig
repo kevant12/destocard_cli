@@ -14,7 +14,7 @@
 
             <div class="filter-group">
                 <label for="category-filter">Catégorie:</label>
-                <select name="category" id="category-filter" onchange="this.form.submit()">
+                <select name="category" id="category-filter">
                     <option value="">Toutes</option>
                     <option value="cards" {% if selectedCategory == 'cards' %}selected{% endif %}>Cartes à collectionner</option>
                     <option value="figures" {% if selectedCategory == 'figures' %}selected{% endif %}>Figurines</option>
@@ -28,7 +28,7 @@
 
             <div class="filter-group">
                 <label for="rarity-filter">Rareté:</label>
-                <select name="rarity" id="rarity-filter" onchange="this.form.submit()">
+                <select name="rarity" id="rarity-filter">
                     <option value="">Toutes</option>
                     <option value="common" {% if selectedRarity == 'common' %}selected{% endif %}>Commune</option>
                     <option value="uncommon" {% if selectedRarity == 'uncommon' %}selected{% endif %}>Peu commune</option>
@@ -41,7 +41,7 @@
 
             <div class="filter-group">
                 <label for="seller-filter">👤 Vendeur:</label>
-                <select name="seller" id="seller-filter" onchange="this.form.submit()">
+                <select name="seller" id="seller-filter">
                     <option value="">Tous les vendeurs</option>
                     {% for seller in sellers %}
                         <option value="{{ seller.id }}" {% if selectedSeller == seller.id %}selected{% endif %}>
@@ -53,7 +53,7 @@
 
             <div class="filter-group">
                 <label for="sort-by">Trier par:</label>
-                <select name="sort_by" id="sort-by" onchange="this.form.submit()">
+                <select name="sort_by" id="sort-by">
                     <option value="date" {% if sortBy == 'date' %}selected{% endif %}>Date d'ajout</option>
                     <option value="price" {% if sortBy == 'price' %}selected{% endif %}>Prix</option>
                     <option value="name" {% if sortBy == 'name' %}selected{% endif %}>Nom</option>
@@ -62,26 +62,37 @@
 
             <div class="filter-group">
                 <label for="sort-order">Ordre:</label>
-                <select name="sort_order" id="sort-order" onchange="this.form.submit()">
+                <select name="sort_order" id="sort-order">
                     <option value="asc" {% if sortOrder == 'asc' %}selected{% endif %}>Croissant</option>
                     <option value="desc" {% if sortOrder == 'desc' %}selected{% endif %}>Décroissant</option>
                 </select>
             </div>
+
+            <div class="filter-group">
+                <button type="submit" class="btn btn--primary">Appliquer les filtres</button>
+            </div>
         </form>
     </div>
 
-    {% if pagination is empty %}
-        <p>Aucun produit ne correspond à votre recherche.</p>
-    {% else %}
-        <div class="products-grid">
-            {% for product in pagination %}
-                {% include 'partials/_product_card.html.twig' with {'product': product, 'query': query} %}
-            {% endfor %}
-        </div>
+    <div id="search-results-container">
+        {% if pagination is empty %}
+            <p>Aucun produit ne correspond à votre recherche.</p>
+        {% else %}
+            <div class="products-grid">
+                {% for product in pagination %}
+                    {% include 'partials/_product_card.html.twig' with {'product': product, 'query': query} %}
+                {% endfor %}
+            </div>
 
-        <div class="navigation text-center">
-            {{ knp_pagination_render(pagination) }}
-        </div>
-    {% endif %}
+            <div class="navigation text-center">
+                {{ knp_pagination_render(pagination) }}
+            </div>
+        {% endif %}
+    </div>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/ajax-filters.js') }}" defer></script>
 {% endblock %}

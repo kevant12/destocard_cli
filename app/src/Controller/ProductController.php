@@ -160,49 +160,43 @@ class ProductController extends AbstractController
      * @return Response La page avec tous les résultats trouvés
      */
     #[Route('/search', name: 'app_product_search', methods: ['GET'])]
-    public function search(Request $request): Response
+    public function search(Request $request, PaginatorInterface $paginator): Response
     {
-        // 📝 On récupère ce que l'utilisateur a tapé dans la barre de recherche
-        $query = $request->query->get('q');           // Le mot à chercher (ex: "Pikachu")
-        $category = $request->query->get('category'); // La catégorie choisie (ex: "cartes")
-        $rarity = $request->query->get('rarity');     // La rareté choisie (ex: "rare")
-        $seller = $request->query->get('seller');     // Le vendeur choisi (ex: "2")
-        $sortBy = $request->query->get('sort_by');    // Comment trier (ex: "prix")
-        $sortOrder = $request->query->get('sort_order', 'asc'); // Ordre (croissant/décroissant)
-        $page = $request->query->getInt('page', 1);   // Quelle page on veut voir
+        $query = $request->query->get('q', '');
+        $category = $request->query->get('category');
+        $rarity = $request->query->get('rarity');
+        $seller = $request->query->get('seller');
+        $sortBy = $request->query->get('sort_by', 'date');
+        $sortOrder = $request->query->get('sort_order', 'desc');
 
-        // 🔍 On utilise notre "machine à chercher" (le repository) pour trouver les cartes
-        // C'est là qu'on utilise la super méthode optimisée qu'on a créée !
-        $productsQuery = $this->productsRepository->searchProductsQuery(
-            $query,     // Ce qu'on cherche
-            $category,  // Dans quelle catégorie
-            $rarity,    // Quelle rareté
-            $seller,    // Quel vendeur
-            $sortBy,    // Comment trier
-            $sortOrder  // Dans quel ordre
+        $queryBuilder = $this->productsRepository->searchProductsQuery($query, $category, $rarity, $seller, $sortBy, $sortOrder);
+
+        $pagination = $paginator->paginate(
+            $queryBuilder,
+            $request->query->getInt('page', 1),
+            12
         );
 
-        // 👥 On récupère la liste de tous les vendeurs pour le filtre
         $sellers = $this->productsRepository->findAllSellers();
 
-        // 📚 On découpe les résultats en pages (comme un livre avec plusieurs pages)
-        // Ça évite d'afficher 1000 cartes d'un coup !
-        $pagination = $this->paginator->paginate(
-            $productsQuery, // Nos résultats de recherche
-            $page,          // Quelle page on veut
-            12              // Combien de cartes par page
-        );
+        if ($request->isXmlHttpRequest()) {
+            return new JsonResponse([
+                'content' => $this->renderView('product/_search_results_content.html.twig', [
+                    'pagination' => $pagination,
+                    'query' => $query,
+                ])
+            ]);
+        }
 
-        // 🎨 On envoie tout ça à la page pour l'afficher joliment
         return $this->render('product/search_results.html.twig', [
-            'pagination' => $pagination,          // Les cartes trouvées
-            'query' => $query,                   // Ce qu'on a cherché (pour le réafficher)
-            'selectedCategory' => $category,      // La catégorie choisie
-            'selectedRarity' => $rarity,         // La rareté choisie
-            'selectedSeller' => $seller,         // Le vendeur choisi
-            'sellers' => $sellers,               // Liste de tous les vendeurs
-            'sortBy' => $sortBy,                 // Comment on trie
-            'sortOrder' => $sortOrder            // Dans quel ordre
+            'query' => $query,
+            'pagination' => $pagination,
+            'selectedCategory' => $category,
+            'selectedRarity' => $rarity,
+            'selectedSeller' => $seller,
+            'sortBy' => $sortBy,
+            'sortOrder' => $sortOrder,
+            'sellers' => $sellers,
         ]);
     }
 
