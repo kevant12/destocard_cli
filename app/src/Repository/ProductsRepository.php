@@ -16,7 +16,7 @@ class ProductsRepository extends ServiceEntityRepository
         parent::__construct($registry, Products::class);
     }
 
-    public function searchProductsQuery(?string $query, ?string $category = null, ?string $rarity = null, ?string $seller = null, ?string $sortBy = null, ?string $sortOrder = 'asc'): \Doctrine\ORM\QueryBuilder
+    public function searchProductsQuery(?string $query, ?string $category = null, ?string $rarity = null, ?string $seller = null, ?string $extension = null, ?string $serie = null, ?string $sortBy = null, ?string $sortOrder = 'asc'): \Doctrine\ORM\QueryBuilder
     {
         $qb = $this->createQueryBuilder('p')
             ->addSelect('m')
@@ -46,6 +46,18 @@ class ProductsRepository extends ServiceEntityRepository
             // 👤 FILTRE PAR VENDEUR - Recherche par ID du vendeur
             $qb->andWhere('p.users = :seller')
                 ->setParameter('seller', $seller);
+        }
+
+        if ($extension) {
+            // 📦 FILTRE PAR EXTENSION - Recherche par extension spécifique
+            $qb->andWhere('p.extension = :extension')
+                ->setParameter('extension', $extension);
+        }
+
+        if ($serie) {
+            // 📚 FILTRE PAR SÉRIE - Recherche par série spécifique
+            $qb->andWhere('p.serie = :serie')
+                ->setParameter('serie', $serie);
         }
 
         // Tri
@@ -101,6 +113,42 @@ class ProductsRepository extends ServiceEntityRepository
             ->join('p.users', 'u')
             ->where('p.quantity > 0') // Seulement les produits disponibles
             ->orderBy('u.firstname', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Récupère toutes les extensions disponibles
+     * Utilisé pour peupler le filtre de recherche par extension
+     * 
+     * @return array Liste des extensions uniques
+     */
+    public function findAllExtensions(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->select('DISTINCT p.extension')
+            ->where('p.extension IS NOT NULL')
+            ->andWhere('p.extension != \'\'')
+            ->andWhere('p.quantity > 0') // Seulement les produits disponibles
+            ->orderBy('p.extension', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Récupère toutes les séries disponibles
+     * Utilisé pour peupler le filtre de recherche par série
+     * 
+     * @return array Liste des séries uniques
+     */
+    public function findAllSeries(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->select('DISTINCT p.serie')
+            ->where('p.serie IS NOT NULL')
+            ->andWhere('p.serie != \'\'')
+            ->andWhere('p.quantity > 0') // Seulement les produits disponibles
+            ->orderBy('p.serie', 'ASC')
             ->getQuery()
             ->getResult();
     }

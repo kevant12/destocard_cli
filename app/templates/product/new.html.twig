@@ -4,10 +4,7 @@
 
     Ce template affiche le formulaire de création d'un nouvel article (produit).
     Il est géré par `ProductController::new`.
-    Ce formulaire est assez complexe car il gère :
-    - Des champs de texte, de prix, et de description.
-    - L'upload de multiples fichiers image.
-    - L'intégration d'une modale pour la capture via webcam.
+    Refait avec la même structure simple que les formulaires d'authentification.
 
     Variables Clés :
     - `form`: L'objet FormView de `ProductFormType` pour construire le formulaire.
@@ -18,103 +15,136 @@
 {% block meta_description %}Vendez vos cartes Pokémon et autres objets de collection sur Destocard. Créez votre annonce facilement et rapidement.{% endblock %}
 
 {% block body %}
-<div class="container">
-    <div class="product-form">
-        <h1>Mettre un nouvel article en vente</h1>
+<div class="auth-page">
+    <div class="auth-card auth-card--large">
+        <h1 class="site-title">Mettre un nouvel article en vente</h1>
 
-        {# `form_start` inclut l'attribut `enctype="multipart/form-data"` nécessaire pour l'upload de fichiers. #}
         {{ form_start(form) }}
-            <div class="form-container">
-                
-                {# SECTION 1: Informations de base #}
+            {# Informations de base #}
+            <div class="form-group">
+                {{ form_label(form.title, 'Nom / Titre de l\'annonce') }}
+                {{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Ex: Dracaufeu'}}) }}
+                {{ form_errors(form.title) }}
+            </div>
+
+            <div class="form-grid">
                 <div class="form-group">
-                    <div class="form-row">
-                        {{ form_row(form.title) }}
-                    </div>
-                    
-                    <div class="form-row form-row--two-columns">
-                        {{ form_row(form.number) }}
-                        {{ form_row(form.category) }}
-                    </div>
-                    
-                    <div class="form-row">
-                        {{ form_row(form.price) }}
-                    </div>
+                    {{ form_label(form.number, 'Numéro') }}
+                    {{ form_widget(form.number, {'attr': {'class': 'form-control', 'placeholder': 'Ex: 4/102'}}) }}
+                    {{ form_errors(form.number) }}
                 </div>
 
-                {# SECTION 2: Détails spécifiques Pokémon #}
-                <div class="form-group form-group--pokemon">
-                    <h3>🎯 Détails de la carte Pokémon</h3>
-                    
-                    <div class="form-row">
-                        {{ form_row(form.extension) }}
-                    </div>
-                    
-                    <div class="form-row form-row--two-columns">
-                        {{ form_row(form.serie) }}
-                        {{ form_row(form.rarity) }}
-                    </div>
-                </div>
-
-                {# SECTION 3: Description #}
                 <div class="form-group">
-                    {{ form_row(form.description) }}
-                </div>
-
-                {# SECTION 4: Images #}
-                <div class="form-group">
-                    {{ form_label(form.imageFiles, 'Photos de votre article') }}
-                    <div class="form-image-upload">
-                        <div class="form-control--file">
-                            {{ form_widget(form.imageFiles) }}
-                            <label for="{{ form.imageFiles.vars.id }}" class="form-file-label">
-                                📷 Choisir des photos
-                                <div class="file-upload-text">Glissez vos fichiers ici ou cliquez pour sélectionner</div>
-                            </label>
-                        </div>
-                        <button type="button" id="webcam-button" class="btn btn--secondary" aria-label="Utiliser la webcam">
-                            📱 Webcam
-                        </button>
-                    </div>
-                    {{ form_errors(form.imageFiles) }}
-                    <div class="form-help">Formats acceptés : PNG, JPG - Taille max : 5MB par fichier</div>
-                    
-                    {# Ce conteneur sera rempli par JavaScript avec les aperçus des images sélectionnées. #}
-                    <div id="image-preview-container"></div>
+                    {{ form_label(form.category, 'Catégorie') }}
+                    {{ form_widget(form.category, {'attr': {'class': 'form-control', 'placeholder': 'Ex: Carte Pokémon'}}) }}
+                    {{ form_errors(form.category) }}
                 </div>
             </div>
 
-            <div class="form-actions">
-                <a href="{{ path('app_user_products') }}" class="btn--form-secondary">Annuler</a>
-                <button type="submit" class="btn--form-primary">🚀 Mettre en vente</button>
+            <div class="form-group">
+                {{ form_label(form.price, 'Prix') }}
+                {{ form_widget(form.price, {'attr': {'class': 'form-control', 'placeholder': '0.00'}}) }}
+                {{ form_errors(form.price) }}
+            </div>
+
+            {# Détails de la carte Pokémon #}
+            <h3 style="margin: 2rem 0 1rem 0; color: var(--primary-text-color);">🎯 Détails de la carte Pokémon</h3>
+            
+            <div class="form-group">
+                {{ form_label(form.extension, 'Extension') }}
+                {{ form_widget(form.extension, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.extension) }}
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    {{ form_label(form.serie, 'Série (libre)') }}
+                    {{ form_widget(form.serie, {'attr': {'class': 'form-control', 'placeholder': 'Ex: Base Set, Jungle, Fossil...'}}) }}
+                    {{ form_errors(form.serie) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.rarity, 'Rareté') }}
+                    {{ form_widget(form.rarity, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.rarity) }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.description, 'Description') }}
+                {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': '4'}}) }}
+                {{ form_errors(form.description) }}
+            </div>
+
+            {# Upload d'images simplifié #}
+            <div class="form-group">
+                {{ form_label(form.imageFiles, 'Photos de votre article') }}
+                <div class="form-image-upload">
+                    <div class="form-file-input">
+                        {{ form_widget(form.imageFiles, {'attr': {'class': 'form-control'}}) }}
+                        <label for="{{ form.imageFiles.vars.id }}" class="form-file-label">
+                            📷 Choisir des photos  Glissez vos fichiers ici ou cliquez pour sélectionner
+                        </label>
+                    </div>
+                    <button type="button" id="webcam-button" class="btn btn--secondary" style="margin-top: 0.5rem;">
+                        📱 Webcam
+                    </button>
+                </div>
+                {{ form_errors(form.imageFiles) }}
+                <div class="form-help">Formats acceptés : PNG, JPG - Taille max : 5MB par fichier</div>
+                <div id="image-preview-container"></div>
+            </div>
+
+            <div class="auth-links" style="margin: 2rem 0 1rem 0;">
+                <a href="{{ path('app_user_products') }}" class="btn btn--secondary">Annuler</a>
+                <button type="submit" class="btn btn--primary" style="margin-left: 1rem;">🚀 Mettre en vente</button>
             </div>
         {{ form_end(form) }}
     </div>
 </div>
 
-{# 
-    La modale pour la webcam est cachée par défaut (`display: none`).
-    Elle est gérée entièrement par `product-form.js`.
-#}
-<div id="webcam-modal" class="webcam-modal" style="display: none;" aria-hidden="true" role="dialog" aria-labelledby="webcam-modal-title">
+{# Modale webcam simplifiée #}
+<div id="webcam-modal" class="webcam-modal" style="display: none;" aria-hidden="true" role="dialog">
     <div class="webcam-modal-content">
-        <h3 id="webcam-modal-title">Prendre une photo avec la webcam</h3>
-        <video id="webcam-video" autoplay playsinline aria-label="Aperçu de la webcam"></video>
-        {# Le canvas est utilisé pour dessiner l'image capturée avant de l'envoyer. #}
+        <h3>Prendre une photo avec la webcam</h3>
+        <video id="webcam-video" autoplay playsinline></video>
         <canvas id="webcam-canvas" style="display: none;"></canvas>
         <div class="webcam-controls">
-            <button type="button" id="capture-button" class="btn btn--primary" aria-label="Capturer la photo">📸 Capturer</button>
-            <button type="button" id="close-webcam-button" class="btn btn--secondary" aria-label="Fermer la webcam">❌ Fermer</button>
+            <button type="button" id="capture-button" class="btn btn--primary">📸 Capturer</button>
+            <button type="button" id="close-webcam-button" class="btn btn--secondary">❌ Fermer</button>
         </div>
     </div>
 </div>
 {% endblock %}
 
+{% block stylesheets %}
+<style>
+/* Styles spécifiques pour le formulaire de produit */
+.auth-card--large {
+    max-width: 600px;
+    width: 100%;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .auth-card--large {
+        margin: 1rem;
+        max-width: none;
+    }
+}
+</style>
+{% endblock %}
+
 {% block javascripts %}
-    {#
-        Le script `product-form.js` est responsable de toute l'interactivité de cette page :
-        - Prévisualisation des images sélectionnées.
-        - Ouverture et gestion de la modale webcam.
-        - Capture de l'image depuis la webcam et injection dans le formulaire.
-    #}
+{# Le script pour la webcam et la prévisualisation des images sera ajouté ici #}
 {% endblock %} 

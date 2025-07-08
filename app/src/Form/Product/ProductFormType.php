@@ -54,7 +54,7 @@ class ProductFormType extends AbstractType
             ])
             
             // Champ catégorie - aide à la classification
-            ->add('category', TextType::class, [
+             ->add('category', TextType::class, [
                 'label' => 'Catégorie',
                 'required' => false,
                 'attr' => ['placeholder' => 'Ex: Carte Pokémon']

@@ -67,7 +67,7 @@
                                 title="Modifier cette adresse">
                             ✏️ Modifier
                         </button>
-                        <button type="button" class="btn btn--secondary btn-delete-address" 
+                        <button type="button" class="btn btn-danger btn-delete-address" 
                                 data-address-id="{{ address.id }}"
                                 data-csrf-token="{{ csrf_token('delete_address' ~ address.id) }}"
                                 title="Supprimer cette adresse">

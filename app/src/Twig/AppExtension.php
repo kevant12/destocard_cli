@@ -70,7 +70,7 @@ class AppExtension extends AbstractExtension implements GlobalsInterface
 
         // Échapper le terme de recherche pour éviter les problèmes de regex
         $escapedQuery = preg_quote($query, '/');
-        
+
         // Surligner le terme (insensible à la casse)
         return preg_replace(
             '/(' . $escapedQuery . ')/i',

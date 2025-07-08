@@ -166,10 +166,12 @@ class ProductController extends AbstractController
         $category = $request->query->get('category');
         $rarity = $request->query->get('rarity');
         $seller = $request->query->get('seller');
+        $extension = $request->query->get('extension');
+        $serie = $request->query->get('serie');
         $sortBy = $request->query->get('sort_by', 'date');
         $sortOrder = $request->query->get('sort_order', 'desc');
 
-        $queryBuilder = $this->productsRepository->searchProductsQuery($query, $category, $rarity, $seller, $sortBy, $sortOrder);
+        $queryBuilder = $this->productsRepository->searchProductsQuery($query, $category, $rarity, $seller, $extension, $serie, $sortBy, $sortOrder);
 
         $pagination = $paginator->paginate(
             $queryBuilder,
@@ -178,6 +180,8 @@ class ProductController extends AbstractController
         );
 
         $sellers = $this->productsRepository->findAllSellers();
+        $extensions = $this->productsRepository->findAllExtensions();
+        $series = $this->productsRepository->findAllSeries();
 
         if ($request->isXmlHttpRequest()) {
             return new JsonResponse([
@@ -194,9 +198,13 @@ class ProductController extends AbstractController
             'selectedCategory' => $category,
             'selectedRarity' => $rarity,
             'selectedSeller' => $seller,
+            'selectedExtension' => $extension,
+            'selectedSerie' => $serie,
             'sortBy' => $sortBy,
             'sortOrder' => $sortOrder,
             'sellers' => $sellers,
+            'extensions' => $extensions,
+            'series' => $series,
         ]);
     }
 

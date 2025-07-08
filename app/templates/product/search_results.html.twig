@@ -40,12 +40,36 @@
             </div>
 
             <div class="filter-group">
-                <label for="seller-filter">👤 Vendeur:</label>
+                <label for="seller-filter">Vendeur:</label>
                 <select name="seller" id="seller-filter">
                     <option value="">Tous les vendeurs</option>
                     {% for seller in sellers %}
                         <option value="{{ seller.id }}" {% if selectedSeller == seller.id %}selected{% endif %}>
                             {{ seller.firstname }} {{ seller.lastname }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="extension-filter">Extension:</label>
+                <select name="extension" id="extension-filter">
+                    <option value="">Toutes</option>
+                    {% for extension in extensions %}
+                        <option value="{{ extension.extension }}" {% if selectedExtension == extension.extension %}selected{% endif %}>
+                            {{ extension.extension }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="serie-filter">Série:</label>
+                <select name="serie" id="serie-filter">
+                    <option value="">Toutes</option>
+                    {% for serie in series %}
+                        <option value="{{ serie.serie }}" {% if selectedSerie == serie.serie %}selected{% endif %}>
+                            {{ serie.serie }}
                         </option>
                     {% endfor %}
                 </select>
@@ -75,20 +99,20 @@
     </div>
 
     <div id="search-results-container">
-        {% if pagination is empty %}
-            <p>Aucun produit ne correspond à votre recherche.</p>
-        {% else %}
-            <div class="products-grid">
-                {% for product in pagination %}
-                    {% include 'partials/_product_card.html.twig' with {'product': product, 'query': query} %}
-                {% endfor %}
-            </div>
+    {% if pagination is empty %}
+        <p>Aucun produit ne correspond à votre recherche.</p>
+    {% else %}
+        <div class="products-grid">
+            {% for product in pagination %}
+                {% include 'partials/_product_card.html.twig' with {'product': product, 'query': query} %}
+            {% endfor %}
+        </div>
 
-            <div class="navigation text-center">
-                {{ knp_pagination_render(pagination) }}
-            </div>
-        {% endif %}
-    </div>
+        <div class="navigation text-center">
+            {{ knp_pagination_render(pagination) }}
+        </div>
+    {% endif %}
+</div>
 </div>
 {% endblock %}
 

@@ -208,7 +208,7 @@ a:focus {
 }
 
 .site-header__logo img {
-  height: 40px;
+  height: 60px;
   width: auto;
   transition: transform var(--transition-fast);
 }
@@ -368,7 +368,7 @@ a:focus {
   align-items: center;
   padding: var(--spacing-sm);
   color: var(--secondary-text-color);
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-2xl);
   transition: color var(--transition-fast);
   text-decoration: none;
 }
@@ -425,6 +425,20 @@ a:focus {
   background-color: var(--border-light);
   color: var(--primary-text-color);
   border-color: var(--border-light);
+}
+
+.btn-danger {
+  background-color: var(--error-color);
+  color: white;
+  border: none;
+}
+
+.btn-danger:hover,
+.btn-danger:focus {
+  background-color: #c82333;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
 .btn--large {
@@ -998,6 +1012,10 @@ body {
    ======================================== */
 
 @media (max-width: 767px) {
+  .site-header__logo img {
+    height: 50px;
+  }
+  
   .cart-count {
     width: 18px;
     height: 18px;
@@ -1009,6 +1027,10 @@ body {
 }
 
 @media (min-width: 768px) {
+  .site-header__logo img {
+    height: 65px;
+  }
+  
   .site-header .container {
     flex-direction: row;
     justify-content: space-between;
@@ -1045,6 +1067,10 @@ body {
 }
 
 @media (min-width: 1024px) {
+  .site-header__logo img {
+    height: 70px;
+  }
+  
   .layout-grid,
   .products-grid {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -1064,6 +1090,10 @@ body {
 }
 
 @media (min-width: 1200px) {
+  .site-header__logo img {
+    height: 80px;
+  }
+  
   :root {
     --container-padding: var(--spacing-xl);
   }
@@ -1606,13 +1636,19 @@ select.form-control {
 
 /* Groupes de radio buttons horizontaux */
 .form-radio-group {
-  display: flex;
+  display: flex !important;
   gap: var(--spacing-lg);
   flex-wrap: wrap;
 }
 
 .form-radio-group .form-check {
   margin-bottom: 0;
+}
+
+.form-radio-group > div {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
 }
 
 /* Messages d'erreur */
@@ -1768,21 +1804,7 @@ legend {
     border-radius: var(--border-radius-md); /* Cohérence des coins arrondis */
 }
 
-/* Styles spécifiques pour le filtre vendeur */
-.filter-group label[for="seller-filter"] {
-    color: var(--accent-color);
-    font-weight: 700;
-}
-
-#seller-filter {
-    border: 2px solid var(--accent-color);
-    /* Le fond est maintenant géré par la règle générale .filter-group select */
-}
-
-#seller-filter:focus {
-    border-color: var(--accent-hover);
-    box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.1);
-}
+/* Styles spécifiques pour le filtre vendeur supprimés - maintenant comme les autres filtres */
 
 /* Responsive pour les filtres de recherche */
 @media (min-width: 768px) {
